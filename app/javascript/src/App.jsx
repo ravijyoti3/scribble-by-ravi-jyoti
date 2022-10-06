@@ -11,11 +11,8 @@ const App = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    /*eslint no-undef: "off"*/
     initializeLogger();
     setAuthHeaders(setLoading);
-    // logger.info("Never use console.log");
-    // logger.error("Never use console.error");
   }, []);
 
   if (loading) {

@@ -14,12 +14,16 @@ const NavBar = () => {
           Scribble
         </Typography>
         <Button
-          className="mr-5"
+          className="mr-5 "
           label="Articles"
           style="secondary-text"
           onClick={() => history.push("/articles", { resetTab: true })}
         />
-        <Button label="Settings" style="link" />
+        <Button
+          label="Settings"
+          style="link"
+          onClick={() => history.push("/setting", { resetTab: true })}
+        />
       </div>
       <Button icon={ExternalLink} label="Preview" style="secondary" />
     </nav>
