@@ -2,6 +2,7 @@ import React from "react";
 
 import { Button, Typography } from "neetoui";
 import { Container, Header } from "neetoui/layouts";
+import { Link } from "react-router-dom";
 
 import ColumnsDropDown from "./ColumnsDropDown";
 import LeftMenuBar from "./LeftMenuBar";
@@ -15,12 +16,14 @@ const index = () => (
         actionBlock={
           <div className="flex items-center justify-between">
             <ColumnsDropDown />
-            <Button
-              className="ml-3"
-              icon="ri-add-line"
-              label="Add New Article"
-              onClick={() => {}}
-            />
+            <Link to="/articles/create">
+              <Button
+                className="ml-3"
+                icon="ri-add-line"
+                label="Add New Article"
+                onClick={() => {}}
+              />
+            </Link>
           </div>
         }
         searchProps={{

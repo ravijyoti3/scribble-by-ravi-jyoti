@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 
 import { Formik, Form as FormikForm } from "formik";
-import { Button, Toastr, ActionDropdown } from "neetoui";
+import { Button, ActionDropdown } from "neetoui";
 import { Input, Select, Textarea } from "neetoui/formik";
+
+import articlesApi from "apis/articles";
 
 import {
   FORM_VALIDATION_SCHEMA,
@@ -10,13 +12,19 @@ import {
   CATEGORY_DATA,
 } from "./constants";
 
-const Create = ({ onClose }) => {
+const Create = ({ onClose, history }) => {
   const [submitted, setSubmitted] = useState(false);
   const { Menu, MenuItem } = ActionDropdown;
 
-  const handleSubmit = () => {
-    Toastr.success("Article added successfully.");
-    onClose();
+  const handleSubmit = async article => {
+    const { title, body, status } = article;
+    const data = { title, body, status };
+    try {
+      await articlesApi.create(data);
+      history.push("/articles");
+    } catch (error) {
+      logger.error(error);
+    }
   };
 
   return (
@@ -27,7 +35,7 @@ const Create = ({ onClose }) => {
       validationSchema={FORM_VALIDATION_SCHEMA}
       onSubmit={handleSubmit}
     >
-      {({ isSubmitting }) => (
+      {({ isSubmitting, setFieldValue, submitForm }) => (
         <FormikForm className="mt-5 flex w-full justify-center">
           <div className="w-1/2">
             <div className="space-between grid w-full grid-flow-row grid-cols-3 gap-4 ">
@@ -38,7 +46,6 @@ const Create = ({ onClose }) => {
               />
               <Select
                 isClearable
-                isMulti
                 isSearchable
                 className="w-full flex-grow-0 "
                 label="Category"
@@ -55,16 +62,33 @@ const Create = ({ onClose }) => {
             />
             <div className="mt-5 flex">
               <ActionDropdown
+                closeOnSelect={false}
                 label="Save Draft"
                 buttonProps={{
                   type: "submit",
                   loading: isSubmitting,
                   disabled: isSubmitting,
                 }}
-                onClick={() => setSubmitted(true)}
+                onClick={() => {
+                  setFieldValue("status", "draft");
+                  setSubmitted(true);
+                }}
               >
-                <Menu>
-                  <MenuItem.Button>Publish</MenuItem.Button>
+                <Menu
+                  dropdownProps={{
+                    closeOnSelect: false,
+                  }}
+                >
+                  <MenuItem.Button
+                    type="submit"
+                    onClick={() => {
+                      submitForm();
+                      setFieldValue("status", "published");
+                      setSubmitted(true);
+                    }}
+                  >
+                    Publish
+                  </MenuItem.Button>
                 </Menu>
               </ActionDropdown>
               <Button
