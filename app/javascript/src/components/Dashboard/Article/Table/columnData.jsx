@@ -2,6 +2,7 @@ import React from "react";
 
 import { Delete, Edit } from "neetoicons";
 import { Typography, Button } from "neetoui";
+import { formatCreatedTimeToDate } from "utils";
 
 const renderText = value => (
   <Typography className="neeto-ui-text-gray-600" style="body2">
@@ -22,8 +23,11 @@ export const buildTableColumnData = () => [
   },
   {
     title: "Date",
-    dataIndex: "date",
-    key: "date",
+    dataIndex: "created_at",
+    key: "created_at",
+    render: created_at => (
+      <div className="font-semibold">{formatCreatedTimeToDate(created_at)}</div>
+    ),
   },
   {
     title: "Author",

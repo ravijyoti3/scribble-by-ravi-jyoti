@@ -7,6 +7,7 @@ import { setAuthHeaders } from "apis/axios";
 import { initializeLogger } from "common/logger";
 import Dashboard from "components/Dashboard";
 import Eui from "components/Eui/Main";
+import "lib/dayjs"; //eslint-disable-line
 
 const App = () => {
   const [loading, setLoading] = useState(true);

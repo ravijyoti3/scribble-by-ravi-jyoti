@@ -91,16 +91,12 @@ export const INITIAL_FORM_VALUES = {
 export const FORM_VALIDATION_SCHEMA = yup.object().shape({
   title: yup.string().required("Title is required"),
   category: yup
-    .array(
-      yup
-        .object()
-        .nullable()
-        .shape({
-          label: yup.string().oneOf(CATEGORY_DATA.map(cat => cat.label)),
-          value: yup.string().oneOf(CATEGORY_DATA.map(cat => cat.value)),
-        })
-    )
-    .min(1, "At least one category is required")
+    .object()
+    .nullable()
+    .shape({
+      label: yup.string().oneOf(CATEGORY_DATA.map(cat => cat.label)),
+      value: yup.string().oneOf(CATEGORY_DATA.map(cat => cat.value)),
+    })
     .required("Category is required"),
   body: yup.string().required("Body is required"),
 });

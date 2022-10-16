@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 const camelize = str =>
   str
     .toLowerCase()
@@ -5,3 +7,6 @@ const camelize = str =>
 
 export const buildSelectOptions = options =>
   options.map(option => ({ label: option, value: camelize(option) }));
+
+export const formatCreatedTimeToDate = dateTime =>
+  dayjs(dateTime).format("MMMM  D, YYYY");
