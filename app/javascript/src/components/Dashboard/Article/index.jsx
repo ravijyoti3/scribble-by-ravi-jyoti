@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-import { Button, Typography } from "neetoui";
+import { Button, Typography, PageLoader } from "neetoui";
 import { Container, Header } from "neetoui/layouts";
 import { Link } from "react-router-dom";
+import { filterData } from "utils";
 
 import articlesApi from "apis/articles";
 import categoriesApi from "apis/categories";
@@ -12,8 +13,11 @@ import LeftMenuBar from "./LeftMenuBar";
 import Table from "./Table";
 
 const Dashboard = () => {
+  const [loading, setLoading] = useState(true);
   const [articleList, setArticleList] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
+  const [articleFilters, setArticleFilters] = useState({});
+  const [filteredArticleList, setFilteredArticleList] = useState([]);
 
   const fetchArticles = async () => {
     try {
@@ -21,8 +25,11 @@ const Dashboard = () => {
         data: { articles },
       } = await articlesApi.fetch();
       setArticleList(articles);
+      setFilteredArticleList(articles);
+      setLoading(false);
     } catch (error) {
       logger.error(error);
+      setLoading(false);
     }
   };
 
@@ -42,9 +49,27 @@ const Dashboard = () => {
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    setFilteredArticleList(filterData(articleList, articleFilters));
+  }, [articleFilters]);
+
+  if (loading) {
+    return (
+      <div className="h-screen w-screen">
+        <PageLoader />
+      </div>
+    );
+  }
+
   return (
     <div className="flex items-start">
-      <LeftMenuBar showMenu article={articleList} category={categoryList} />
+      <LeftMenuBar
+        showMenu
+        article={articleList}
+        articleFilters={articleFilters}
+        category={categoryList}
+        setArticleFilters={setArticleFilters}
+      />
       <Container>
         <Header
           actionBlock={
@@ -67,7 +92,7 @@ const Dashboard = () => {
         <Typography className="mb-5" style="h3">
           67 Articles
         </Typography>
-        <Table data={articleList} />
+        <Table data={filteredArticleList} />
       </Container>
     </div>
   );

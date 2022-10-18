@@ -6,24 +6,45 @@ import { MenuBar } from "neetoui/layouts";
 
 import Form from "./Form";
 
-const LeftMenuBar = ({ showMenu, refetch, article, category }) => {
+import { STATUS_OPTIONS } from "../constants";
+
+const LeftMenuBar = ({
+  showMenu,
+  refetch,
+  article,
+  category,
+  setArticleFilters,
+  articleFilters,
+}) => {
   const [isSearchCollapsed, setIsSearchCollapsed] = useState(true);
   const [isAddCollapsed, setIsAddCollapsed] = useState(true);
-
-  const statusOptions = [
-    { label: "Draft", value: "draft" },
-    { label: "Published", value: "published" },
-  ];
 
   return (
     <div className="flex">
       <MenuBar showMenu={showMenu} title="Articles">
-        <MenuBar.Block count={article.length} label="All" />
-        {statusOptions.map(option => (
+        <MenuBar.Block
+          active={!articleFilters.status}
+          count={article.length}
+          label="All"
+          onClick={() =>
+            setArticleFilters(articleFilters => ({
+              ...articleFilters,
+              status: null,
+            }))
+          }
+        />
+        {STATUS_OPTIONS.map(option => (
           <MenuBar.Block
+            active={articleFilters.status === option.value}
             count={article.filter(e => e.status === option.value).length}
             key={option.label}
             label={option.label}
+            onClick={() =>
+              setArticleFilters(articleFilters => ({
+                ...articleFilters,
+                status: option.value,
+              }))
+            }
           />
         ))}
         <MenuBar.SubTitle
@@ -57,7 +78,18 @@ const LeftMenuBar = ({ showMenu, refetch, article, category }) => {
           <Form refetch={refetch} setIsAddCollapsed={setIsAddCollapsed} />
         )}
         {category.map(category => (
-          <MenuBar.Block count={80} key={category.name} label={category.name} />
+          <MenuBar.Block
+            active={category.id === articleFilters.category_id}
+            count={80}
+            key={category.name}
+            label={category.name}
+            onClick={() =>
+              setArticleFilters(articleFilters => ({
+                ...articleFilters,
+                category_id: category.id,
+              }))
+            }
+          />
         ))}
       </MenuBar>
     </div>

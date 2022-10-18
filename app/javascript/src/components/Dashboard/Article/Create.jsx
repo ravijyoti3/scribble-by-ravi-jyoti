@@ -12,7 +12,7 @@ import { FORM_VALIDATION_SCHEMA, INITIAL_FORM_VALUES } from "./constants";
 const Create = ({ onClose, history }) => {
   const [submitted, setSubmitted] = useState(false);
   const [categoryList, setCategoryList] = useState([]);
-  const [pageLoading, setPageLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   const { Menu, MenuItem } = ActionDropdown;
 
@@ -27,10 +27,10 @@ const Create = ({ onClose, history }) => {
           value: category.id,
         }))
       );
-      setPageLoading(false);
+      setLoading(false);
     } catch (error) {
       logger.error(error);
-      setPageLoading(false);
+      setLoading(false);
     }
   };
 
@@ -50,8 +50,12 @@ const Create = ({ onClose, history }) => {
     fetchCategories();
   }, []);
 
-  if (pageLoading) {
-    return <PageLoader />;
+  if (loading) {
+    return (
+      <div className="h-screen w-screen">
+        <PageLoader />
+      </div>
+    );
   }
 
   return (
