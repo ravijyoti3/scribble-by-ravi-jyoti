@@ -37,3 +37,5 @@ export const CATEGORTY_INITIAL_FORM_VALUE = {
 export const CATEGORY_FORM_VALIDATION_SCHEMA = yup.object().shape({
   name: yup.string().required("Category is required"),
 });
+
+export const STATUS_OPTIONS = buildSelectOptions(["Draft", "Published"]);
