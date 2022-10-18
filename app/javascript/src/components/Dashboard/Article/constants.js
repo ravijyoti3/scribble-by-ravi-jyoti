@@ -39,3 +39,12 @@ export const CATEGORY_FORM_VALIDATION_SCHEMA = yup.object().shape({
 });
 
 export const STATUS_OPTIONS = buildSelectOptions(["Draft", "Published"]);
+
+export const TABLE_COLUMNS = [
+  "Title",
+  "Category",
+  "Date",
+  "Author",
+  "Status",
+  "",
+];

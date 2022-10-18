@@ -3,10 +3,11 @@ import React from "react";
 import { Down } from "neetoicons";
 import { Dropdown, Checkbox, Typography } from "neetoui";
 
-const { Menu, MenuItem } = Dropdown;
-const listItems = ["Title", "Category", "Date", "Author", "Status"];
+import { TABLE_COLUMNS } from "./constants";
 
-const ColumnsDropDown = () => (
+const { Menu, MenuItem } = Dropdown;
+
+const ColumnsDropDown = ({ visibleColumns, setVisibleColumns }) => (
   <Dropdown
     buttonStyle="secondary"
     closeOnSelect={false}
@@ -17,11 +18,32 @@ const ColumnsDropDown = () => (
       Columns
     </Typography>
     <Menu>
-      {listItems.map((item, idx) => (
-        <MenuItem.Button key={idx} prefix={<Checkbox id="checkbox_name" />}>
-          {item}
-        </MenuItem.Button>
-      ))}
+      {TABLE_COLUMNS.map((item, idx) => {
+        if (!item) return null;
+
+        return (
+          <MenuItem.Button
+            key={idx}
+            prefix={
+              <Checkbox
+                checked={visibleColumns.includes(item)}
+                id="column"
+                onChange={() =>
+                  setVisibleColumns(visibleColumns => {
+                    if (visibleColumns.includes(item)) {
+                      return visibleColumns.filter(column => column !== item);
+                    }
+
+                    return [...visibleColumns, item];
+                  })
+                }
+              />
+            }
+          >
+            {item}
+          </MenuItem.Button>
+        );
+      })}
     </Menu>
   </Dropdown>
 );

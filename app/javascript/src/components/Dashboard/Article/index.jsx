@@ -9,6 +9,7 @@ import articlesApi from "apis/articles";
 import categoriesApi from "apis/categories";
 
 import ColumnsDropDown from "./ColumnsDropDown";
+import { TABLE_COLUMNS } from "./constants";
 import LeftMenuBar from "./LeftMenuBar";
 import Table from "./Table";
 
@@ -18,6 +19,7 @@ const Dashboard = () => {
   const [categoryList, setCategoryList] = useState([]);
   const [articleFilters, setArticleFilters] = useState({});
   const [filteredArticleList, setFilteredArticleList] = useState([]);
+  const [visibleColumns, setVisibleColumns] = useState(TABLE_COLUMNS);
 
   const fetchArticles = async () => {
     try {
@@ -74,7 +76,10 @@ const Dashboard = () => {
         <Header
           actionBlock={
             <div className="flex items-center justify-between">
-              <ColumnsDropDown />
+              <ColumnsDropDown
+                setVisibleColumns={setVisibleColumns}
+                visibleColumns={visibleColumns}
+              />
               <Link to="/articles/create">
                 <Button
                   className="ml-3"
@@ -92,7 +97,7 @@ const Dashboard = () => {
         <Typography className="mb-5" style="h3">
           67 Articles
         </Typography>
-        <Table data={filteredArticleList} />
+        <Table data={filteredArticleList} visibleColumns={visibleColumns} />
       </Container>
     </div>
   );
