@@ -25,8 +25,12 @@ export const buildTableColumnData = () => [
     title: "Date",
     dataIndex: "created_at",
     key: "created_at",
-    render: created_at => (
-      <div className="font-semibold">{formatCreatedTimeToDate(created_at)}</div>
+    render: (created_at, tableRow) => (
+      <div className="font-semibold">
+        {tableRow.status === "published"
+          ? formatCreatedTimeToDate(created_at)
+          : "--------"}
+      </div>
     ),
   },
   {
@@ -39,7 +43,7 @@ export const buildTableColumnData = () => [
     title: "Category",
     dataIndex: "category",
     key: "category",
-    render: renderText,
+    render: category => renderText(category.name),
   },
   {
     title: "Status",

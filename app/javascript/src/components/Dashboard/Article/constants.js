@@ -1,81 +1,6 @@
 import { buildSelectOptions } from "utils";
 import * as yup from "yup";
 
-export const ROW_DATA = [
-  {
-    id: 0,
-    title: "Oliver Smith",
-    date: "Sep 23, 2022",
-    author: "William",
-    category: "Romance",
-    status: "Draft",
-  },
-  {
-    id: 1,
-    title: "Oliver Smith",
-    date: "Sep 23, 2022",
-    author: "William",
-    category: "Romance",
-    status: "Draft",
-  },
-  {
-    id: 2,
-    title: "Oliver Smith",
-    date: "Sep 23, 2022",
-    author: "William",
-    category: "Romance",
-    status: "Draft",
-  },
-  {
-    id: 3,
-    title: "Oliver Smith",
-    date: "Sep 23, 2022",
-    author: "William",
-    category: "Romance",
-    status: "Draft",
-  },
-  {
-    id: 4,
-    title: "Oliver Smith",
-    date: "Sep 23, 2022",
-    author: "William",
-    category: "Romance",
-    status: "Draft",
-  },
-  {
-    id: 5,
-    title: "Oliver Smith",
-    date: "Sep 23, 2022",
-    author: "William",
-    category: "Romance",
-    status: "Draft",
-  },
-  {
-    id: 6,
-    title: "Oliver Smith",
-    date: "Sep 23, 2022",
-    author: "William",
-    category: "Romance",
-    status: "Draft",
-  },
-  {
-    id: 7,
-    title: "Oliver Smith",
-    date: "Sep 23, 2022",
-    author: "William",
-    category: "Romance",
-    status: "Draft",
-  },
-  {
-    id: 8,
-    title: "Oliver Smith",
-    date: "Sep 23, 2022",
-    author: "William",
-    category: "Romance",
-    status: "Draft",
-  },
-];
-
 export const CATEGORY_DATA = buildSelectOptions([
   "Getting Started",
   "Misc",
@@ -84,19 +9,31 @@ export const CATEGORY_DATA = buildSelectOptions([
 
 export const INITIAL_FORM_VALUES = {
   title: "",
-  category: [],
+  category: {
+    value: "",
+    label: "",
+  },
   body: "",
 };
 
-export const FORM_VALIDATION_SCHEMA = yup.object().shape({
-  title: yup.string().required("Title is required"),
-  category: yup
-    .object()
-    .nullable()
-    .shape({
-      label: yup.string().oneOf(CATEGORY_DATA.map(cat => cat.label)),
-      value: yup.string().oneOf(CATEGORY_DATA.map(cat => cat.value)),
-    })
-    .required("Category is required"),
-  body: yup.string().required("Body is required"),
+export const FORM_VALIDATION_SCHEMA = CATEGORY_LIST =>
+  yup.object().shape({
+    title: yup.string().required("Title is required"),
+    category: yup
+      .object()
+      .nullable()
+      .shape({
+        label: yup.string().oneOf(CATEGORY_LIST.map(cat => cat.label)),
+        value: yup.number().oneOf(CATEGORY_LIST.map(cat => cat.value)),
+      })
+      .required("Category is required"),
+    body: yup.string().required("Body is required"),
+  });
+
+export const CATEGORTY_INITIAL_FORM_VALUE = {
+  name: "",
+};
+
+export const CATEGORY_FORM_VALIDATION_SCHEMA = yup.object().shape({
+  name: yup.string().required("Category is required"),
 });

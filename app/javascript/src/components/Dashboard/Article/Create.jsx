@@ -1,24 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Formik, Form as FormikForm } from "formik";
-import { Button, ActionDropdown } from "neetoui";
+import { Button, ActionDropdown, PageLoader } from "neetoui";
 import { Input, Select, Textarea } from "neetoui/formik";
 
 import articlesApi from "apis/articles";
+import categoriesApi from "apis/categories";
 
-import {
-  FORM_VALIDATION_SCHEMA,
-  INITIAL_FORM_VALUES,
-  CATEGORY_DATA,
-} from "./constants";
+import { FORM_VALIDATION_SCHEMA, INITIAL_FORM_VALUES } from "./constants";
 
 const Create = ({ onClose, history }) => {
   const [submitted, setSubmitted] = useState(false);
+  const [categoryList, setCategoryList] = useState([]);
+  const [pageLoading, setPageLoading] = useState(true);
+
   const { Menu, MenuItem } = ActionDropdown;
+
+  const fetchCategories = async () => {
+    try {
+      const {
+        data: { categories },
+      } = await categoriesApi.fetch();
+      setCategoryList(
+        categories.map(category => ({
+          label: category.name,
+          value: category.id,
+        }))
+      );
+      setPageLoading(false);
+    } catch (error) {
+      logger.error(error);
+      setPageLoading(false);
+    }
+  };
 
   const handleSubmit = async article => {
     const { title, body, status } = article;
-    const data = { title, body, status };
+    const category_id = article.category.value;
+    const data = { title, body, status, category_id };
     try {
       await articlesApi.create(data);
       history.push("/articles");
@@ -27,12 +46,20 @@ const Create = ({ onClose, history }) => {
     }
   };
 
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  if (pageLoading) {
+    return <PageLoader />;
+  }
+
   return (
     <Formik
       initialValues={INITIAL_FORM_VALUES}
       validateOnBlur={submitted}
       validateOnChange={submitted}
-      validationSchema={FORM_VALIDATION_SCHEMA}
+      validationSchema={FORM_VALIDATION_SCHEMA(categoryList)}
       onSubmit={handleSubmit}
     >
       {({ isSubmitting, setFieldValue, submitForm }) => (
@@ -45,16 +72,17 @@ const Create = ({ onClose, history }) => {
                 name="title"
               />
               <Select
-                isClearable
                 isSearchable
+                required
                 className="w-full flex-grow-0 "
                 label="Category"
                 name="category"
-                options={CATEGORY_DATA}
+                options={categoryList}
                 placeholder="Select Category"
               />
             </div>
             <Textarea
+              required
               className="mt-5 w-full flex-grow-0"
               label="Article Body"
               name="body"
@@ -74,13 +102,8 @@ const Create = ({ onClose, history }) => {
                   setSubmitted(true);
                 }}
               >
-                <Menu
-                  dropdownProps={{
-                    closeOnSelect: false,
-                  }}
-                >
+                <Menu>
                   <MenuItem.Button
-                    type="submit"
                     onClick={() => {
                       submitForm();
                       setFieldValue("status", "published");
