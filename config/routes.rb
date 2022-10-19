@@ -3,7 +3,12 @@
 Rails.application.routes.draw do
   constraints(lambda { |req| req.format == :json }) do
     resources :articles, only: %i[index create]
-    resources :categories, only: %i[index create update destroy]
+    resources :categories, only: %i[index create destroy]
+    resources :categories, only: :update do
+      collection do
+        put "position_update"
+      end
+    end
   end
 
   root "home#index"
