@@ -63,3 +63,5 @@ group :development, :test do
   gem "rubocop-rails"
 end
 # other gems if any
+
+gem "acts_as_list"

@@ -54,7 +54,11 @@ const Categories = () => {
   };
 
   if (pageLoading) {
-    return <PageLoader />;
+    return (
+      <div className="h-screen w-screen">
+        <PageLoader />
+      </div>
+    );
   }
 
   return (

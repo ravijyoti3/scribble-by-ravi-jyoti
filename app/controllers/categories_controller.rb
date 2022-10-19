@@ -15,6 +15,23 @@ class CategoriesController < ApplicationController
     end
   end
 
+  def position_update
+    position = 1
+    category_id_list = params[:category_id_list]
+    category_id_list.each do |pos|
+      category = Category.find_by!(id: pos)
+      category.position = position
+      position = position + 1
+      category.save!
+    end
+    render status: :ok, json: { notice: "Position successfully updated" }
+  end
+
+  def update
+    @category.update!(category_params)
+    render status: :ok, json: { notice: "Successfully updated" }
+  end
+
   private
 
     def category_params
