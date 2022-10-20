@@ -65,3 +65,5 @@ end
 # other gems if any
 
 gem "acts_as_list"
+
+gem "bcrypt", "~> 3.1.13"
