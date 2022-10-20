@@ -4,10 +4,14 @@ import { Table as NeetoUITable } from "neetoui";
 
 import { buildTableColumnData } from "./columnData";
 
-const Table = ({ data, visibleColumns }) => (
+const Table = ({ data, visibleColumns, setShowDeleteAlert, setArticle }) => (
   <NeetoUITable
-    columnData={buildTableColumnData(visibleColumns)}
     rowData={data}
+    columnData={buildTableColumnData(
+      visibleColumns,
+      setShowDeleteAlert,
+      setArticle
+    )}
   />
 );
 
