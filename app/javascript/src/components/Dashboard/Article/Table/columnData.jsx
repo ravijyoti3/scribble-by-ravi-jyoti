@@ -13,7 +13,8 @@ const renderText = value => (
 export const buildTableColumnData = (
   visibleColumns,
   setShowDeleteAlert,
-  setArticle
+  setArticle,
+  history
 ) =>
   [
     {
@@ -81,7 +82,16 @@ export const buildTableColumnData = (
               setShowDeleteAlert(true);
             }}
           />
-          <Button icon={Edit} style="text" />
+          <Button
+            icon={Edit}
+            style="text"
+            onClick={() => {
+              history.push({
+                pathname: "/articles/edit/",
+                id: article.id,
+              });
+            }}
+          />
         </div>
       ),
     },

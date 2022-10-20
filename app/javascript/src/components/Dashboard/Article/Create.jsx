@@ -9,12 +9,32 @@ import categoriesApi from "apis/categories";
 
 import { FORM_VALIDATION_SCHEMA, INITIAL_FORM_VALUES } from "./constants";
 
-const Create = ({ onClose, history }) => {
+const Create = ({ onClose, history, location }) => {
   const [submitted, setSubmitted] = useState(false);
   const [categoryList, setCategoryList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [article, setArticle] = useState(null);
 
   const { Menu, MenuItem } = ActionDropdown;
+  const id = location.id || null;
+
+  const fetchArticle = async () => {
+    try {
+      const { data } = await articlesApi.show(id);
+      setArticle({
+        title: data.article.title,
+        body: data.article.body,
+        category: {
+          label: data.article.category,
+          value: data.article.category_id,
+        },
+      });
+      setLoading(false);
+    } catch (error) {
+      logger.error(error);
+      setLoading(false);
+    }
+  };
 
   const fetchCategories = async () => {
     try {
@@ -48,7 +68,8 @@ const Create = ({ onClose, history }) => {
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+    if (id) fetchArticle();
+  }, [fetchArticle, id]);
 
   if (loading) {
     return (
@@ -60,7 +81,8 @@ const Create = ({ onClose, history }) => {
 
   return (
     <Formik
-      initialValues={INITIAL_FORM_VALUES}
+      enableReinitialize
+      initialValues={id ? article : INITIAL_FORM_VALUES}
       validateOnBlur={submitted}
       validateOnChange={submitted}
       validationSchema={FORM_VALIDATION_SCHEMA(categoryList)}

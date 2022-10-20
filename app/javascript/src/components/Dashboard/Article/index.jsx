@@ -14,7 +14,7 @@ import DeleteAlert from "./DeleteAlert";
 import LeftMenuBar from "./LeftMenuBar";
 import Table from "./Table";
 
-const Dashboard = () => {
+const Dashboard = ({ history }) => {
   const [loading, setLoading] = useState(true);
   const [articleList, setArticleList] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
@@ -102,6 +102,7 @@ const Dashboard = () => {
         </Typography>
         <Table
           data={filteredArticleList}
+          history={history}
           setArticle={setArticle}
           setShowDeleteAlert={setShowDeleteAlert}
           visibleColumns={visibleColumns}
