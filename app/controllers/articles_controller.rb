@@ -26,6 +26,11 @@ class ArticlesController < ApplicationController
     render status: :ok, json: { notice: "Article was successfully deleted" }
   end
 
+  def show
+    @article = Article.find(params[:id])
+    render
+  end
+
   private
 
     def article_params
