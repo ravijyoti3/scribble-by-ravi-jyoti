@@ -10,7 +10,11 @@ const renderText = value => (
   </Typography>
 );
 
-export const buildTableColumnData = visibleColumns =>
+export const buildTableColumnData = (
+  visibleColumns,
+  setShowDeleteAlert,
+  setArticle
+) =>
   [
     {
       title: "Title",
@@ -67,9 +71,16 @@ export const buildTableColumnData = visibleColumns =>
       dataIndex: "more",
       key: "more",
       width: "10%",
-      render: () => (
+      render: (_, article) => (
         <div className="flex">
-          <Button icon={Delete} style="text" />
+          <Button
+            icon={Delete}
+            style="text"
+            onClick={() => {
+              setArticle(article);
+              setShowDeleteAlert(true);
+            }}
+          />
           <Button icon={Edit} style="text" />
         </div>
       ),

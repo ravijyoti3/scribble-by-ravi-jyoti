@@ -10,6 +10,7 @@ import categoriesApi from "apis/categories";
 
 import ColumnsDropDown from "./ColumnsDropDown";
 import { TABLE_COLUMNS } from "./constants";
+import DeleteAlert from "./DeleteAlert";
 import LeftMenuBar from "./LeftMenuBar";
 import Table from "./Table";
 
@@ -20,6 +21,8 @@ const Dashboard = () => {
   const [articleFilters, setArticleFilters] = useState({});
   const [filteredArticleList, setFilteredArticleList] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState(TABLE_COLUMNS);
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const [article, setArticle] = useState(null);
 
   const fetchArticles = async () => {
     try {
@@ -53,7 +56,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     setFilteredArticleList(filterData(articleList, articleFilters));
-  }, [articleFilters]);
+  }, [articleFilters, articleList]);
 
   if (loading) {
     return (
@@ -97,7 +100,18 @@ const Dashboard = () => {
         <Typography className="mb-5" style="h3">
           67 Articles
         </Typography>
-        <Table data={filteredArticleList} visibleColumns={visibleColumns} />
+        <Table
+          data={filteredArticleList}
+          setArticle={setArticle}
+          setShowDeleteAlert={setShowDeleteAlert}
+          visibleColumns={visibleColumns}
+        />
+        <DeleteAlert
+          article={article}
+          refetch={fetchArticles}
+          setShowDeleteAlert={setShowDeleteAlert}
+          showDeleteAlert={showDeleteAlert}
+        />
       </Container>
     </div>
   );

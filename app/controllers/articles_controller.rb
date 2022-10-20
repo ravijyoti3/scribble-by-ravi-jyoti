@@ -20,6 +20,12 @@ class ArticlesController < ApplicationController
     render status: :ok, json: { notice: "Articles successfully updated" }
   end
 
+  def destroy
+    article = Article.find(params[:id])
+    article.destroy
+    render status: :ok, json: { notice: "Article was successfully deleted" }
+  end
+
   private
 
     def article_params
