@@ -12,6 +12,14 @@ class ArticlesController < ApplicationController
     render status: :ok, json: { notice: "Article was successfully created" }
   end
 
+  def bulk_update
+    articles = Article.where(category_id: params[:category_id])
+    articles.each do |article|
+      article.update(category_id: params[:new_category_id])
+    end
+    render status: :ok, json: { notice: "Articles successfully updated" }
+  end
+
   private
 
     def article_params

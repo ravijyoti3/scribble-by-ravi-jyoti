@@ -27,6 +27,16 @@ const Categories = () => {
     }
   };
 
+  const addCategory = async category => {
+    try {
+      await categoriesApi.create(category);
+      fetchCategoriesDetails();
+      setShowAddCategory(false);
+    } catch (error) {
+      logger.error(error);
+    }
+  };
+
   useEffect(() => {
     fetchCategoriesDetails();
   }, []);
@@ -69,7 +79,7 @@ const Categories = () => {
           Create and configure the categories inside your scribble.
         </Typography>
         {showAddCategory ? (
-          <Form setShowAddCategory={setShowAddCategory} />
+          <Form handleSubmit={addCategory} />
         ) : (
           <Button
             className="mb-4 mt-6 rounded-sm"

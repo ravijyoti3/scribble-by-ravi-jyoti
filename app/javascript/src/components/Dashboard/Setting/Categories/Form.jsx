@@ -10,12 +10,8 @@ import {
   CATEGORY_SETTING_FORM_VALIDATION_SCHEMA,
 } from "../constants";
 
-const Form = ({ setShowAddCategory }) => {
+const Form = ({ handleSubmit }) => {
   const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = () => {
-    setShowAddCategory(false);
-  };
 
   return (
     <Formik
@@ -29,7 +25,7 @@ const Form = ({ setShowAddCategory }) => {
         <FormikForm className="my-3 w-1/2">
           <Input
             className=""
-            name="category"
+            name="name"
             suffix={
               <Button
                 disabled={isSubmitting}
