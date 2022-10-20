@@ -79,9 +79,9 @@ export const CATEGORIES_DATA = [
 ];
 
 export const CATEGORY_FORM_INITIAL_VALUE = {
-  category: "",
+  name: "",
 };
 
 export const CATEGORY_SETTING_FORM_VALIDATION_SCHEMA = yup.object().shape({
-  category: yup.string().required("Category is required"),
+  name: yup.string().required("Category is required"),
 });

@@ -4,12 +4,25 @@ import { Delete, Edit } from "neetoicons";
 import { Button, Typography } from "neetoui";
 import { Draggable } from "react-beautiful-dnd";
 
+import categoriesApi from "apis/categories";
+
 import DeleteModal from "./DeleteModal";
 import Form from "./Form";
 
 const List = ({ category, index, refetch, categoryList }) => {
   const [isEdit, setIsEdit] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const editCategory = async payload => {
+    payload.id = category.id;
+    try {
+      await categoriesApi.update(payload);
+      refetch();
+      setIsEdit(false);
+    } catch (error) {
+      logger.error(error);
+    }
+  };
 
   return (
     <>
@@ -50,13 +63,7 @@ const List = ({ category, index, refetch, categoryList }) => {
                 </div>
               </>
             ) : (
-              <Form
-                isEdit
-                id={category.id}
-                initialValues={{ name: category.name }}
-                refetch={refetch}
-                setIsEdit={setIsEdit}
-              />
+              <Form handleSubmit={editCategory} />
             )}
           </div>
         )}
