@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class Site < ApplicationRecord
-  has_secure_password
-  validates :name, presence: true, length: { maximum: 45 }
+  validates :name, presence: true
+  has_secure_password validations: false
+  has_secure_token :authentication_token
   validates :password, length: { minimum: 6 }, if: -> { password.present? }
 end

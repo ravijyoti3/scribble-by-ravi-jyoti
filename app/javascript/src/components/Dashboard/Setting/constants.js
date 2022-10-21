@@ -1,11 +1,7 @@
 import * as yup from "yup";
 
 export const GENERAL_SETTING_FORM_VALIDATION_SCHEMA = yup.object().shape({
-  site_name: yup.string().required("Site Name is required"),
-  password: yup
-    .string()
-    .min(6, "Password cannot be less than 6 characters")
-    .required("Password is required"),
+  name: yup.string().required("Site Name is required"),
 });
 
 export const LEFT_MENU_ITEMS = [

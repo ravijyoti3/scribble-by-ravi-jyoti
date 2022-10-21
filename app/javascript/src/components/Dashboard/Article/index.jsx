@@ -18,7 +18,10 @@ const Dashboard = ({ history }) => {
   const [loading, setLoading] = useState(true);
   const [articleList, setArticleList] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
-  const [articleFilters, setArticleFilters] = useState({});
+  const [articleFilters, setArticleFilters] = useState({
+    status: null,
+    category_id: [],
+  });
   const [filteredArticleList, setFilteredArticleList] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState(TABLE_COLUMNS);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);

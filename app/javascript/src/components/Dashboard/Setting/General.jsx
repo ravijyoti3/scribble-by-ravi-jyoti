@@ -1,20 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Form as FormikForm, Formik } from "formik";
 import { Typography, Checkbox, Button } from "neetoui";
 import { Input as FormikInput } from "neetoui/formik";
 
-import {
-  GENERAL_SETTING_FORM_INITIAL_VALUE,
-  GENERAL_SETTING_FORM_VALIDATION_SCHEMA,
-} from "./constants";
+import sitesApi from "apis/sites";
+
+import { GENERAL_SETTING_FORM_VALIDATION_SCHEMA } from "./constants";
 
 const General = () => {
   const [submitted, setSubmitted] = useState(false);
   const [showPasswordField, setShowPasswordField] = useState(false);
-  const handleSubmit = () => {
-    setSubmitted(true);
+  const [siteData, setSiteData] = useState(null);
+
+  const fetchSiteDetails = async () => {
+    try {
+      const { data } = await sitesApi.show();
+      setSiteData({ ...data, password: data.password_digest });
+      setShowPasswordField(data.password_protected);
+    } catch (err) {
+      logger.error(err);
+    }
   };
+
+  const handleSubmit = async values => {
+    try {
+      await sitesApi.update(values);
+      setSubmitted(true);
+    } catch (err) {
+      logger.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchSiteDetails();
+  }, []);
 
   return (
     <div className="flex w-full justify-center">
@@ -24,27 +44,30 @@ const General = () => {
           Configure general attributes of scribble.
         </Typography>
         <Formik
-          initialValues={GENERAL_SETTING_FORM_INITIAL_VALUE}
+          enableReinitialize
+          initialValues={siteData}
           validateOnBlur={submitted}
           validateOnChange={submitted}
           validationSchema={GENERAL_SETTING_FORM_VALIDATION_SCHEMA}
           onSubmit={handleSubmit}
         >
-          {({ isSubmitting }) => (
+          {({ isSubmitting, setFieldValue }) => (
             <FormikForm className="mt-8">
               <FormikInput
                 helpText="Customize the site name which is used to show the site name in Open Graph Tags."
                 label="Site Name"
-                name="site_name"
+                name="name"
               />
               <hr className="mt-3" />
               <Checkbox
+                checked={showPasswordField}
                 className="mt-3"
                 id="toggle_password_field"
                 label="Password Protect Knowledge Base"
-                onChange={() =>
-                  setShowPasswordField(showPasswordField => !showPasswordField)
-                }
+                onChange={() => {
+                  setFieldValue("password_protected", !showPasswordField);
+                  setShowPasswordField(showPasswordField => !showPasswordField);
+                }}
               />
               {showPasswordField && (
                 <FormikInput
@@ -62,7 +85,6 @@ const General = () => {
                   loading={isSubmitting}
                   style="primary"
                   type="submit"
-                  onClick={() => setSubmitted(true)}
                 />
                 <Button
                   className="rounded-sm"
