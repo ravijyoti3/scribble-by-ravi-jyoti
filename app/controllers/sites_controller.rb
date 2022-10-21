@@ -17,7 +17,6 @@ class SitesController < ApplicationController
 
   private
 
-    # TODO: Remove password_digest
     def site_params
       params.require(:site).permit(:name, :password)
     end
