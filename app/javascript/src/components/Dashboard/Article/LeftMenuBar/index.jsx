@@ -79,15 +79,26 @@ const LeftMenuBar = ({
         )}
         {category.map(category => (
           <MenuBar.Block
-            active={category.id === articleFilters.category_id}
+            active={articleFilters.category_id?.includes(category.id)}
             count={80}
             key={category.name}
             label={category.name}
             onClick={() =>
-              setArticleFilters(articleFilters => ({
-                ...articleFilters,
-                category_id: category.id,
-              }))
+              setArticleFilters(articleFilters => {
+                if (articleFilters.category_id?.includes(category.id)) {
+                  return {
+                    ...articleFilters,
+                    category_id: articleFilters.category_id.filter(
+                      id => id !== category.id
+                    ),
+                  };
+                }
+
+                return {
+                  ...articleFilters,
+                  category_id: [...articleFilters.category_id, category.id],
+                };
+              })
             }
           />
         ))}

@@ -13,8 +13,14 @@ export const formatCreatedTimeToDate = dateTime =>
 
 export const filterData = (data, filter) => {
   Object.keys(filter).forEach(key => {
-    if (filter[key]) {
+    if (filter[key] && typeof filter[key] === "string") {
       data = data.filter(item => item[key] === filter[key]);
+    } else if (
+      filter[key] &&
+      typeof filter[key] === "object" &&
+      filter[key].length > 0
+    ) {
+      data = data.filter(item => filter[key].includes(item[key]));
     }
   });
 
