@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 
 import { Form as FormikForm, Formik } from "formik";
-import { Typography, Checkbox, Button } from "neetoui";
-import { Input as FormikInput } from "neetoui/formik";
+import { Typography, Button } from "neetoui";
+import {
+  Input as FormikInput,
+  Checkbox as FormikCheckbox,
+} from "neetoui/formik";
 
 import sitesApi from "apis/sites";
 
@@ -59,11 +62,10 @@ const General = () => {
                 name="name"
               />
               <hr className="mt-3" />
-              <Checkbox
-                checked={showPasswordField}
+              <FormikCheckbox
                 className="mt-3"
-                id="toggle_password_field"
                 label="Password Protect Knowledge Base"
+                name="password_protected"
                 onChange={() => {
                   setFieldValue("password_protected", !showPasswordField);
                   setShowPasswordField(showPasswordField => !showPasswordField);

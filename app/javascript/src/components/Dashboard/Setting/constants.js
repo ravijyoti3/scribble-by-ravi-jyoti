@@ -2,6 +2,24 @@ import * as yup from "yup";
 
 export const GENERAL_SETTING_FORM_VALIDATION_SCHEMA = yup.object().shape({
   name: yup.string().required("Site Name is required"),
+  password_protected: yup.boolean(),
+  password: yup
+    .string()
+    .when("password_protected", {
+      is: true,
+      then: yup
+        .string()
+        .required("Password is required")
+        .min(6, "Password must be at least 6 characters")
+        .matches(
+          /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{1,}$/,
+          "Password must have one letter and one number"
+        ),
+    })
+    .when("password_protected", {
+      is: false,
+      then: yup.string().notRequired(),
+    }),
 });
 
 export const LEFT_MENU_ITEMS = [
