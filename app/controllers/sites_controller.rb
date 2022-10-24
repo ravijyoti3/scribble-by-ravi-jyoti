@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SitesController < ApplicationController
-  before_action :set_site, only: %i[show update]
+  before_action :set_site, only: %i[show update create]
 
   def show
     render
@@ -13,6 +13,12 @@ class SitesController < ApplicationController
     @site.password_protected = params[:password_protected]
     @site.save!
     render status: :ok, json: { notice: "Site was successfully updated" }
+  end
+
+  def create
+    unless @site.authenticate(params[:password])
+      render status: :unauthorized, json: { error: "Invalid password" }
+    end
   end
 
   private

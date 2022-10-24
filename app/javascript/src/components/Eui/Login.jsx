@@ -1,24 +1,41 @@
 import React, { useState } from "react";
 
 import { Formik, Form as FormikForm } from "formik";
-import { Typography, Button } from "neetoui";
+import { Typography, Button, Toastr } from "neetoui";
 import { Input } from "neetoui/formik";
 import * as yup from "yup";
 
+import { setAuthHeaders } from "apis/axios";
+import sitesApi from "apis/sites";
+
 import LoginImage from "./LoginImage";
 
-const Login = () => {
+const Login = ({ siteData, setIsPasswordValidated }) => {
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = () => {
-    setSubmitted(true);
+  const handleSubmit = async values => {
+    try {
+      const response = await sitesApi.login({
+        password: values.password,
+      });
+      localStorage.setItem(
+        "authToken",
+        JSON.stringify({ token: response.data.authentication_token })
+      );
+      setAuthHeaders();
+      setIsPasswordValidated(true);
+      window.location.href = "/public";
+    } catch (error) {
+      Toastr.error("Invalid password");
+      logger.error(error);
+    }
   };
 
   return (
     <div className="mt-16 flex grid justify-center">
       <img alt="Login Image" className="justify-self-center" src={LoginImage} />
       <Typography className="mt-5" style="h2">
-        Spinkart is password protected!
+        {siteData.name} is password protected!
       </Typography>
       <Typography className="text-gray-600" style="body2">
         Enter the password to gain access to spinkart.
@@ -28,13 +45,18 @@ const Login = () => {
         validateOnBlur={submitted}
         validateOnChange={submitted}
         validationSchema={yup.object().shape({
-          category: yup.string().required("Category is required"),
+          password: yup.string().required("Password is required"),
         })}
         onSubmit={handleSubmit}
       >
         {({ isSubmitting }) => (
           <FormikForm className="">
-            <Input className="mt-5 w-full" label="Password" name="password" />
+            <Input
+              className="mt-5 w-full"
+              label="Password"
+              name="password"
+              type="password"
+            />
             <Button
               className="mt-5"
               disabled={isSubmitting}
