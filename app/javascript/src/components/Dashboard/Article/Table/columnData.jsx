@@ -2,6 +2,7 @@ import React from "react";
 
 import { Delete, Edit } from "neetoicons";
 import { Typography, Button } from "neetoui";
+import { Link } from "react-router-dom";
 import { formatCreatedTimeToDate } from "utils";
 
 const renderText = value => (
@@ -13,8 +14,7 @@ const renderText = value => (
 export const buildTableColumnData = (
   visibleColumns,
   setShowDeleteAlert,
-  setArticle,
-  history
+  setArticle
 ) =>
   [
     {
@@ -82,16 +82,9 @@ export const buildTableColumnData = (
               setShowDeleteAlert(true);
             }}
           />
-          <Button
-            icon={Edit}
-            style="text"
-            onClick={() => {
-              history.push({
-                pathname: "/articles/edit/",
-                id: article.id,
-              });
-            }}
-          />
+          <Link to={`/articles/${article.id}/edit`}>
+            <Button icon={Edit} style="text" />
+          </Link>
         </div>
       ),
     },
