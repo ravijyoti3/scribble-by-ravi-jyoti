@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     resources :articles, only: %i[index create destroy show]
     resources :sites, only: %i[update show create]
     resources :categories, only: %i[index create destroy show]
+    resources :redirections, only: %i[index create destroy update]
     resources :categories, only: :update do
       collection do
         put "position_update"
