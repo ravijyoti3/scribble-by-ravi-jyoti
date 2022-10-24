@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 
 import articlesApi from "apis/articles";
 import categoriesApi from "apis/categories";
@@ -11,6 +11,7 @@ import SideBar from "./SideBar";
 const Article = () => {
   const [articles, setArticles] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [defaultArticle, setDefaultArticle] = useState("");
 
   const fetchCategories = async () => {
     try {
@@ -25,6 +26,9 @@ const Article = () => {
     try {
       const { data } = await articlesApi.fetch();
       setArticles(data.articles);
+      setDefaultArticle(
+        data.articles[0].slug ? data.articles[0].slug : data.articles[0].id
+      );
     } catch (err) {
       logger.error(err);
     }
@@ -52,6 +56,7 @@ const Article = () => {
               <ArticleContent article={article} />
             </Route>
           ))}
+          <Redirect from="/public" to={`/public/${defaultArticle}`} />
         </Switch>
       </div>
     </div>

@@ -1,1 +1,1 @@
-json.extract! @site, :id, :name, :password_digest, :password_protected
+json.extract! @site, :id, :name, :password_protected
