@@ -10,6 +10,7 @@ export const GENERAL_SETTING_PATH = "/setting/general";
 export const REDIRECTIONS_SETTING_PATH = "/setting/redirections";
 export const CATEGORIES_SETTING_PATH = "/setting/categories";
 export const PUBLIC_PATH = "/public";
+export const LOGIN_PATH = "/public/login";
 
 export const DASHBOARD_ROUTES = [
   {
