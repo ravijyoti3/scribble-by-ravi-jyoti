@@ -51,7 +51,7 @@ export const GENERAL_SETTING_FORM_INITIAL_VALUE = {
 export const REDIRECTIONS_SETTING_ROW_DATA = [
   {
     from_path: "/welcome",
-    to_path: "",
+    to: "",
     key: 0,
   },
   {
@@ -64,14 +64,22 @@ export const REDIRECTIONS_SETTING_ROW_DATA = [
 export const REDIRECTIONS_DEFAULT_URL = "https://scribble.com";
 
 export const REDIRECTIONS_FORM_INITIAL_VALUE = {
-  from_path: REDIRECTIONS_DEFAULT_URL,
-  to_path: "",
+  from: "/",
+  to: "/",
 };
 
-export const REDIRECTIONS_SETTING_FORM_VALIDATION_SCHEMA = yup.object().shape({
-  from_path: yup.string().required("From Path is required"),
-  to_path: yup.string().required("To Path is required"),
-});
+export const REDIRECTIONS_SETTING_FORM_VALIDATION_SCHEMA = redirectionsData =>
+  yup.object().shape({
+    from: yup.string().required("From Path is required"),
+    to: yup
+      .string()
+      .notOneOf([yup.ref("from"), null], "To and From should not be equal")
+      .notOneOf(
+        redirectionsData.map(item => item.from),
+        "From Path already exists"
+      )
+      .required("To Path is required"),
+  });
 
 export const CATEGORIES_DATA = [
   {
