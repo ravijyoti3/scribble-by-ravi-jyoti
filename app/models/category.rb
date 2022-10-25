@@ -3,7 +3,7 @@
 class Category < ApplicationRecord
   has_many :articles
   validates :name, presence: true, uniqueness: true
-
+  belongs_to :user
   before_create :set_position
 
   private
