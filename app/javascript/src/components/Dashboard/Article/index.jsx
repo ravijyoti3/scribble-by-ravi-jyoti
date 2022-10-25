@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Typography, PageLoader } from "neetoui";
 import { Container, Header } from "neetoui/layouts";
 import { Link } from "react-router-dom";
-import { filterData } from "utils";
+import { searchArticle, dataIntersection, filterData } from "utils";
 
 import articlesApi from "apis/articles";
 import categoriesApi from "apis/categories";
@@ -26,6 +26,7 @@ const Dashboard = ({ history }) => {
   const [visibleColumns, setVisibleColumns] = useState(TABLE_COLUMNS);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [article, setArticle] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const fetchArticles = async () => {
     try {
@@ -58,8 +59,13 @@ const Dashboard = ({ history }) => {
   }, []);
 
   useEffect(() => {
-    setFilteredArticleList(filterData(articleList, articleFilters));
-  }, [articleFilters, articleList]);
+    setFilteredArticleList(
+      dataIntersection(
+        filterData(articleList, articleFilters),
+        searchArticle(articleList, searchQuery)
+      )
+    );
+  }, [articleFilters, searchQuery]);
 
   if (loading) {
     return (
@@ -98,6 +104,8 @@ const Dashboard = ({ history }) => {
           }
           searchProps={{
             placeholder: "Search article title",
+            value: searchQuery,
+            onChange: e => setSearchQuery(e.target.value),
           }}
         />
         <Typography className="mb-5" style="h3">
