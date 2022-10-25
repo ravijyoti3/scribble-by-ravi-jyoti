@@ -4,6 +4,7 @@ class Article < ApplicationRecord
   validates :title, :body, :status, presence: true
   enum status: %i[draft published]
   belongs_to :category
+  belongs_to :user
 
   before_save :set_slug
 

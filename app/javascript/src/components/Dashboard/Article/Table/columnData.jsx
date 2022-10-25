@@ -49,7 +49,7 @@ export const buildTableColumnData = (
       key: "author",
       width: "10%",
 
-      render: renderText,
+      render: author => renderText(author.name),
     },
     {
       title: "Category",
