@@ -7,20 +7,20 @@ import {
   Checkbox as FormikCheckbox,
 } from "neetoui/formik";
 
-import sitesApi from "apis/sites";
+import organizationsApi from "apis/organizations";
 
 import { GENERAL_SETTING_FORM_VALIDATION_SCHEMA } from "./constants";
 
 const General = () => {
   const [submitted, setSubmitted] = useState(false);
   const [showPasswordField, setShowPasswordField] = useState(false);
-  const [siteData, setSiteData] = useState(null);
+  const [organizationData, setOrganizationData] = useState(null);
   const [changePassword, setChangePassword] = useState(false);
 
-  const fetchSiteDetails = async () => {
+  const fetchOrganizationDetails = async () => {
     try {
-      const { data } = await sitesApi.show();
-      setSiteData({
+      const { data } = await organizationsApi.show();
+      setOrganizationData({
         ...data,
         password: data.password_digest,
         change_password: false,
@@ -33,7 +33,7 @@ const General = () => {
 
   const handleSubmit = async values => {
     try {
-      await sitesApi.update(values);
+      await organizationsApi.update(values);
       setSubmitted(true);
       setTimeout(() => window.location.reload(), 500);
     } catch (err) {
@@ -42,7 +42,7 @@ const General = () => {
   };
 
   useEffect(() => {
-    fetchSiteDetails();
+    fetchOrganizationDetails();
   }, []);
 
   return (
@@ -55,7 +55,7 @@ const General = () => {
         <Formik
           enableReinitialize
           validateOnChange
-          initialValues={siteData}
+          initialValues={organizationData}
           validateOnBlur={submitted}
           validationSchema={GENERAL_SETTING_FORM_VALIDATION_SCHEMA}
           onSubmit={handleSubmit}
@@ -63,8 +63,8 @@ const General = () => {
           {({ isSubmitting, setFieldValue, dirty }) => (
             <FormikForm validateOnChange className="mt-8">
               <FormikInput
-                helpText="Customize the site name which is used to show the site name in Open Graph Tags."
-                label="Site Name"
+                helpText="Customize the organization name which is used to show the organization name in Open Graph Tags."
+                label="Organization Name"
                 name="name"
               />
               <hr className="mt-3" />
@@ -117,7 +117,7 @@ const General = () => {
                   type="reset"
                   onClick={() => {
                     setChangePassword(false);
-                    setShowPasswordField(siteData.password_protected);
+                    setShowPasswordField(organizationData.password_protected);
                   }}
                 />
               </div>

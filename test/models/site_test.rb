@@ -2,7 +2,7 @@
 
 require "test_helper"
 
-class SiteTest < ActiveSupport::TestCase
+class OrganizationTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

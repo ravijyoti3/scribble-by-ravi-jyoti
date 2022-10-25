@@ -6,16 +6,16 @@ import { Input } from "neetoui/formik";
 import * as yup from "yup";
 
 import { setAuthHeaders } from "apis/axios";
-import sitesApi from "apis/sites";
+import organizationsApi from "apis/organizations";
 
 import LoginImage from "./LoginImage";
 
-const Login = ({ siteData, setIsPasswordValidated }) => {
+const Login = ({ organizationData, setIsPasswordValidated }) => {
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = async values => {
     try {
-      const response = await sitesApi.login({
+      const response = await organizationsApi.login({
         password: values.password,
       });
       localStorage.setItem(
@@ -35,7 +35,7 @@ const Login = ({ siteData, setIsPasswordValidated }) => {
     <div className="mt-16 flex grid justify-center">
       <img alt="Login Image" className="justify-self-center" src={LoginImage} />
       <Typography className="mt-5" style="h2">
-        {siteData.name} is password protected!
+        {organizationData.name} is password protected!
       </Typography>
       <Typography className="text-gray-600" style="body2">
         Enter the password to gain access to spinkart.

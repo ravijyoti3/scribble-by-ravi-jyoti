@@ -1,7 +1,7 @@
 import * as yup from "yup";
 
 export const GENERAL_SETTING_FORM_VALIDATION_SCHEMA = yup.object().shape({
-  name: yup.string().required("Site Name is required"),
+  name: yup.string().required("Organization Name is required"),
   password_protected: yup.boolean(),
   change_password: yup.boolean(),
   password: yup

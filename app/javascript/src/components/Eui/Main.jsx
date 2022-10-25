@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { Route, Switch } from "react-router-dom";
 
-import sitesApi from "apis/sites";
+import organizationsApi from "apis/organizations";
 import PrivateRoute from "components/Common/PrivateRoute";
 
 import Article from "./Article";
@@ -14,13 +14,13 @@ import { PUBLIC_PATH, LOGIN_PATH } from "../routeConstants";
 const Main = () => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
 
-  const [siteData, setSiteData] = useState({});
+  const [organizationData, setOrganizationData] = useState({});
   const [isPasswordValidated, setIsPasswordValidated] = useState(true);
 
-  const fetchSiteDataAndCheckPasswordValidation = async () => {
+  const fetchOrganizationDataAndCheckPasswordValidation = async () => {
     try {
-      const { data } = await sitesApi.show();
-      setSiteData(data);
+      const { data } = await organizationsApi.show();
+      setOrganizationData(data);
       setIsPasswordValidated(
         (authToken && authToken.token) || !data.password_protected
       );
@@ -30,17 +30,17 @@ const Main = () => {
   };
 
   useEffect(() => {
-    fetchSiteDataAndCheckPasswordValidation();
+    fetchOrganizationDataAndCheckPasswordValidation();
   }, []);
 
   return (
     <>
-      <Header title={siteData.name} />
+      <Header title={organizationData.name} />
       <Switch>
         <Route exact path={LOGIN_PATH}>
           <Login
+            organizationData={organizationData}
             setIsPasswordValidated={setIsPasswordValidated}
-            siteData={siteData}
           />
         </Route>
         <PrivateRoute

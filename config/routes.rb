@@ -3,7 +3,7 @@
 Rails.application.routes.draw do
   constraints(lambda { |req| req.format == :json }) do
     resources :articles, only: %i[index create destroy show ]
-    resources :sites, only: %i[update show create]
+    resources :organizations, only: %i[update show create]
     resources :categories, only: %i[index create destroy show]
     resources :redirections, only: %i[index create destroy update]
     resources :categories, only: :update do
