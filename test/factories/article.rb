@@ -5,7 +5,7 @@ FactoryBot.define do
     association :category, factory: :category
     association :user, factory: :user
     title { Faker::Lorem.sentence[0..14] }
-    status { "Draft" }
+    status { "draft" }
     body { Faker::Lorem.sentence[0..49] }
   end
 end

@@ -7,6 +7,7 @@ class User < ApplicationRecord
 
   has_many :articles
   has_many :categories
+  belongs_to :organization
 
   validates :name, presence: true, length: { maximum: MAX_NAME_LENGTH }
   validates :email, presence: true,
