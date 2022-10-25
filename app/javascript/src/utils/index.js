@@ -26,3 +26,14 @@ export const filterData = (data, filter) => {
 
   return data;
 };
+
+export const searchArticle = (articles, searchQuery) => {
+  if (searchQuery.length === 0) return articles;
+
+  return articles.filter(article =>
+    article.title.toLowerCase().includes(searchQuery.toLowerCase().trim())
+  );
+};
+
+export const dataIntersection = (data1, data2) =>
+  data1.filter(item => data2.some(item2 => item.id === item2.id));
