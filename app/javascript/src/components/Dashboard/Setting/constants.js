@@ -26,19 +26,19 @@ export const LEFT_MENU_ITEMS = [
   {
     description: "Page Title, Brand Name & Meta Description",
     label: "General",
-    linkTo: "/setting/general",
+    tab: "general",
     id: 0,
   },
   {
     description: "Create & configure redirection rules",
     label: "Redirections",
-    linkTo: "/setting/redirections",
+    tab: "redirections",
     id: 1,
   },
   {
     description: "Edit and Reorder KB Structure",
     label: "Manage Categories",
-    linkTo: "/setting/categories",
+    tab: "categories",
     id: 2,
   },
 ];

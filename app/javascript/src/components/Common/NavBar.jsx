@@ -22,7 +22,9 @@ const NavBar = () => {
         <Button
           label="Settings"
           style="link"
-          onClick={() => history.push("/setting", { resetTab: true })}
+          onClick={() =>
+            history.push("/settings?tab=general", { resetTab: true })
+          }
         />
       </div>
       <Button icon={ExternalLink} label="Preview" style="secondary" />
