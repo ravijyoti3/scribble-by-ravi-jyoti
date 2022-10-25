@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Search, Plus } from "neetoicons";
 import { Typography } from "neetoui";
 import { MenuBar } from "neetoui/layouts";
+import { searchCategory } from "utils";
 
 import Form from "./Form";
 
@@ -11,20 +12,21 @@ import { STATUS_OPTIONS } from "../constants";
 const LeftMenuBar = ({
   showMenu,
   refetch,
-  article,
-  category,
+  articles,
+  categories,
   setArticleFilters,
   articleFilters,
 }) => {
   const [isSearchCollapsed, setIsSearchCollapsed] = useState(true);
   const [isAddCollapsed, setIsAddCollapsed] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   return (
     <div className="flex">
       <MenuBar showMenu={showMenu} title="Articles">
         <MenuBar.Block
           active={!articleFilters.status}
-          count={article.length}
+          count={articles.length}
           label="All"
           onClick={() =>
             setArticleFilters(articleFilters => ({
@@ -36,7 +38,7 @@ const LeftMenuBar = ({
         {STATUS_OPTIONS.map(option => (
           <MenuBar.Block
             active={articleFilters.status === option.value}
-            count={article.filter(e => e.status === option.value).length}
+            count={articles.filter(e => e.status === option.value).length}
             key={option.label}
             label={option.label}
             onClick={() =>
@@ -72,15 +74,20 @@ const LeftMenuBar = ({
         </MenuBar.SubTitle>
         <MenuBar.Search
           collapse={isSearchCollapsed}
-          onCollapse={() => setIsSearchCollapsed(true)}
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          onCollapse={() => {
+            setIsSearchCollapsed(true);
+            setSearchQuery("");
+          }}
         />
         {!isAddCollapsed && (
           <Form refetch={refetch} setIsAddCollapsed={setIsAddCollapsed} />
         )}
-        {category.map(category => (
+        {searchCategory(categories, searchQuery).map(category => (
           <MenuBar.Block
             active={articleFilters.category_id?.includes(category.id)}
-            count={80}
+            count={articles.filter(e => e.category_id === category.id).length}
             key={category.name}
             label={category.name}
             onClick={() =>
