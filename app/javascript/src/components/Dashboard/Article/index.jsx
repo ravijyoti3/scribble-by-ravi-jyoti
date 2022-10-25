@@ -79,9 +79,9 @@ const Dashboard = ({ history }) => {
     <div className="flex items-start">
       <LeftMenuBar
         showMenu
-        article={articleList}
         articleFilters={articleFilters}
-        category={categoryList}
+        articles={articleList}
+        categories={categoryList}
         setArticleFilters={setArticleFilters}
       />
       <Container>

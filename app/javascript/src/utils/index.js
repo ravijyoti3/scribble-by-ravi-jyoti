@@ -37,3 +37,8 @@ export const searchArticle = (articles, searchQuery) => {
 
 export const dataIntersection = (data1, data2) =>
   data1.filter(item => data2.some(item2 => item.id === item2.id));
+
+export const searchCategory = (categoryList, searchCategory) =>
+  categoryList.filter(category =>
+    category.name.toLowerCase().includes(searchCategory.toLowerCase().trim())
+  );
