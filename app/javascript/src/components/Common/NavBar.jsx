@@ -2,7 +2,7 @@ import React from "react";
 
 import { ExternalLink } from "neetoicons";
 import { Button, Typography } from "neetoui";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 const NavBar = () => {
   const history = useHistory();
@@ -27,7 +27,9 @@ const NavBar = () => {
           }
         />
       </div>
-      <Button icon={ExternalLink} label="Preview" style="secondary" />
+      <Link target="_blank" to="/public">
+        <Button icon={ExternalLink} label="Preview" style="secondary" />
+      </Link>
     </nav>
   );
 };
