@@ -20,7 +20,11 @@ const General = () => {
   const fetchSiteDetails = async () => {
     try {
       const { data } = await sitesApi.show();
-      setSiteData({ ...data, password: data.password_digest });
+      setSiteData({
+        ...data,
+        password: data.password_digest,
+        change_password: false,
+      });
       setShowPasswordField(data.password_protected);
     } catch (err) {
       logger.error(err);
@@ -31,6 +35,7 @@ const General = () => {
     try {
       await sitesApi.update(values);
       setSubmitted(true);
+      setTimeout(() => window.location.reload(), 500);
     } catch (err) {
       logger.error(err);
     }
@@ -49,14 +54,14 @@ const General = () => {
         </Typography>
         <Formik
           enableReinitialize
+          validateOnChange
           initialValues={siteData}
           validateOnBlur={submitted}
-          validateOnChange={submitted}
           validationSchema={GENERAL_SETTING_FORM_VALIDATION_SCHEMA}
           onSubmit={handleSubmit}
         >
-          {({ isSubmitting, setFieldValue, dirty, isValid }) => (
-            <FormikForm className="mt-8">
+          {({ isSubmitting, setFieldValue, dirty }) => (
+            <FormikForm validateOnChange className="mt-8">
               <FormikInput
                 helpText="Customize the site name which is used to show the site name in Open Graph Tags."
                 label="Site Name"
@@ -89,14 +94,17 @@ const General = () => {
                     disabled={changePassword}
                     label="Change Password"
                     style="primary"
-                    onClick={() => setChangePassword(true)}
+                    onClick={() => {
+                      setFieldValue("change_password", true);
+                      setChangePassword(true);
+                    }}
                   />
                 </div>
               )}
               <div className="mt-6 flex">
                 <Button
                   className="mr-3 rounded-sm bg-gray-800 hover:bg-gray-600"
-                  disabled={isSubmitting || !(dirty && isValid)}
+                  disabled={isSubmitting || !dirty}
                   label="Save changes"
                   loading={isSubmitting}
                   style="primary"
@@ -107,7 +115,10 @@ const General = () => {
                   label="Cancel"
                   style="text"
                   type="reset"
-                  onClick={() => setChangePassword(false)}
+                  onClick={() => {
+                    setChangePassword(false);
+                    setShowPasswordField(siteData.password_protected);
+                  }}
                 />
               </div>
             </FormikForm>

@@ -3,22 +3,26 @@ import * as yup from "yup";
 export const GENERAL_SETTING_FORM_VALIDATION_SCHEMA = yup.object().shape({
   name: yup.string().required("Site Name is required"),
   password_protected: yup.boolean(),
+  change_password: yup.boolean(),
   password: yup
     .string()
-    .when("password_protected", {
-      is: true,
-      then: yup
-        .string()
-        .required("Password is required")
-        .min(6, "Password must be at least 6 characters"),
-      // .matches(
-      //   /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{1,}$/,
-      //   "Password must have one letter and one number"
-      // ),
-    })
-    .when("password_protected", {
+    .when("change_password", {
       is: false,
       then: yup.string().notRequired(),
+    })
+    .when("change_password", {
+      is: true,
+      then: yup.string().when("password_protected", {
+        is: true,
+        then: yup
+          .string()
+          .required("Password is required")
+          .min(6, "Password must be at least 6 characters")
+          .matches(
+            /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{1,}$/,
+            "Password must have one letter and one number"
+          ),
+      }),
     }),
 });
 
@@ -70,35 +74,20 @@ export const REDIRECTIONS_FORM_INITIAL_VALUE = {
 
 export const REDIRECTIONS_SETTING_FORM_VALIDATION_SCHEMA = redirectionsData =>
   yup.object().shape({
-    from: yup.string().required("From Path is required"),
+    from: yup
+      .string()
+      .notOneOf([yup.ref("to")], "From and To cannot be same")
+      .matches(/^\/[a-zA-Z0-9/?&=]+$/i, "From must be in the format of '/path'")
+      .required("From Path is required"),
     to: yup
       .string()
-      .notOneOf([yup.ref("from"), null], "To and From should not be equal")
       .notOneOf(
         redirectionsData.map(item => item.from),
         "From Path already exists"
       )
+      .matches(/^\/[a-zA-Z0-9/?&=]+$/i, "To must be in the format of '/path'")
       .required("To Path is required"),
   });
-
-export const CATEGORIES_DATA = [
-  {
-    id: 0,
-    title: "Security & Privacy",
-  },
-  {
-    id: 1,
-    title: "Getting Started",
-  },
-  {
-    id: 2,
-    title: "App & Integration",
-  },
-  {
-    id: 3,
-    title: "Misc",
-  },
-];
 
 export const CATEGORY_FORM_INITIAL_VALUE = {
   name: "",
