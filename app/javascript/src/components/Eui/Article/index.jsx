@@ -25,10 +25,11 @@ const Article = () => {
   const fetchArticles = async () => {
     try {
       const { data } = await articlesApi.fetch();
-      setArticles(data.articles);
-      setDefaultArticle(
-        data.articles[0].slug ? data.articles[0].slug : data.articles[0].id
+      const filteredArticles = data.articles.filter(
+        article => article.status === "published"
       );
+      setArticles(filteredArticles);
+      setDefaultArticle(filteredArticles[0].slug);
     } catch (err) {
       logger.error(err);
     }
@@ -45,18 +46,11 @@ const Article = () => {
       <div className="mt-5 w-3/4 px-5">
         <Switch>
           {articles.map(article => (
-            <Route
-              key={article.id}
-              path={
-                article.slug
-                  ? `/public/${article.slug}`
-                  : `/public/${article.id}`
-              }
-            >
+            <Route key={article.id} path={`/public/${article.slug}`}>
               <ArticleContent article={article} />
             </Route>
           ))}
-          <Redirect from="/public" to={`/public/${defaultArticle}`} />
+          <Redirect exact from="/public" to={`/public/${defaultArticle}`} />
         </Switch>
       </div>
     </div>
