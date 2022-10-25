@@ -48,9 +48,10 @@ const App = () => {
       <Switch>
         {redirectionsData.map(redirection => (
           <Redirect
+            exact
             from={redirection.from}
             key={redirection.id}
-            to={redirection.to}
+            to={{ pathname: redirection.to, state: { status: 301 } }}
           />
         ))}
         <Route path="/public">
@@ -59,6 +60,7 @@ const App = () => {
         <Route path="/">
           <Dashboard />
         </Route>
+        <Route element={<h1>not found</h1>} path="*" />
       </Switch>
     </Router>
   );

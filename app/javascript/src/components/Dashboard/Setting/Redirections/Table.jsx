@@ -8,14 +8,12 @@ import redirectionsApi from "apis/redirections";
 import DeleteAlert from "./DeleteAlert";
 import Form from "./Form";
 
-import { REDIRECTIONS_DEFAULT_URL } from "../constants";
-
 const Table = ({ redirectionsData, refetch }) => {
   const [editingKey, setEditingKey] = useState("");
   const [showAddRow, setShowAddRow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
-
+  const { origin } = window.location;
   const addRedirection = async payload => {
     try {
       await redirectionsApi.create(payload);
@@ -59,19 +57,20 @@ const Table = ({ redirectionsData, refetch }) => {
             initialValues={item}
             redirectionsData={redirectionsData}
             refetch={refetch}
+            setEditingKey={setEditingKey}
             submitHandler={updateRedirection}
           />
         ) : (
           <div
-            className="mb-2 grid grid-flow-row grid-cols-5 items-center justify-between bg-white p-2"
+            className="mb-2 grid grid-flow-row grid-cols-5 items-center justify-between gap-4  bg-white p-2"
             key={item.id}
           >
             <Typography className="col-span-2" style="body3">
-              <span className="text-gray-400">{REDIRECTIONS_DEFAULT_URL}</span>
+              <span className="text-gray-400">{origin}</span>
               {item.from}
             </Typography>
             <Typography className="col-span-2" style="body3">
-              {`${REDIRECTIONS_DEFAULT_URL}${item.to}`}
+              {`${origin}${item.to}`}
             </Typography>
             <div className="flex justify-around">
               <Button
@@ -94,6 +93,7 @@ const Table = ({ redirectionsData, refetch }) => {
       {showAddRow && (
         <Form
           redirectionsData={redirectionsData}
+          setShowAddRow={setShowAddRow}
           submitHandler={addRedirection}
         />
       )}
