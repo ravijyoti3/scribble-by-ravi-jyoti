@@ -19,9 +19,7 @@ const Dashboard = () => (
         <Route exact component={component} key={path} path={path} />
       ))}
       <Route component={Create} path="/articles/:id/edit" />
-      <Route path="/setting">
-        <Setting />
-      </Route>
+      <Route component={Setting} path="/settings" />
       <Redirect from={DASHBOARD_PATH} to={ARTICLE_PATH} />
     </Switch>
   </>
