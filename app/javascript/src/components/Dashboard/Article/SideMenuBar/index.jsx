@@ -3,13 +3,13 @@ import React, { useState } from "react";
 import { Search, Plus } from "neetoicons";
 import { Typography } from "neetoui";
 import { MenuBar } from "neetoui/layouts";
-import { searchCategory } from "utils";
 
 import Form from "./Form";
 
 import { STATUS_OPTIONS } from "../constants";
+import { searchCategory } from "../utils";
 
-const LeftMenuBar = ({
+const SideMenuBar = ({
   showMenu,
   refetch,
   articles,
@@ -114,4 +114,4 @@ const LeftMenuBar = ({
   );
 };
 
-export default LeftMenuBar;
+export default SideMenuBar;

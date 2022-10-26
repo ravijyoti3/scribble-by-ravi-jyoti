@@ -23,11 +23,16 @@ export const buildTableColumnData = (
       key: "title",
       width: "10%",
 
-      render: title => (
-        <Typography className="font-semibold text-indigo-500" style="body2">
-          {title}
-        </Typography>
-      ),
+      render: (title, { status, slug }) =>
+        status === "published" ? (
+          <Link target="_blank" to={`/public/${slug}`}>
+            <Typography className="text-indigo-500" style="h5">
+              {title}
+            </Typography>
+          </Link>
+        ) : (
+          <Typography style="h5">{title}</Typography>
+        ),
     },
     {
       title: "Date",

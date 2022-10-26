@@ -6,6 +6,7 @@ import articlesApi from "apis/articles";
 import categoriesApi from "apis/categories";
 
 import ArticleContent from "./ArticleContent";
+import ArticleNotFound from "./ArticleNotFound";
 import SideBar from "./SideBar";
 
 const Article = () => {
@@ -51,6 +52,7 @@ const Article = () => {
             </Route>
           ))}
           <Redirect exact from="/public" to={`/public/${defaultArticle}`} />
+          <Route component={ArticleNotFound} path="*" />
         </Switch>
       </div>
     </div>

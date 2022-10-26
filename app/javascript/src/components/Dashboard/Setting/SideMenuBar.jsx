@@ -5,7 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 
 import { LEFT_MENU_ITEMS } from "./constants";
 
-const LeftMenuBar = () => {
+const SideMenuBar = () => {
   const useQuery = () => new URLSearchParams(useLocation().search);
   const currentTab = useQuery().get("tab");
 
@@ -26,4 +26,4 @@ const LeftMenuBar = () => {
   );
 };
 
-export default LeftMenuBar;
+export default SideMenuBar;
