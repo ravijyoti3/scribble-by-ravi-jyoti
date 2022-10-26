@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
-import { setAuthHeaders } from "apis/axios";
+import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import redirectionsApi from "apis/redirections";
 import { initializeLogger } from "common/logger";
 import Dashboard from "components/Dashboard";
@@ -36,6 +36,7 @@ const App = () => {
     initializeLogger();
     setAuthHeaders(setLoading);
     fetchRedirections();
+    registerIntercepts();
   }, []);
 
   if (loading) {

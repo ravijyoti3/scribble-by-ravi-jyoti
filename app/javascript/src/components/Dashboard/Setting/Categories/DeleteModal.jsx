@@ -1,125 +1,150 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import { Warning } from "neetoicons";
-import { Modal, Typography, Button, Callout, Select } from "neetoui";
+import { Modal, Button, Typography, Callout, Select } from "neetoui";
 
 import articlesApi from "apis/articles";
 import categoriesApi from "apis/categories";
 
 const DeleteModal = ({
+  category,
   showDeleteModal,
   setShowDeleteModal,
-  category,
-  categoryList,
   refetch,
+  categoryList,
 }) => {
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [categoryData, setCategoryData] = useState({});
+  const [moveArticlesToCategory, setMoveArticlesToCategory] = useState({});
 
-  const fetchCategoryDetails = async () => {
+  const handleSubmit = async id => {
+    setShowDeleteModal(false);
     try {
-      const { data } = await categoriesApi.show(category.id);
-      setCategoryData(data.category);
-    } catch (error) {
-      logger.error(error);
-    }
-  };
-
-  const dropdownCategories = categoryList
-    .filter(e => e.id !== category.id)
-    .map(e => ({ label: e.name, value: e.id }));
-
-  const deleteButtonDisabled =
-    !selectedCategory &&
-    categoryData.article_count > 0 &&
-    dropdownCategories.length > 0;
-
-  const handleDelete = async () => {
-    const newCategoryId = selectedCategory?.value || "";
-    const payload = {
-      category_id: category.id,
-      new_category_id: newCategoryId,
-    };
-    try {
-      if (!newCategoryId && categoryList.length === 1) {
-        await categoriesApi.update({
-          name: "General",
-          id: category.id,
+      if (categoryList.length > 1) {
+        await articlesApi.bulkUpdate({
+          category_id: id,
+          new_category_id: moveArticlesToCategory.value,
         });
-      } else {
-        await articlesApi.bulk_update(payload);
-        await categoriesApi.destroy(category.id);
+      } else if (category.name !== "General") {
+        await categoriesApi.create({
+          name: "General",
+        });
+        const {
+          data: { categories },
+        } = await categoriesApi.fetch();
+        await articlesApi.bulkUpdate({
+          category_id: id,
+          new_category_id: categories[1].id,
+        });
       }
+      await categoriesApi.destroy(id);
       refetch();
-      setShowDeleteModal(false);
     } catch (error) {
       logger.error(error);
     }
   };
-
-  useEffect(() => {
-    fetchCategoryDetails();
-  }, [fetchCategoryDetails]);
 
   return (
-    <div className="w-full">
-      <div className="space-y-6">
-        <div className="w-1/2 space-y-8">
-          <div className="flex flex-row items-center justify-start space-x-6">
-            <Button
-              label="Show Modal"
-              onClick={() => setShowDeleteModal(true)}
-            />
-          </div>
-        </div>
-      </div>
-      <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
-        <Modal.Header>
-          <Typography id="dialog1Title" style="h2">
-            Delete Category
-          </Typography>
-        </Modal.Header>
+    <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+      <Modal.Header>
+        <Typography style="h2">Delete Category</Typography>
+      </Modal.Header>
+      {category.articles.length === 0 && (
         <Modal.Body className="space-y-2">
-          <Typography lineHeight="normal" style="body2">
-            You are permanently deleting the{" "}
-            <span className="font-bold">{category.name}</span> category. This
-            action cannot be undone. Are you sure you wish to continue?
+          <Typography className="mt-2" lineHeight="normal" style="body2">
+            <strong>{category.name}</strong> has no articles. Are you sure you
+            want to delete it? This action cannot be undone.
           </Typography>
-          <Callout icon={Warning} style="danger">
-            Category {category.name} has {categoryData.article_count} articles.
-            {dropdownCategories.length > 0
-              ? ` Before this category can be deleted, these articles needs to be
-            moved to another category.`
-              : ` All articles under this category will be moved to a new category called General`}
-          </Callout>
         </Modal.Body>
-        <Modal.Footer className="space-x-2">
-          {categoryData.article_count > 0 && dropdownCategories.length > 0 && (
+      )}
+      {category.articles.length > 0 &&
+        categoryList.length === 1 &&
+        category.name === "General" && (
+          <Modal.Body className="space-y-2">
+            <Typography className="mt-2" lineHeight="normal" style="body2">
+              You are deleting the <strong>General category,</strong> this
+              has&nbsp;{category.articles.length} articles. Deleting this will
+              delete all associated articles.
+            </Typography>
+          </Modal.Body>
+        )}
+      {category.articles.length > 0 && (
+        <Modal.Body className="space-y-2">
+          {category.name !== "General" && (
+            <Typography className="mt-2" lineHeight="normal" style="body2">
+              You are permanently deleting the {category.name} category. This
+              action cannot be undone. Are you sure you wish to continue?
+            </Typography>
+          )}
+          {categoryList.length > 1 && (
+            <Callout icon={Warning} style="danger">
+              <div>
+                Category <strong>{category.name}</strong> has&nbsp;
+                <strong>
+                  {category.articles.length}
+                  {category.articles.length > 1 ? " articles" : " article"}
+                </strong>
+                . Before this category can be deleted these articles needs to be
+                moved to another category.
+              </div>
+            </Callout>
+          )}
+          {categoryList.length === 1 && category.name !== "General" && (
+            <Callout icon={Warning} style="danger">
+              <div>
+                Category <strong>{category.name}</strong> has&nbsp;
+                <strong>
+                  {category.articles.length}
+                  {category.articles.length > 1 ? " articles" : " article"}
+                </strong>
+                . This will be moved to category general. Click proceed to
+                continue.
+              </div>
+            </Callout>
+          )}
+          {categoryList.length > 1 && (
             <Select
-              isClearable
-              isSearchable
-              className="mb-4"
+              required
               label="Select a category to move these articles into"
-              name="ValueList"
-              options={dropdownCategories}
-              placeholder="Select an Option"
-              onChange={e => setSelectedCategory(e)}
+              name="category"
+              placeholder="Select Category"
+              strategy="fixed"
+              options={categoryList
+                .filter(categoryItem => categoryItem.id !== category.id)
+                .map(category => ({
+                  label: category.name,
+                  value: category.id,
+                }))}
+              onChange={e => setMoveArticlesToCategory(e)}
             />
           )}
-          <Button
-            disabled={deleteButtonDisabled}
-            label="Proceed"
-            style="danger"
-            onClick={() => handleDelete()}
-          />
-          <Button
-            label="Cancel"
-            style="text"
-            onClick={() => setShowDeleteModal(false)}
-          />
-        </Modal.Footer>
-      </Modal>
-    </div>
+          {!moveArticlesToCategory.value && categoryList.length > 1 && (
+            <Typography className="neeto-ui-text-error-500" style="body2">
+              Please Select a Category
+            </Typography>
+          )}
+        </Modal.Body>
+      )}
+      <Modal.Footer>
+        <Button
+          label="Proceed"
+          style="danger"
+          disabled={
+            moveArticlesToCategory.value === undefined &&
+            categoryList.length > 1 &&
+            category.articles.length > 0 &&
+            category.name !== "General"
+          }
+          onClick={() => {
+            setShowDeleteModal(false);
+            handleSubmit(category.id);
+          }}
+        />
+        <Button
+          label="Cancel"
+          style="text"
+          onClick={() => setShowDeleteModal(false)}
+        />
+      </Modal.Footer>
+    </Modal>
   );
 };
 

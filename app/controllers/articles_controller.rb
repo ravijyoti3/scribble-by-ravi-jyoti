@@ -15,10 +15,8 @@ class ArticlesController < ApplicationController
   end
 
   def bulk_update
-    articles = Article.where(category_id: params[:category_id])
-    articles.each do |article|
-      article.update(category_id: params[:new_category_id])
-    end
+    articles = Article.all.where(category_id: params[:category_id])
+    articles.update(category_id: params[:new_category_id])
     respond_with_success(t("successfully_moved", entity: "Article"))
   end
 
