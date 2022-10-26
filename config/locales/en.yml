@@ -31,7 +31,8 @@
 
 en:
   hello: "Hello world"
-  successfully_created: "%{entity} was successfully created!"
-  successfully_updated: "%{entity} was successfully updated!"
-  successfully_deleted: "%{entity} was successfully deleted!"
+  successfully_created: "%{entity} was successfully created"
+  successfully_updated: "%{entity} was successfully updated"
+  successfully_deleted: "%{entity} was successfully deleted"
   successfully_moved: "%{entity} was moved successfully"
+  position_successfully_updated: "%{entity} Position was successfully updated"
