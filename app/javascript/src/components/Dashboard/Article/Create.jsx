@@ -15,7 +15,7 @@ const Create = ({ onClose, history }) => {
   const [categoryList, setCategoryList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [article, setArticle] = useState(null);
-  const [submitButtonLabel, setSubmitButtonLabel] = useState();
+  const [submitButtonLabel, setSubmitButtonLabel] = useState("Save Draft");
 
   const { Menu, MenuItem } = ActionDropdown;
   const { id } = useParams();

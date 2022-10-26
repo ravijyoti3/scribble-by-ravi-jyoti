@@ -1,4 +1,2 @@
-json.category do
-  json.extract! @category, :id, :name, :updated_at
-  json.article_count @category.articles.count
-end
+json.extract! @category, :id, :name, :updated_at
+json.articles @category.articles, :id, :title, :body, :slug, :category_id, :status
