@@ -24,16 +24,16 @@ const Create = ({ onClose, history }) => {
     try {
       const { data } = await articlesApi.show(id);
       setArticle({
-        title: data.article.title,
-        body: data.article.body,
-        status: data.article.status,
+        title: data.title,
+        body: data.body,
+        status: data.status,
         category: {
-          label: data.article.category,
-          value: data.article.category_id,
+          label: data.category.name,
+          value: data.category.id,
         },
       });
       setSubmitButtonLabel(
-        data.article.status === "published" ? "Publish" : "Save Draft"
+        data.status === "published" ? "Publish" : "Save Draft"
       );
       setLoading(false);
     } catch (error) {
@@ -71,7 +71,7 @@ const Create = ({ onClose, history }) => {
           payload: {
             title: article.title,
             body: article.body,
-            status: article.status === "published" ? 1 : 0,
+            status: article.status,
             category_id: article.category.value,
           },
         });

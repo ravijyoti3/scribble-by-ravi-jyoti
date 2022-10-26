@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Accordion } from "neetoui";
+import { Accordion, Typography } from "neetoui";
 import { NavLink } from "react-router-dom";
 
 const SideBar = ({ categories, articles }) => {
@@ -35,23 +35,31 @@ const SideBar = ({ categories, articles }) => {
     >
       {categories.map(item => (
         <Accordion.Item key={item.id} title={item.name}>
-          {articles
-            .filter(e => e.category_id === item.id)
-            .map(article => (
-              <div className="mb-2" key={article.slug}>
-                <NavLink
-                  activeClassName="text-indigo-600 font-medium"
-                  className="font-medium text-gray-500"
-                  to={
-                    article.slug
-                      ? `/public/${article.slug}`
-                      : `/public/${article.id}`
-                  }
-                >
-                  {article.title}
-                </NavLink>
-              </div>
-            ))}
+          {articles.filter(
+            e => e.category_id === item.id && e.status === "published"
+          ).length === 0 ? (
+            <Typography className="neeto-ui-text-gray-400" style="h4">
+              No Articles
+            </Typography>
+          ) : (
+            articles
+              .filter(e => e.category_id === item.id)
+              .map(article => (
+                <div className="mb-2" key={article.slug}>
+                  <NavLink
+                    activeClassName="text-indigo-600 font-medium"
+                    className="font-medium text-gray-500"
+                    to={
+                      article.slug
+                        ? `/public/${article.slug}`
+                        : `/public/${article.id}`
+                    }
+                  >
+                    {article.title}
+                  </NavLink>
+                </div>
+              ))
+          )}
         </Accordion.Item>
       ))}
     </Accordion>

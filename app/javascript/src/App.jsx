@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 
+import { PageLoader } from "neetoui";
 import {
   BrowserRouter as Router,
   Switch,
@@ -40,7 +41,11 @@ const App = () => {
   }, []);
 
   if (loading) {
-    return <h1>Loading...</h1>;
+    return (
+      <div className="h-screen w-screen">
+        <PageLoader />
+      </div>
+    );
   }
 
   return (
@@ -61,7 +66,6 @@ const App = () => {
         <Route path="/">
           <Dashboard />
         </Route>
-        <Route element={<h1>not found</h1>} path="*" />
       </Switch>
     </Router>
   );

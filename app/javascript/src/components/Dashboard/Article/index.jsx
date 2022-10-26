@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 
-import { Button, Typography, PageLoader } from "neetoui";
+import { Button, PageLoader } from "neetoui";
 import { Container, Header } from "neetoui/layouts";
-import { Link } from "react-router-dom";
-import { searchArticle, dataIntersection, filterData } from "utils";
 
 import articlesApi from "apis/articles";
 import categoriesApi from "apis/categories";
+import TooltipWrapper from "components/Common/TooltipWrapper";
 
 import ColumnsDropDown from "./ColumnsDropDown";
 import { TABLE_COLUMNS } from "./constants";
 import DeleteAlert from "./DeleteAlert";
-import LeftMenuBar from "./LeftMenuBar";
+import SideMenuBar from "./SideMenuBar";
 import Table from "./Table";
+import { searchArticle, dataIntersection, filterData } from "./utils";
 
 const Dashboard = ({ history }) => {
   const [loading, setLoading] = useState(true);
@@ -53,9 +53,13 @@ const Dashboard = ({ history }) => {
     }
   };
 
-  useEffect(() => {
+  const fetchArticlesCategories = () => {
     fetchArticles();
     fetchCategories();
+  };
+
+  useEffect(() => {
+    fetchArticlesCategories();
   }, []);
 
   useEffect(() => {
@@ -77,11 +81,12 @@ const Dashboard = ({ history }) => {
 
   return (
     <div className="flex items-start">
-      <LeftMenuBar
+      <SideMenuBar
         showMenu
         articleFilters={articleFilters}
         articles={articleList}
         categories={categoryList}
+        refetch={fetchCategories}
         setArticleFilters={setArticleFilters}
       />
       <Container>
@@ -92,14 +97,19 @@ const Dashboard = ({ history }) => {
                 setVisibleColumns={setVisibleColumns}
                 visibleColumns={visibleColumns}
               />
-              <Link to="/articles/create">
+              <TooltipWrapper
+                content="Add category to create an article"
+                disabled={categoryList.length === 0}
+                followCursor="horizontal"
+                position="bottom"
+              >
                 <Button
-                  className="ml-3"
-                  icon="ri-add-line"
+                  className="mx-2"
+                  disabled={categoryList.length === 0}
                   label="Add New Article"
-                  onClick={() => {}}
+                  to={categoryList.length > 0 ? "/articles/create" : "/"}
                 />
-              </Link>
+              </TooltipWrapper>
             </div>
           }
           searchProps={{
@@ -108,9 +118,6 @@ const Dashboard = ({ history }) => {
             onChange: e => setSearchQuery(e.target.value),
           }}
         />
-        <Typography className="mb-5" style="h3">
-          67 Articles
-        </Typography>
         <Table
           data={filteredArticleList}
           history={history}
