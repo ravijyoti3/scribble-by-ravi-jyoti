@@ -5,3 +5,5 @@ en:
   successfully_deleted: "%{entity} was successfully deleted"
   successfully_moved: "%{entity} was moved successfully"
   position_successfully_updated: "%{entity} Position was successfully updated"
+  organization:
+    incorrect_credential: "Invalid Password."
