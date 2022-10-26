@@ -8,11 +8,8 @@ class CategoriesController < ApplicationController
 
   def create
     category = Category.new(category_params)
-    if category.save!
-      render status: :ok, json: { notice: "Category was successfully created" }
-    else
-      render status: :unprocessable_entity, json: { notice: "Category already exists" }
-    end
+    category.save!
+    respond_with_success(t("successfully_created", entity: Category))
   end
 
   def position_update
@@ -24,13 +21,13 @@ class CategoriesController < ApplicationController
       position = position + 1
       category.save!
     end
-    render status: :ok, json: { notice: "Position successfully updated" }
+    respond_with_success(t("position_successfully_updated", entity: Category))
   end
 
   def update
     category = Category.find(params[:id])
     category.update!(category_params)
-    render status: :ok, json: { notice: "Successfully updated" }
+    respond_with_success(t("successfully_updated", entity: Category))
   end
 
   def show
@@ -41,7 +38,7 @@ class CategoriesController < ApplicationController
   def destroy
     @category = Category.find(params[:id])
     @category.destroy
-    render status: :ok, json: { notice: "Category was successfully deleted" }
+    respond_with_success(t("successfully_deleted", entity: Category))
   end
 
   private
