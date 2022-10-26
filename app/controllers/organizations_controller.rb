@@ -12,12 +12,12 @@ class OrganizationsController < ApplicationController
     @organization.password = params[:password]
     @organization.password_protected = params[:password_protected]
     @organization.save!
-    render status: :ok, json: { notice: "Organization was successfully updated" }
+    respond_with_success(t("successfully_updated", entity: Organization))
   end
 
   def create
     unless @organization.authenticate(params[:password])
-      render status: :unauthorized, json: { error: "Invalid password" }
+      respond_with_error(t("invalid_password"), :unauthorized)
     end
   end
 
