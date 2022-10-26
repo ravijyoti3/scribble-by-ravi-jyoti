@@ -11,7 +11,7 @@ class ArticlesController < ApplicationController
   def create
     article = Article.new(article_params)
     article.save!
-    render status: :ok, json: { notice: "Article was successfully created" }
+    respond_with_success(t("successfully_created", entity: "Article"))
   end
 
   def bulk_update
@@ -19,13 +19,13 @@ class ArticlesController < ApplicationController
     articles.each do |article|
       article.update(category_id: params[:new_category_id])
     end
-    render status: :ok, json: { notice: "Articles successfully updated" }
+    respond_with_success(t("successfully_moved", entity: "Article"))
   end
 
   def destroy
     article = Article.find(params[:id])
     article.destroy
-    render status: :ok, json: { notice: "Article was successfully deleted" }
+    respond_with_success(t("successfully_deleted", entity: "Article"))
   end
 
   def show
@@ -35,7 +35,7 @@ class ArticlesController < ApplicationController
 
   def update
     @article.update!(article_params)
-    render status: :ok, json: { notice: "Article was successfully updated" }
+    respond_with_success(t("successfully_updated", entity: "Article"))
   end
 
   private
