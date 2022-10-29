@@ -12,12 +12,17 @@ import SideBar from "./SideBar";
 const Article = () => {
   const [articles, setArticles] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [defaultArticle, setDefaultArticle] = useState("");
+  const [defaultSlug, setDefaultSlug] = useState("");
 
   const fetchCategories = async () => {
     try {
       const { data } = await categoriesApi.fetch();
       setCategories(data.categories);
+      setDefaultSlug(
+        data.categories
+          .filter(e => e.articles.length > 0)[0]
+          .articles.filter(e => e.status === "published")[0].slug
+      );
     } catch (error) {
       logger.error(error);
     }
@@ -30,15 +35,19 @@ const Article = () => {
         article => article.status === "published"
       );
       setArticles(filteredArticles);
-      setDefaultArticle(filteredArticles[0].slug);
+      setDefaultSlug(filteredArticles[0].slug);
     } catch (err) {
       logger.error(err);
     }
   };
 
-  useEffect(() => {
+  const fetchArticlesCategories = () => {
     fetchCategories();
     fetchArticles();
+  };
+
+  useEffect(() => {
+    fetchArticlesCategories();
   }, []);
 
   return (
@@ -47,11 +56,11 @@ const Article = () => {
       <div className="mt-5 w-3/4 px-5">
         <Switch>
           {articles.map(article => (
-            <Route key={article.id} path={`/public/${article.slug}`}>
+            <Route key={article.slug} path={`/public/${article.slug}`}>
               <ArticleContent article={article} />
             </Route>
           ))}
-          <Redirect exact from="/public" to={`/public/${defaultArticle}`} />
+          <Redirect exact from="/public" to={`/public/${defaultSlug}`} />
           <Route component={ArticleNotFound} path="*" />
         </Switch>
       </div>

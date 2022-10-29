@@ -18,6 +18,15 @@ task populate_with_sample_data: [:environment] do
   end
 end
 
+task bulk_update: [:environment] do
+  bulk_update
+end
+
+def bulk_update
+  Article.where(category_id: 3).update_all(category_id: 4)
+  Category.find(3).destroy
+end
+
 def create_sample_categories!
   puts "Seeding with sample category..."
   Category.create!(

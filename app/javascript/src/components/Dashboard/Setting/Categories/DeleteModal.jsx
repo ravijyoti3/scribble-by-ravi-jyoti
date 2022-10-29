@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { Warning } from "neetoicons";
 import { Modal, Button, Typography, Callout, Select } from "neetoui";
 
-import articlesApi from "apis/articles";
 import categoriesApi from "apis/categories";
 
 const DeleteModal = ({
@@ -16,30 +15,16 @@ const DeleteModal = ({
   const [moveArticlesToCategory, setMoveArticlesToCategory] = useState({});
 
   const handleSubmit = async id => {
-    setShowDeleteModal(false);
     try {
-      if (categoryList.length > 1) {
-        await articlesApi.bulkUpdate({
-          category_id: id,
-          new_category_id: moveArticlesToCategory.value,
-        });
-      } else if (category.name !== "General") {
-        await categoriesApi.create({
-          name: "General",
-        });
-        const {
-          data: { categories },
-        } = await categoriesApi.fetch();
-        await articlesApi.bulkUpdate({
-          category_id: id,
-          new_category_id: categories[1].id,
-        });
-      }
-      await categoriesApi.destroy(id);
+      await categoriesApi.destroy({
+        id,
+        new_id: moveArticlesToCategory.value,
+      });
       refetch();
     } catch (error) {
       logger.error(error);
     }
+    setShowDeleteModal(false);
   };
 
   return (
