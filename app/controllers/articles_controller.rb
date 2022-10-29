@@ -14,11 +14,11 @@ class ArticlesController < ApplicationController
     respond_with_success(t("successfully_created", entity: "Article"))
   end
 
-  def bulk_update
-    articles = Article.all.where(category_id: params[:category_id])
-    articles.update(category_id: params[:new_category_id])
-    respond_with_success(t("successfully_moved", entity: "Article"))
-  end
+  # def bulk_update
+  #   articles = Article.all.where(category_id: params[:category_id])
+  #   articles.update(category_id: params[:new_category_id])
+  #   respond_with_success(t("successfully_moved", entity: "Article"))
+  # end
 
   def destroy
     article = Article.find(params[:id])

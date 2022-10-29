@@ -37,6 +37,7 @@ class CategoriesController < ApplicationController
 
   def destroy
     @category = Category.find(params[:id])
+    ArticleBulkUpdate.new(Article, params[:id], params[:new_id]).bulk_update
     @category.destroy
     respond_with_success(t("successfully_deleted", entity: Category))
   end

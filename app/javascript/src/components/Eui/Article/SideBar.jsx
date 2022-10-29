@@ -10,10 +10,7 @@ const SideBar = ({ categories, articles }) => {
     let category_id = null;
     let position = 0;
     articles.forEach(article => {
-      if (
-        (article.slug && article.slug === pathName) ||
-        article.id === pathName
-      ) {
+      if (article.slug === pathName) {
         category_id = article.category_id;
       }
     });
@@ -49,11 +46,7 @@ const SideBar = ({ categories, articles }) => {
                   <NavLink
                     activeClassName="text-indigo-600 font-medium"
                     className="font-medium text-gray-500"
-                    to={
-                      article.slug
-                        ? `/public/${article.slug}`
-                        : `/public/${article.id}`
-                    }
+                    to={`/public/${article.slug}`}
                   >
                     {article.title}
                   </NavLink>
