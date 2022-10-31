@@ -22,8 +22,7 @@ const General = () => {
       const { data } = await organizationsApi.show();
       setOrganizationData({
         ...data,
-        password: data.password_digest,
-        change_password: false,
+        change_password: !data.password_protected,
       });
       setShowPasswordField(data.password_protected);
     } catch (err) {
@@ -33,8 +32,11 @@ const General = () => {
 
   const handleSubmit = async values => {
     try {
-      await organizationsApi.update(values);
+      await organizationsApi.update(
+        showPasswordField ? values : { ...values, password: null }
+      );
       setSubmitted(true);
+      localStorage.setItem("authToken", JSON.stringify({ token: null }));
       setTimeout(() => window.location.reload(), 500);
     } catch (err) {
       logger.error(err);
@@ -81,24 +83,30 @@ const General = () => {
                 <div className="flex items-end">
                   <FormikInput
                     className="mt-5"
-                    disabled={!changePassword}
                     label="Password"
                     name="password"
                     type="password"
+                    disabled={
+                      !(changePassword || !organizationData?.password_digest)
+                    }
                     placeholder={
-                      changePassword ? "Enter new password" : "********"
+                      !changePassword && showPasswordField
+                        ? "********"
+                        : "Enter new password"
                     }
                   />
-                  <Button
-                    className="ml-3 rounded-sm bg-gray-800 hover:bg-gray-600"
-                    disabled={changePassword}
-                    label="Change Password"
-                    style="primary"
-                    onClick={() => {
-                      setFieldValue("change_password", true);
-                      setChangePassword(true);
-                    }}
-                  />
+                  {organizationData.password_digest && (
+                    <Button
+                      className="ml-3 rounded-sm bg-gray-800 hover:bg-gray-600"
+                      disabled={changePassword}
+                      label="Change Password"
+                      style="primary"
+                      onClick={() => {
+                        setFieldValue("change_password", true);
+                        setChangePassword(true);
+                      }}
+                    />
+                  )}
                 </div>
               )}
               <div className="mt-6 flex">

@@ -12,13 +12,22 @@ const DeleteModal = ({
   refetch,
   categoryList,
 }) => {
-  const [moveArticlesToCategory, setMoveArticlesToCategory] = useState({});
+  const [moveArticlesToCategory, setMoveArticlesToCategory] = useState("");
 
   const handleSubmit = async id => {
     try {
+      if (categoryList.length === 1 && category.articles.length > 0) {
+        await categoriesApi.create({ name: "General" });
+      }
+
+      const {
+        data: { categories },
+      } = await categoriesApi.fetch();
+
       await categoriesApi.destroy({
         id,
-        new_id: moveArticlesToCategory.value,
+        newId:
+          categoryList.length > 1 ? moveArticlesToCategory : categories[1]?.id,
       });
       refetch();
     } catch (error) {
@@ -32,25 +41,25 @@ const DeleteModal = ({
       <Modal.Header>
         <Typography style="h2">Delete Category</Typography>
       </Modal.Header>
-      {category.articles.length === 0 && (
-        <Modal.Body className="space-y-2">
-          <Typography className="mt-2" lineHeight="normal" style="body2">
-            <strong>{category.name}</strong> has no articles. Are you sure you
-            want to delete it? This action cannot be undone.
-          </Typography>
-        </Modal.Body>
-      )}
-      {category.articles.length > 0 &&
-        categoryList.length === 1 &&
-        category.name === "General" && (
-          <Modal.Body className="space-y-2">
-            <Typography className="mt-2" lineHeight="normal" style="body2">
-              You are deleting the <strong>General category,</strong> this
-              has&nbsp;{category.articles.length} articles. Deleting this will
-              delete all associated articles.
-            </Typography>
-          </Modal.Body>
-        )}
+      <Modal.Body className="space-y-2">
+        <Typography className="mt-2" lineHeight="normal" style="body2">
+          {category.articles.length === 0 && (
+            <>
+              <strong>{category.name}</strong> has no articles. Are you sure you
+              want to delete it? This action cannot be undone.
+            </>
+          )}
+          {category.articles.length > 0 &&
+            categoryList.length === 1 &&
+            category.name === "General" && (
+              <>
+                You are deleting the <strong>General category,</strong> this
+                has&nbsp;{category.articles.length} articles. Deleting this will
+                delete all associated articles.
+              </>
+            )}
+        </Typography>
+      </Modal.Body>
       {category.articles.length > 0 && (
         <Modal.Body className="space-y-2">
           {category.name !== "General" && (
@@ -98,10 +107,10 @@ const DeleteModal = ({
                   label: category.name,
                   value: category.id,
                 }))}
-              onChange={e => setMoveArticlesToCategory(e)}
+              onChange={e => setMoveArticlesToCategory(e.value)}
             />
           )}
-          {!moveArticlesToCategory.value && categoryList.length > 1 && (
+          {!moveArticlesToCategory && categoryList.length > 1 && (
             <Typography className="neeto-ui-text-error-500" style="body2">
               Please Select a Category
             </Typography>
@@ -113,13 +122,12 @@ const DeleteModal = ({
           label="Proceed"
           style="danger"
           disabled={
-            moveArticlesToCategory.value === undefined &&
+            !moveArticlesToCategory &&
             categoryList.length > 1 &&
             category.articles.length > 0 &&
             category.name !== "General"
           }
           onClick={() => {
-            setShowDeleteModal(false);
             handleSubmit(category.id);
           }}
         />

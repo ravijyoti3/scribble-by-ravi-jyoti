@@ -1,12 +1,6 @@
 import { buildSelectOptions } from "utils";
 import * as yup from "yup";
 
-export const CATEGORY_DATA = buildSelectOptions([
-  "Getting Started",
-  "Misc",
-  "Security & Privacy",
-]);
-
 export const INITIAL_FORM_VALUES = {
   title: "",
   category: {

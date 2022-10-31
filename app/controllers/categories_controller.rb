@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class CategoriesController < ApplicationController
+  before_action :load_category, only: %i[show update destroy]
+
   def index
     @categories = Category.all
     render
@@ -25,19 +27,17 @@ class CategoriesController < ApplicationController
   end
 
   def update
-    category = Category.find(params[:id])
-    category.update!(category_params)
+    @category.update!(category_params)
     respond_with_success(t("successfully_updated", entity: Category))
   end
 
   def show
-    @category = Category.find(params[:id])
+    @category
     render
   end
 
   def destroy
-    @category = Category.find(params[:id])
-    ArticleBulkUpdate.new(Article, params[:id], params[:new_id]).bulk_update
+    ArticleBulkUpdateService.new(Article, params[:id], params[:new_id]).bulk_update
     @category.destroy
     respond_with_success(t("successfully_deleted", entity: Category))
   end
@@ -46,5 +46,9 @@ class CategoriesController < ApplicationController
 
     def category_params
       params.require(:category).permit(:name)
+    end
+
+    def load_category
+      @category = Category.find(params[:id])
     end
 end

@@ -52,21 +52,6 @@ export const GENERAL_SETTING_FORM_INITIAL_VALUE = {
   password: "",
 };
 
-export const REDIRECTIONS_SETTING_ROW_DATA = [
-  {
-    from_path: "/welcome",
-    to: "",
-    key: 0,
-  },
-  {
-    from_path: "/about",
-    to_path: "/about-us",
-    key: 1,
-  },
-];
-
-export const REDIRECTIONS_DEFAULT_URL = "https://scribble.com";
-
 export const REDIRECTIONS_FORM_INITIAL_VALUE = {
   from: "/",
   to: "/",

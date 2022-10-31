@@ -30,12 +30,12 @@ const Article = () => {
 
   const fetchArticles = async () => {
     try {
-      const { data } = await articlesApi.fetch();
-      const filteredArticles = data.articles.filter(
-        article => article.status === "published"
-      );
-      setArticles(filteredArticles);
-      setDefaultSlug(filteredArticles[0].slug);
+      const { data } = await articlesApi.fetch({
+        status: "published",
+        categories: [],
+        search: "",
+      });
+      setArticles(data.articles);
     } catch (err) {
       logger.error(err);
     }

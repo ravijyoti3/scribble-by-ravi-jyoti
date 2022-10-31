@@ -12,15 +12,14 @@ import { TABLE_COLUMNS } from "./constants";
 import DeleteAlert from "./DeleteAlert";
 import SideMenuBar from "./SideMenuBar";
 import Table from "./Table";
-import { searchArticle, dataIntersection, filterData } from "./utils";
 
 const Dashboard = ({ history }) => {
   const [loading, setLoading] = useState(true);
   const [articleList, setArticleList] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
   const [articleFilters, setArticleFilters] = useState({
-    status: null,
-    category_id: [],
+    status: "",
+    categoryIds: [],
   });
   const [filteredArticleList, setFilteredArticleList] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState(TABLE_COLUMNS);
@@ -30,11 +29,21 @@ const Dashboard = ({ history }) => {
 
   const fetchArticles = async () => {
     try {
+      const payload = {
+        categories: articleFilters.categoryIds.join(","),
+        status: articleFilters.status,
+        search: searchQuery,
+      };
       const {
         data: { articles },
-      } = await articlesApi.fetch();
-      setArticleList(articles);
+      } = await articlesApi.fetch(payload);
       setFilteredArticleList(articles);
+      if (
+        articleFilters.status === "" &&
+        articleFilters.categoryIds.length === 0
+      ) {
+        setArticleList(articles);
+      }
       setLoading(false);
     } catch (error) {
       logger.error(error);
@@ -63,21 +72,8 @@ const Dashboard = ({ history }) => {
   }, []);
 
   useEffect(() => {
-    setFilteredArticleList(
-      dataIntersection(
-        filterData(articleList, articleFilters),
-        searchArticle(articleList, searchQuery)
-      )
-    );
+    fetchArticles();
   }, [articleFilters, searchQuery]);
-
-  if (loading) {
-    return (
-      <div className="h-screen w-screen">
-        <PageLoader />
-      </div>
-    );
-  }
 
   return (
     <div className="flex items-start">
@@ -118,13 +114,16 @@ const Dashboard = ({ history }) => {
             onChange: e => setSearchQuery(e.target.value),
           }}
         />
-        <Table
-          data={filteredArticleList}
-          history={history}
-          setArticle={setArticle}
-          setShowDeleteAlert={setShowDeleteAlert}
-          visibleColumns={visibleColumns}
-        />
+        {!loading && (
+          <Table
+            data={filteredArticleList}
+            history={history}
+            setArticle={setArticle}
+            setShowDeleteAlert={setShowDeleteAlert}
+            visibleColumns={visibleColumns}
+          />
+        )}
+        {loading && <PageLoader />}
         <DeleteAlert
           article={article}
           refetch={fetchArticles}

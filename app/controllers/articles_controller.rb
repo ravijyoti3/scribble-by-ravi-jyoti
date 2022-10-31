@@ -4,7 +4,11 @@ class ArticlesController < ApplicationController
   before_action :load_article, only: %i[show update destroy]
 
   def index
+    category_ids = params[:categories].split(",").map(&:to_i) if params[:categories].present?
     @articles = Article.all
+    @articles = @articles.where(status: params[:status]) if params[:status].present?
+    @articles = @articles.where(category_id: category_ids) if category_ids.present?
+    @articles = @articles.where("title LIKE ?", "%#{params[:search]}%") if params[:search].present?
     render
   end
 
@@ -14,20 +18,14 @@ class ArticlesController < ApplicationController
     respond_with_success(t("successfully_created", entity: "Article"))
   end
 
-  # def bulk_update
-  #   articles = Article.all.where(category_id: params[:category_id])
-  #   articles.update(category_id: params[:new_category_id])
-  #   respond_with_success(t("successfully_moved", entity: "Article"))
-  # end
-
   def destroy
-    article = Article.find(params[:id])
-    article.destroy
+    @article
+    @article.destroy
     respond_with_success(t("successfully_deleted", entity: "Article"))
   end
 
   def show
-    @article = Article.find(params[:id])
+    @article
     render
   end
 

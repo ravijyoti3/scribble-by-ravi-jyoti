@@ -77,3 +77,5 @@ group :development, :test do
 end
 
 gem "responders"
+
+gem "simplecov", require: false, group: :test
