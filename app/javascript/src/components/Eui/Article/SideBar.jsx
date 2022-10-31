@@ -7,16 +7,16 @@ const SideBar = ({ categories, articles }) => {
   const pathName = window.location.pathname.split("/")[2];
 
   const findCategory = () => {
-    let category_id = null;
+    let categoryId = null;
     let position = 0;
     articles.forEach(article => {
       if (article.slug === pathName) {
-        category_id = article.category_id;
+        categoryId = article.category_id;
       }
     });
 
     categories.forEach((category, index) => {
-      if (category.id === category_id) {
+      if (category.id === categoryId) {
         position = index;
       }
     });
