@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { Formik, Form as FormikForm } from "formik";
 import { Check, Close } from "neetoicons";
-import { Button, Toastr } from "neetoui";
+import { Button } from "neetoui";
 import { Input } from "neetoui/formik";
 
 import {
@@ -20,12 +20,8 @@ const Form = ({
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = async values => {
-    if (values.to === values.from) {
-      Toastr.error("From and To cannot be same");
-    } else {
-      submitHandler(values);
-      setSubmitted(true);
-    }
+    submitHandler(values);
+    setSubmitted(true);
   };
 
   return (

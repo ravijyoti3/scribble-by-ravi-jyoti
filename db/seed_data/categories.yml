@@ -1,0 +1,9 @@
+---
+- name: "NASA"
+  user_id: 1
+- name: "ISRO"
+  user_id: 1
+- name: "SpaceX"
+  user_id: 1
+- name: "Russia"
+  user_id: 1

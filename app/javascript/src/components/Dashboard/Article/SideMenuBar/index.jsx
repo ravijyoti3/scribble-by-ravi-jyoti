@@ -31,7 +31,7 @@ const SideMenuBar = ({
           onClick={() =>
             setArticleFilters(articleFilters => ({
               ...articleFilters,
-              status: null,
+              status: "",
             }))
           }
         />
@@ -86,16 +86,16 @@ const SideMenuBar = ({
         )}
         {searchCategory(categories, searchQuery).map(category => (
           <MenuBar.Block
-            active={articleFilters.category_id?.includes(category.id)}
+            active={articleFilters.categoryIds?.includes(category.id)}
             count={articles.filter(e => e.category_id === category.id).length}
             key={category.name}
             label={category.name}
             onClick={() =>
               setArticleFilters(articleFilters => {
-                if (articleFilters.category_id?.includes(category.id)) {
+                if (articleFilters.categoryIds?.includes(category.id)) {
                   return {
                     ...articleFilters,
-                    category_id: articleFilters.category_id.filter(
+                    categoryIds: articleFilters.categoryIds.filter(
                       id => id !== category.id
                     ),
                   };
@@ -103,7 +103,7 @@ const SideMenuBar = ({
 
                 return {
                   ...articleFilters,
-                  category_id: [...articleFilters.category_id, category.id],
+                  categoryIds: [...articleFilters.categoryIds, category.id],
                 };
               })
             }

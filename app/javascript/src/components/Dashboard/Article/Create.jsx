@@ -23,7 +23,7 @@ const Create = ({ onClose, history }) => {
   const fetchArticle = async () => {
     try {
       const { data } = await articlesApi.show(id);
-      setArticle({
+      const payload = {
         title: data.title,
         body: data.body,
         status: data.status,
@@ -31,7 +31,8 @@ const Create = ({ onClose, history }) => {
           label: data.category.name,
           value: data.category.id,
         },
-      });
+      };
+      setArticle(payload);
       setSubmitButtonLabel(
         data.status === "published" ? "Publish" : "Save Draft"
       );
@@ -62,21 +63,20 @@ const Create = ({ onClose, history }) => {
 
   const handleSubmit = async article => {
     const { title, body, status } = article;
-    const category_id = article.category.value;
-    const data = { title, body, status, category_id };
+    const payload = {
+      title,
+      body,
+      status,
+      category_id: article.category.value,
+    };
     try {
       if (id) {
         await articlesApi.update({
           id,
-          payload: {
-            title: article.title,
-            body: article.body,
-            status: article.status,
-            category_id: article.category.value,
-          },
+          payload,
         });
       } else {
-        await articlesApi.create(data);
+        await articlesApi.create(payload);
       }
       history.push("/articles");
     } catch (error) {

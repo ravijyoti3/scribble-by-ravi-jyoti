@@ -9,7 +9,7 @@ import categoriesApi from "apis/categories";
 import DeleteModal from "./DeleteModal";
 import Form from "./Form";
 
-const List = ({ category, index, refetch, categoryList }) => {
+const List = ({ category, index, refetch, categoryList, setCategoryList }) => {
   const [isEdit, setIsEdit] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -51,6 +51,7 @@ const List = ({ category, index, refetch, categoryList }) => {
                 </div>
                 <div className="mt-2">
                   <Button
+                    disabled={category.name === "General"}
                     icon={Delete}
                     style="text"
                     onClick={() => setShowDeleteModal(true)}
@@ -63,7 +64,11 @@ const List = ({ category, index, refetch, categoryList }) => {
                 </div>
               </>
             ) : (
-              <Form handleSubmit={editCategory} />
+              <Form
+                category={category}
+                handleSubmit={editCategory}
+                showForm={setIsEdit}
+              />
             )}
           </div>
         )}
@@ -73,6 +78,7 @@ const List = ({ category, index, refetch, categoryList }) => {
           category={category}
           categoryList={categoryList}
           refetch={refetch}
+          setCategoryList={setCategoryList}
           setShowDeleteModal={setShowDeleteModal}
           showDeleteModal={showDeleteModal}
         />

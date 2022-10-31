@@ -79,7 +79,7 @@ const Categories = () => {
           Create and configure the categories inside your scribble.
         </Typography>
         {showAddCategory ? (
-          <Form handleSubmit={addCategory} />
+          <Form handleSubmit={addCategory} showForm={setShowAddCategory} />
         ) : (
           <Button
             className="mb-4 mt-6 rounded-sm"
@@ -101,6 +101,7 @@ const Categories = () => {
                     index={idx}
                     key={idx}
                     refetch={fetchCategoriesDetails}
+                    setCategoryList={setCategoryList}
                   />
                 ))}
                 {provided.placeholder}

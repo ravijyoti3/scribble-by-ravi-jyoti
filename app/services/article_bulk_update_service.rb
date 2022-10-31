@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ArticleBulkUpdate
+class ArticleBulkUpdateService
   attr_reader :articles, :id, :new_id
 
   def initialize(articles, id, new_id)
