@@ -16,7 +16,7 @@ class ArticleBulkUpdateServiceTest < ActiveSupport::TestCase
     second_article = create(:article, category: @category, user: @user)
     third_article = create(:article, category: @category, user: @user)
     ArticleBulkUpdateService.new(@user, @category.id, new_category.id).bulk_update
-    new_category_ids = Article.where(
+    new_category_ids = @user.articles.where(
       id: [first_article.id, second_article.id,
       third_article.id]).pluck(:category_id).uniq
     assert_equal new_category_ids, [new_category.id]
@@ -24,7 +24,7 @@ class ArticleBulkUpdateServiceTest < ActiveSupport::TestCase
 
   def test_should_create_general_category_and_update_article
     ArticleBulkUpdateService.new(@user, @category.id, nil).bulk_update
-    new_category_name = Category.last.name
+    new_category_name = @user.categories.last.name
     assert_equal new_category_name, "General"
   end
 end
