@@ -6,3 +6,5 @@ en:
   position_successfully_updated: "%{entity} Position was successfully updated"
   organization:
     incorrect_credential: "Invalid Password."
+  category:
+    cannot_be_deleted: "Category cannot be deleted"

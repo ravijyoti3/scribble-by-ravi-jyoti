@@ -31,6 +31,16 @@ class CategoriesControllerTest < ActionDispatch::IntegrationTest
     assert_equal t("successfully_deleted", entity: Category), response_json["notice"]
   end
 
+  def test_should_not_delete_last_category_if_it_is_general
+    @category.destroy
+    Category.new(name: "General", user_id: @user.id).save!
+    @category = @user.categories.last
+    delete category_path(@category.id), as: :json
+    assert_response :unprocessable_entity
+    response_json = response.parsed_body
+    assert_equal t("category.cannot_be_deleted"), response_json["error"]
+  end
+
   def test_should_update_category
     @category.save
     category_params = { category: { name: "ISRO", user_id: @user.id } }

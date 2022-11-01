@@ -16,18 +16,9 @@ const DeleteModal = ({
 
   const handleSubmit = async id => {
     try {
-      if (categoryList.length === 1 && category.articles.length > 0) {
-        await categoriesApi.create({ name: "General" });
-      }
-
-      const {
-        data: { categories },
-      } = await categoriesApi.fetch();
-
       await categoriesApi.destroy({
         id,
-        newId:
-          categoryList.length > 1 ? moveArticlesToCategory : categories[1]?.id,
+        newId: moveArticlesToCategory,
       });
       refetch();
     } catch (error) {

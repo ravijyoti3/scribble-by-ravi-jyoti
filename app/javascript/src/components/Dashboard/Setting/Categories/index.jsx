@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Plus } from "neetoicons";
 import { Typography, Button, PageLoader } from "neetoui";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { useKey } from "utils";
 
 import categoriesApi from "apis/categories";
 
@@ -62,6 +63,10 @@ const Categories = () => {
       });
     }
   };
+
+  useKey("Escape", () => {
+    setShowAddCategory(false);
+  });
 
   if (pageLoading) {
     return (

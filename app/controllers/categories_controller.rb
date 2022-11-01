@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 class CategoriesController < ApplicationController
-  before_action :load_category, only: %i[show update destroy]
+  before_action :current_user!, only: %i[show update destroy index]
+  before_action :load_category!, only: %i[show update destroy]
 
   def index
-    @categories = Category.all
+    @categories = @_current_user.categories.all
     render
   end
 
@@ -32,14 +33,16 @@ class CategoriesController < ApplicationController
   end
 
   def show
-    @category
     render
   end
 
   def destroy
-    ArticleBulkUpdateService.new(Article, params[:id], params[:new_id]).bulk_update
-    @category.destroy
-    respond_with_success(t("successfully_deleted", entity: Category))
+    if ArticleBulkUpdateService.new(@_current_user, params[:id], params[:new_id]).bulk_update
+      @category.destroy
+      respond_with_success(t("successfully_deleted", entity: Category))
+    else
+      respond_with_error(t("category.cannot_be_deleted"))
+    end
   end
 
   private
@@ -48,7 +51,7 @@ class CategoriesController < ApplicationController
       params.require(:category).permit(:name)
     end
 
-    def load_category
-      @category = Category.find(params[:id])
+    def load_category!
+      @category = @_current_user.categories.find(params[:id])
     end
 end
