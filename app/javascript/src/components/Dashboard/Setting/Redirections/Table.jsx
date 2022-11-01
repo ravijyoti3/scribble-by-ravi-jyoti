@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import { Delete, Edit, Plus } from "neetoicons";
 import { Typography, Button } from "neetoui";
+import { useKey } from "utils";
 
 import redirectionsApi from "apis/redirections";
 
@@ -34,6 +35,11 @@ const Table = ({ redirectionsData, refetch }) => {
       logger.error(error);
     }
   };
+
+  useKey("Escape", () => {
+    setEditingKey("");
+    setShowAddRow(false);
+  });
 
   return (
     <>

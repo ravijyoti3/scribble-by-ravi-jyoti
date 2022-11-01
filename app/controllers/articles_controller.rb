@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 class ArticlesController < ApplicationController
-  before_action :load_article, only: %i[show update destroy]
+  before_action :current_user!, only: %i[show update destroy index]
+  before_action :load_article!, only: %i[show update destroy]
 
   def index
     category_ids = params[:categories].split(",").map(&:to_i) if params[:categories].present?
-    @articles = Article.all
+    @articles = @_current_user.articles.all
     @articles = @articles.where(status: params[:status]) if params[:status].present?
     @articles = @articles.where(category_id: category_ids) if category_ids.present?
     @articles = @articles.where("title LIKE ?", "%#{params[:search]}%") if params[:search].present?
@@ -19,13 +20,11 @@ class ArticlesController < ApplicationController
   end
 
   def destroy
-    @article
     @article.destroy
     respond_with_success(t("successfully_deleted", entity: "Article"))
   end
 
   def show
-    @article
     render
   end
 
@@ -40,7 +39,7 @@ class ArticlesController < ApplicationController
       params.require(:article).permit(:title, :body, :status, :category_id)
     end
 
-    def load_article
-      @article = Article.find(params[:id])
+    def load_article!
+      @article = @_current_user.articles.find(params[:id])
     end
 end

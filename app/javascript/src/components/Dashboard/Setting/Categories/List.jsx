@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Delete, Edit } from "neetoicons";
 import { Button, Typography } from "neetoui";
 import { Draggable } from "react-beautiful-dnd";
+import { useKey } from "utils";
 
 import categoriesApi from "apis/categories";
 
@@ -23,6 +24,10 @@ const List = ({ category, index, refetch, categoryList, setCategoryList }) => {
       logger.error(error);
     }
   };
+
+  useKey("Escape", () => {
+    setIsEdit(false);
+  });
 
   return (
     <>
@@ -51,9 +56,11 @@ const List = ({ category, index, refetch, categoryList, setCategoryList }) => {
                 </div>
                 <div className="mt-2">
                   <Button
-                    disabled={category.name === "General"}
                     icon={Delete}
                     style="text"
+                    disabled={
+                      category.name === "General" && categoryList.length === 1
+                    }
                     onClick={() => setShowDeleteModal(true)}
                   />
                   <Button

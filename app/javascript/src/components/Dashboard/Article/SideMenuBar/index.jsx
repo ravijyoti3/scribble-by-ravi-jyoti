@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Search, Plus } from "neetoicons";
 import { Typography } from "neetoui";
 import { MenuBar } from "neetoui/layouts";
+import { useKey } from "utils";
 
 import Form from "./Form";
 
@@ -20,6 +21,11 @@ const SideMenuBar = ({
   const [isSearchCollapsed, setIsSearchCollapsed] = useState(true);
   const [isAddCollapsed, setIsAddCollapsed] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+
+  useKey("Escape", () => {
+    setIsSearchCollapsed(true);
+    setIsAddCollapsed(true);
+  });
 
   return (
     <div className="flex">
