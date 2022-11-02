@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CategoriesController < ApplicationController
+class Admin::CategoriesController < ApplicationController
   before_action :current_user!, only: %i[show update destroy index]
   before_action :load_category!, only: %i[show update destroy]
 

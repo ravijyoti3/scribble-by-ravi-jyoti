@@ -3,26 +3,17 @@ import React from "react";
 import { Accordion, Typography } from "neetoui";
 import { NavLink } from "react-router-dom";
 
-const SideBar = ({ categories, articles }) => {
+const SideBar = ({ categories }) => {
   const pathName = window.location.pathname.split("/")[2];
 
-  const findCategory = () => {
-    let categoryId = null;
-    let position = 0;
-    articles.forEach(article => {
-      if (article.slug === pathName) {
-        categoryId = article.category_id;
-      }
-    });
-
-    categories.forEach((category, index) => {
-      if (category.id === categoryId) {
-        position = index;
-      }
-    });
-
-    return position;
-  };
+  const findCategory = () =>
+    categories
+      .map(e => e.id)
+      .indexOf(
+        categories.find(category =>
+          category.articles.map(e => e.slug).includes(pathName)
+        )?.id
+      ) || 0;
 
   return (
     <Accordion
@@ -30,17 +21,16 @@ const SideBar = ({ categories, articles }) => {
       defaultActiveKey={findCategory()}
       iconPosition="end"
     >
-      {categories.map(item => (
-        <Accordion.Item key={item.id} title={item.name}>
-          {articles.filter(
-            e => e.category_id === item.id && e.status === "published"
-          ).length === 0 ? (
+      {categories.map(category => (
+        <Accordion.Item key={category.id} title={category.name}>
+          {category.articles.filter(article => article.status === "published")
+            .length === 0 ? (
             <Typography className="neeto-ui-text-gray-400" style="h4">
               No Articles
             </Typography>
           ) : (
-            articles
-              .filter(e => e.category_id === item.id)
+            category.articles
+              .filter(article => article.status === "published")
               .map(article => (
                 <div className="mb-2" key={article.slug}>
                   <NavLink

@@ -1,15 +1,13 @@
 # frozen_string_literal: true
 
-class ArticlesController < ApplicationController
-  before_action :current_user!, only: %i[show update destroy index]
+class Admin::ArticlesController < ApplicationController
+  before_action :current_user!, only: %i[show update destroy index show_by_slug]
   before_action :load_article!, only: %i[show update destroy]
 
   def index
-    category_ids = params[:categories].split(",").map(&:to_i) if params[:categories].present?
-    @articles = @_current_user.articles.all
-    @articles = @articles.where(status: params[:status]) if params[:status].present?
-    @articles = @articles.where(category_id: category_ids) if category_ids.present?
-    @articles = @articles.where("title LIKE ?", "%#{params[:search]}%") if params[:search].present?
+    @articles = ArticleFilterationService.new(
+      @_current_user.articles, params[:categories], params[:status],
+      params[:search]).filter_articles
     render
   end
 
@@ -25,6 +23,11 @@ class ArticlesController < ApplicationController
   end
 
   def show
+    render
+  end
+
+  def show_by_slug
+    @article = @_current_user.articles.find_by!(slug: params[:slug])
     render
   end
 

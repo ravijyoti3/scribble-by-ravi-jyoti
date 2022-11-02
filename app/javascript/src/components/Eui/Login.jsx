@@ -6,7 +6,7 @@ import { Input } from "neetoui/formik";
 import * as yup from "yup";
 
 import { setAuthHeaders } from "apis/axios";
-import organizationsApi from "apis/organizations";
+import organizationApi from "apis/organization";
 
 import LoginImage from "./LoginImage";
 
@@ -15,7 +15,7 @@ const Login = ({ organizationData, setIsPasswordValidated }) => {
 
   const handleSubmit = async values => {
     try {
-      const response = await organizationsApi.login({
+      const response = await organizationApi.login({
         password: values.password,
       });
       localStorage.setItem(

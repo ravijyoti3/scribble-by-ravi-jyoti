@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { Route, Switch } from "react-router-dom";
 
-import organizationsApi from "apis/organizations";
+import organizationApi from "apis/organization";
 import PrivateRoute from "components/Common/PrivateRoute";
 
 import Article from "./Article";
@@ -19,7 +19,7 @@ const Main = () => {
 
   const fetchOrganizationDataAndCheckPasswordValidation = async () => {
     try {
-      const { data } = await organizationsApi.show();
+      const { data } = await organizationApi.show();
       setOrganizationData(data);
       setIsPasswordValidated(
         (authToken && authToken.token) || !data.password_protected
