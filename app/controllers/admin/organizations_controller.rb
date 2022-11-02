@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class OrganizationsController < ApplicationController
+class Admin::OrganizationsController < ApplicationController
   before_action :load_current_organization!, only: %i[show update create]
 
   def show
@@ -20,10 +20,4 @@ class OrganizationsController < ApplicationController
       respond_with_error(t("organization.incorrect_credential"), :unauthorized)
     end
   end
-
-  private
-
-    def organization_params
-      params.require(:organization).permit(:name, :password)
-    end
 end

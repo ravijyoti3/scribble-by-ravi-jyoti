@@ -7,7 +7,7 @@ import {
   Checkbox as FormikCheckbox,
 } from "neetoui/formik";
 
-import organizationsApi from "apis/organizations";
+import organizationApi from "apis/organization";
 
 import { GENERAL_SETTING_FORM_VALIDATION_SCHEMA } from "./constants";
 
@@ -19,7 +19,7 @@ const General = () => {
 
   const fetchOrganizationDetails = async () => {
     try {
-      const { data } = await organizationsApi.show();
+      const { data } = await organizationApi.show();
       setOrganizationData({
         ...data,
         change_password: !data.password_protected,
@@ -32,7 +32,7 @@ const General = () => {
 
   const handleSubmit = async values => {
     try {
-      await organizationsApi.update(
+      await organizationApi.update(
         showPasswordField ? values : { ...values, password: null }
       );
       setSubmitted(true);

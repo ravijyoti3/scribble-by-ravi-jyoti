@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import { Switch, Route, Redirect } from "react-router-dom";
 
-import articlesApi from "apis/articles";
 import categoriesApi from "apis/categories";
 
 import ArticleContent from "./ArticleContent";
@@ -10,7 +9,6 @@ import ArticleNotFound from "./ArticleNotFound";
 import SideBar from "./SideBar";
 
 const Article = () => {
-  const [articles, setArticles] = useState([]);
   const [categories, setCategories] = useState([]);
   const [defaultSlug, setDefaultSlug] = useState("");
 
@@ -28,22 +26,8 @@ const Article = () => {
     }
   };
 
-  const fetchArticles = async () => {
-    try {
-      const { data } = await articlesApi.fetch({
-        status: "published",
-        categories: [],
-        search: "",
-      });
-      setArticles(data.articles);
-    } catch (err) {
-      logger.error(err);
-    }
-  };
-
   const fetchArticlesCategories = () => {
     fetchCategories();
-    fetchArticles();
   };
 
   useEffect(() => {
@@ -52,14 +36,17 @@ const Article = () => {
 
   return (
     <div className="flex">
-      <SideBar articles={articles} categories={categories} />
+      <SideBar categories={categories} />
       <div className="mt-5 w-3/4 px-5">
         <Switch>
-          {articles.map(article => (
-            <Route key={article.slug} path={`/public/${article.slug}`}>
-              <ArticleContent article={article} />
-            </Route>
-          ))}
+          {categories
+            .map(category => category.articles)
+            .flat(1)
+            .map(article => (
+              <Route key={article.slug} path={`/public/${article.slug}`}>
+                <ArticleContent />
+              </Route>
+            ))}
           <Redirect exact from="/public" to={`/public/${defaultSlug}`} />
           <Route component={ArticleNotFound} path="*" />
         </Switch>
