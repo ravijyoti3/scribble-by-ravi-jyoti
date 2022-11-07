@@ -15,7 +15,7 @@ class ArticleFilterationService
     @articles = @articles.all
     @articles = @articles.where(status: @status) if @status.present?
     @articles = @articles.where(category_id: category_ids) if category_ids.present?
-    @articles = @articles.where("title LIKE ?", "%#{@search}%") if @search.present?
+    @articles = @articles.where("title iLIKE ?", "%#{@search.downcase}%") if @search.present?
     @articles
   end
 end
