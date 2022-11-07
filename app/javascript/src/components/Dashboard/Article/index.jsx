@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 
-import { Button, PageLoader } from "neetoui";
+import { PageLoader } from "neetoui";
 import { Container, Header } from "neetoui/layouts";
 
-import articlesApi from "apis/articles";
-import categoriesApi from "apis/categories";
-import TooltipWrapper from "components/Common/TooltipWrapper";
+import articlesApi from "apis/admin/articles";
+import categoriesApi from "apis/admin/categories";
 
-import ColumnsDropDown from "./ColumnsDropDown";
+import ActionBlock from "./ActionBlock";
 import { TABLE_COLUMNS } from "./constants";
 import DeleteAlert from "./DeleteAlert";
 import SideMenuBar from "./SideMenuBar";
@@ -15,17 +14,17 @@ import Table from "./Table";
 
 const Dashboard = ({ history }) => {
   const [loading, setLoading] = useState(true);
-  const [articleList, setArticleList] = useState([]);
-  const [categoryList, setCategoryList] = useState([]);
+  const [articles, setArticles] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [articleFilters, setArticleFilters] = useState({
     status: "",
     categoryIds: [],
   });
-  const [filteredArticleList, setFilteredArticleList] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState(TABLE_COLUMNS);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [article, setArticle] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [pageLoading, setPageLoading] = useState(true);
 
   const fetchArticles = async () => {
     try {
@@ -37,12 +36,12 @@ const Dashboard = ({ history }) => {
       const {
         data: { articles },
       } = await articlesApi.fetch(payload);
-      setFilteredArticleList(articles);
+      setArticles(articles);
       if (
         articleFilters.status === "" &&
         articleFilters.categoryIds.length === 0
       ) {
-        setArticleList(articles);
+        setArticles(articles);
       }
       setLoading(false);
     } catch (error) {
@@ -56,15 +55,15 @@ const Dashboard = ({ history }) => {
       const {
         data: { categories },
       } = await categoriesApi.fetch();
-      setCategoryList(categories);
+      setCategories(categories);
     } catch (error) {
       logger.error(error);
     }
   };
 
-  const fetchArticlesCategories = () => {
-    fetchArticles();
-    fetchCategories();
+  const fetchArticlesCategories = async () => {
+    await Promise.all([fetchArticles(), fetchCategories()]);
+    setPageLoading(false);
   };
 
   useEffect(() => {
@@ -75,38 +74,32 @@ const Dashboard = ({ history }) => {
     fetchArticles();
   }, [articleFilters, searchQuery]);
 
+  if (pageLoading) {
+    return (
+      <div className="h-screen w-screen">
+        <PageLoader />
+      </div>
+    );
+  }
+
   return (
     <div className="flex items-start">
       <SideMenuBar
         showMenu
         articleFilters={articleFilters}
-        articles={articleList}
-        categories={categoryList}
+        articles={articles}
+        categories={categories}
         refetch={fetchCategories}
         setArticleFilters={setArticleFilters}
       />
       <Container>
         <Header
           actionBlock={
-            <div className="flex items-center justify-between">
-              <ColumnsDropDown
-                setVisibleColumns={setVisibleColumns}
-                visibleColumns={visibleColumns}
-              />
-              <TooltipWrapper
-                content="Add category to create an article"
-                disabled={categoryList.length === 0}
-                followCursor="horizontal"
-                position="bottom"
-              >
-                <Button
-                  className="mx-2"
-                  disabled={categoryList.length === 0}
-                  label="Add New Article"
-                  to={categoryList.length > 0 ? "/articles/create" : "/"}
-                />
-              </TooltipWrapper>
-            </div>
+            <ActionBlock
+              categories={categories}
+              setVisibleColumns={setVisibleColumns}
+              visibleColumns={visibleColumns}
+            />
           }
           searchProps={{
             placeholder: "Search article title",
@@ -116,7 +109,7 @@ const Dashboard = ({ history }) => {
         />
         {!loading && (
           <Table
-            data={filteredArticleList}
+            data={articles}
             history={history}
             setArticle={setArticle}
             setShowDeleteAlert={setShowDeleteAlert}

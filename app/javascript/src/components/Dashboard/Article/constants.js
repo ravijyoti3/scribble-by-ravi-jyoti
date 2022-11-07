@@ -12,7 +12,10 @@ export const INITIAL_FORM_VALUES = {
 
 export const FORM_VALIDATION_SCHEMA = CATEGORY_LIST =>
   yup.object().shape({
-    title: yup.string().required("Title is required"),
+    title: yup
+      .string()
+      .matches(/^[A-Za-z 0-9]*$/, "Title must be alphanumeric")
+      .required("Title is required"),
     category: yup
       .object()
       .nullable()

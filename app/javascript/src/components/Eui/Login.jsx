@@ -5,10 +5,9 @@ import { Typography, Button } from "neetoui";
 import { Input } from "neetoui/formik";
 import * as yup from "yup";
 
+import organizationApi from "apis/admin/organization";
 import { setAuthHeaders } from "apis/axios";
-import organizationApi from "apis/organization";
-
-import LoginImage from "./LoginImage";
+import LoginImage from "images/Login";
 
 const Login = ({ organizationData, setIsPasswordValidated }) => {
   const [submitted, setSubmitted] = useState(false);
@@ -37,7 +36,7 @@ const Login = ({ organizationData, setIsPasswordValidated }) => {
         {organizationData.name} is password protected!
       </Typography>
       <Typography className="text-gray-600" style="body2">
-        Enter the password to gain access to spinkart.
+        Enter the password to gain access to {organizationData.name}.
       </Typography>
       <Formik
         initialValues={{ password: "" }}

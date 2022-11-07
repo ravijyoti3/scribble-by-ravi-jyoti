@@ -11,7 +11,7 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_should_create_article
-    post admin_articles_path,
+    post api_admin_articles_path,
       params: {
         article: {
           title: @article.title, category_id: @category.id, user_id: @user.id,
@@ -26,7 +26,7 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
 
   def test_should_destroy_article
     assert_difference "Article.count", -1 do
-      delete admin_article_path(@article.id), as: :json
+      delete api_admin_article_path(@article.id), as: :json
     end
     assert_response :ok
   end
@@ -35,7 +35,7 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
     article_id = @article.id
     article_title = @article.title
 
-    post admin_articles_path,
+    post api_admin_articles_path,
       params: {
         article: {
           title: @article.title, category_id: @category.id, user_id: @user.id,
@@ -46,7 +46,7 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
 
     @article.reload
 
-    put admin_article_path(article_id),
+    put api_admin_article_path(article_id),
       params: {
         article: {
           title: @article.title, category_id: @category.id, user_id: @user.id,
@@ -59,7 +59,7 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_should_show_all_articles
-    get admin_articles_path, as: :json
+    get api_admin_articles_path, as: :json
     assert_response :success
     response_json = response.parsed_body
     all_articles = @user.articles.count

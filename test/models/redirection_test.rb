@@ -4,7 +4,8 @@ require "test_helper"
 
 class RedirectionTest < ActiveSupport::TestCase
   def setup
-    @redirection = create(:redirection)
+    @organization = create(:organization)
+    @redirection = create(:redirection, organization: @organization)
   end
 
   def test_redirection_from_path_shouldnt_be_null
@@ -23,15 +24,14 @@ class RedirectionTest < ActiveSupport::TestCase
   end
 
   def test_redirection_to_and_from_shouldnt_be_same
-    test_redirection = create(:redirection)
-    test_redirection.from = test_redirection.to
-    assert_not test_redirection.valid?
+    @redirection.from = @redirection.to
+    assert_not @redirection.valid?
   end
 
   def test_redirection_shouldnt_create_redirection_cycle
-    first_redirection = create(:redirection)
-    second_redirection = create(:redirection)
-    third_redirection = create(:redirection)
+    first_redirection = create(:redirection, organization: @organization)
+    second_redirection = create(:redirection, organization: @organization)
+    third_redirection = create(:redirection, organization: @organization)
 
     second_redirection.from = first_redirection.to
     third_redirection.from = second_redirection.to

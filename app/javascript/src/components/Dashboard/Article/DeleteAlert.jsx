@@ -2,7 +2,7 @@ import React from "react";
 
 import { Modal, Button, Typography } from "neetoui";
 
-import articlesApi from "apis/articles";
+import articlesApi from "apis/admin/articles";
 
 const DeleteAlert = ({
   article,

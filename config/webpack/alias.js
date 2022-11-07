@@ -8,6 +8,8 @@ module.exports = {
       neetoui: "@bigbinary/neetoui",
       neetoicons: "@bigbinary/neeto-icons",
       lib: "src/lib",
+      images: "src/images",
+      hooks: "src/hooks",
     },
   },
 };
