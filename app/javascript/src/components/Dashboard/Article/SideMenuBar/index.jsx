@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 
 import { Search, Plus } from "neetoicons";
 import { Typography } from "neetoui";
 import { MenuBar } from "neetoui/layouts";
-import { useKey } from "utils";
+
+import { useKey } from "hooks/useKey";
 
 import Form from "./Form";
 
@@ -22,6 +23,8 @@ const SideMenuBar = ({
   const [isAddCollapsed, setIsAddCollapsed] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const allArticles = useMemo(() => articles, []);
+
   useKey("Escape", () => {
     setIsSearchCollapsed(true);
     setIsAddCollapsed(true);
@@ -32,7 +35,7 @@ const SideMenuBar = ({
       <MenuBar showMenu={showMenu} title="Articles">
         <MenuBar.Block
           active={!articleFilters.status}
-          count={articles.length}
+          count={allArticles.length}
           label="All"
           onClick={() =>
             setArticleFilters(articleFilters => ({
@@ -44,7 +47,7 @@ const SideMenuBar = ({
         {STATUS_OPTIONS.map(option => (
           <MenuBar.Block
             active={articleFilters.status === option.value}
-            count={articles.filter(e => e.status === option.value).length}
+            count={allArticles.filter(e => e.status === option.value).length}
             key={option.label}
             label={option.label}
             onClick={() =>
@@ -93,9 +96,11 @@ const SideMenuBar = ({
         {searchCategory(categories, searchQuery).map(category => (
           <MenuBar.Block
             active={articleFilters.categoryIds?.includes(category.id)}
-            count={articles.filter(e => e.category_id === category.id).length}
             key={category.name}
             label={category.name}
+            count={
+              allArticles.filter(e => e.category_id === category.id).length
+            }
             onClick={() =>
               setArticleFilters(articleFilters => {
                 if (articleFilters.categoryIds?.includes(category.id)) {

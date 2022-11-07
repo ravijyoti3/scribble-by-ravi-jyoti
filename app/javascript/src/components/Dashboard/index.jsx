@@ -1,28 +1,35 @@
 import React from "react";
 
+import { matchPath } from "react-router";
 import { Redirect, Route, Switch } from "react-router-dom";
 
 import NavBar from "components/Common/NavBar";
-import Create from "components/Dashboard/Article/Create";
-import Setting from "components/Dashboard/Setting";
+import UrlNotFound from "components/Common/UrlNotFound";
 import {
   DASHBOARD_PATH,
   ARTICLE_PATH,
   DASHBOARD_ROUTES,
 } from "components/routeConstants";
 
-const Dashboard = () => (
-  <>
-    <NavBar />
-    <Switch>
-      {DASHBOARD_ROUTES.map(({ path, component }) => (
-        <Route exact component={component} key={path} path={path} />
-      ))}
-      <Route component={Create} path="/articles/:id/edit" />
-      <Route component={Setting} path="/settings" />
-      <Redirect exact from={DASHBOARD_PATH} to={ARTICLE_PATH} />
-    </Switch>
-  </>
-);
+const Dashboard = () => {
+  const isValidRoute = matchPath(window.location.pathname, {
+    path: DASHBOARD_ROUTES.map(route => route.path),
+    exact: true,
+    strict: false,
+  });
+
+  return (
+    <>
+      {isValidRoute && <NavBar />}
+      <Switch>
+        {DASHBOARD_ROUTES.map(({ path, component }) => (
+          <Route exact component={component} key={path} path={path} />
+        ))}
+        <Redirect exact from={DASHBOARD_PATH} to={ARTICLE_PATH} />
+        <Route component={UrlNotFound} path="*" />
+      </Switch>
+    </>
+  );
+};
 
 export default Dashboard;

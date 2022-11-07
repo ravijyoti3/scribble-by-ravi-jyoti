@@ -5,15 +5,16 @@ import { Button, ActionDropdown, PageLoader, Dropdown } from "neetoui";
 import { Input, Select, Textarea } from "neetoui/formik";
 import { useParams } from "react-router-dom";
 
-import articlesApi from "apis/articles";
-import categoriesApi from "apis/categories";
+import articlesApi from "apis/admin/articles";
+import categoriesApi from "apis/admin/categories";
+import TooltipWrapper from "components/Common/TooltipWrapper";
 
 import { FORM_VALIDATION_SCHEMA, INITIAL_FORM_VALUES } from "./constants";
 
-const Create = ({ onClose, history }) => {
+const Create = ({ history }) => {
   const [submitted, setSubmitted] = useState(false);
   const [categoryList, setCategoryList] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [pageLoading, setPageLoading] = useState(true);
   const [article, setArticle] = useState(null);
   const [submitButtonLabel, setSubmitButtonLabel] = useState("Save Draft");
 
@@ -36,10 +37,10 @@ const Create = ({ onClose, history }) => {
       setSubmitButtonLabel(
         data.status === "published" ? "Publish" : "Save Draft"
       );
-      setLoading(false);
+      setPageLoading(false);
     } catch (error) {
       logger.error(error);
-      setLoading(false);
+      setPageLoading(false);
     }
   };
 
@@ -54,10 +55,10 @@ const Create = ({ onClose, history }) => {
           value: category.id,
         }))
       );
-      setLoading(false);
+      setPageLoading(false);
     } catch (error) {
       logger.error(error);
-      setLoading(false);
+      setPageLoading(false);
     }
   };
 
@@ -89,7 +90,7 @@ const Create = ({ onClose, history }) => {
     if (id) fetchArticle();
   }, [id]);
 
-  if (loading) {
+  if (pageLoading) {
     return (
       <div className="h-screen w-screen">
         <PageLoader />
@@ -134,16 +135,22 @@ const Create = ({ onClose, history }) => {
             />
             <div className="mt-5 flex">
               <div className="flex">
-                <Button
-                  className="mr-px"
+                <TooltipWrapper
+                  content="Please make change to save"
                   disabled={isSubmitting || !(isValid && dirty)}
-                  label={submitButtonLabel}
-                  loading={isSubmitting}
-                  size="medium"
-                  style="primary"
-                  type="submit"
-                  onClick={() => setSubmitted(true)}
-                />
+                  position="bottom"
+                >
+                  <Button
+                    className="mr-px"
+                    disabled={isSubmitting || !(isValid && dirty)}
+                    label={submitButtonLabel}
+                    pageLoading={isSubmitting}
+                    size="medium"
+                    style="primary"
+                    type="submit"
+                    onClick={() => setSubmitted(true)}
+                  />
+                </TooltipWrapper>
                 <Dropdown
                   className="mr-3"
                   disabled={isSubmitting}
@@ -172,7 +179,7 @@ const Create = ({ onClose, history }) => {
                 label="Cancel"
                 style="text"
                 type="reset"
-                onClick={onClose}
+                onClick={() => history.push("/")}
               />
             </div>
           </div>

@@ -21,7 +21,7 @@ export const buildTableColumnData = (
       title: "Title",
       dataIndex: "title",
       key: "title",
-      width: "10%",
+      width: "16%",
 
       render: (title, { status, slug }) =>
         status === "published" ? (
@@ -35,10 +35,10 @@ export const buildTableColumnData = (
         ),
     },
     {
-      title: "Date",
+      title: "Last Published At",
       dataIndex: "created_at",
       key: "created_at",
-      width: "10%",
+      width: "16%",
 
       render: (created_at, tableRow) => (
         <div className="font-semibold">
@@ -52,7 +52,7 @@ export const buildTableColumnData = (
       title: "Author",
       dataIndex: "author",
       key: "author",
-      width: "10%",
+      width: "16%",
 
       render: author => renderText(author.name),
     },
@@ -60,7 +60,7 @@ export const buildTableColumnData = (
       title: "Category",
       dataIndex: "category",
       key: "category",
-      width: "10%",
+      width: "16%",
 
       render: category => renderText(category.name),
     },
@@ -68,7 +68,7 @@ export const buildTableColumnData = (
       title: "Status",
       dataIndex: "status",
       key: "status",
-      width: "10%",
+      width: "16%",
 
       render: renderText,
     },
@@ -76,7 +76,7 @@ export const buildTableColumnData = (
       title: "",
       dataIndex: "more",
       key: "more",
-      width: "10%",
+      width: "16%",
       render: (_, article) => (
         <div className="flex">
           <Button

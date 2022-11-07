@@ -3,22 +3,22 @@ import React, { useEffect, useState } from "react";
 import { Typography, Tag, PageLoader } from "neetoui";
 import { formatCreatedTimeToDate } from "utils";
 
-import articlesApi from "apis/articles";
+import articlesApi from "apis/public/articles";
 
 const ArticleContent = () => {
   const slug = window.location.pathname.split("/")[2];
 
   const [article, setArticle] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [pageLoading, setPageLoading] = useState(true);
 
   const showArticle = async slug => {
     try {
-      const { data } = await articlesApi.show_by_slug(slug);
+      const { data } = await articlesApi.showBySlug(slug);
       setArticle(data);
-      setLoading(false);
+      setPageLoading(false);
     } catch (error) {
       logger.error(error);
-      setLoading(false);
+      setPageLoading(false);
     }
   };
 
@@ -26,7 +26,7 @@ const ArticleContent = () => {
     showArticle(slug);
   }, []);
 
-  if (loading) {
+  if (pageLoading) {
     return (
       <div className="h-screen w-screen">
         <PageLoader />

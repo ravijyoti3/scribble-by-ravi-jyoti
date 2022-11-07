@@ -10,7 +10,7 @@ class ArticleFilterationService
     @search = search
   end
 
-  def filter_articles
+  def process
     category_ids = @category_ids.split(",").map(&:to_i) if @category_ids.present?
     @articles = @articles.all
     @articles = @articles.where(status: @status) if @status.present?

@@ -2,11 +2,14 @@
 
 class Article < ApplicationRecord
   MAX_TITLE_LENGTH = 50
-  validates :title, presence: true, length: { maximum: MAX_TITLE_LENGTH }
-  validates :body, :status, presence: true
+
   enum status: %i[draft published]
+
   belongs_to :category
   belongs_to :user
+
+  validates :title, presence: true, length: { maximum: MAX_TITLE_LENGTH }
+  validates :body, :status, presence: true
 
   before_save :set_slug
 

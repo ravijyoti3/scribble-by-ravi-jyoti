@@ -2,23 +2,21 @@
 
 Rails.application.routes.draw do
   constraints(lambda { |req| req.format == :json }) do
-    namespace :admin do
-      resources :articles, only: %i[index create destroy show update]
-      resource :organization, only: %i[update show create]
-      resources :categories, only: %i[create destroy show]
-      resources :redirections, only: %i[index create destroy update]
-      resources :categories, only: :update do
-        collection do
-          put "position_update"
+    namespace :api do
+      namespace :admin do
+        resources :articles, only: %i[index create destroy show update]
+        resource :organization, only: %i[update show create]
+        resources :categories, only: %i[index create destroy show]
+        resources :redirections, only: %i[index create destroy update]
+        resources :categories, only: :update do
+          put "position_update", on: :collection
         end
       end
-    end
 
-    namespace :public do
-      resources :categories, only: :index
-      resources :articles, only: :show, param: :slug do
-        member do
-          get "show_by_slug"
+      namespace :public do
+        resources :categories, only: :index
+        resources :articles, only: :show, param: :slug do
+          get "show_by_slug", on: :member
         end
       end
     end
