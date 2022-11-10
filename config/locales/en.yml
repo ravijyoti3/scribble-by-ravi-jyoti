@@ -8,3 +8,7 @@ en:
     incorrect_credential: "Invalid Password."
   category:
     cannot_be_deleted: "Category cannot be deleted"
+  redirection:
+    to_and_from_not_equal: "To and From cannot be equal"
+    redirection_loop: "This redirection causes redirection loop"
+    unique_to_and_from_combination: "This redirection already exist"

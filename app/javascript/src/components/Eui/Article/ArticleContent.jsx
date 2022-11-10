@@ -13,7 +13,7 @@ const ArticleContent = () => {
 
   const showArticle = async slug => {
     try {
-      const { data } = await articlesApi.showBySlug(slug);
+      const { data } = await articlesApi.show(slug);
       setArticle(data);
       setPageLoading(false);
     } catch (error) {

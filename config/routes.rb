@@ -15,9 +15,7 @@ Rails.application.routes.draw do
 
       namespace :public do
         resources :categories, only: :index
-        resources :articles, only: :show, param: :slug do
-          get "show_by_slug", on: :member
-        end
+        resources :articles, only: :show, param: :slug
       end
     end
   end

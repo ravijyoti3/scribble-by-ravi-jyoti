@@ -16,13 +16,11 @@ class Organization < ApplicationRecord
   has_secure_password validations: false
   has_secure_token :authentication_token
 
-  before_save :set_password_digest_null
+  before_save :set_password_digest_null, if: -> { !password_protected }
 
   private
 
     def set_password_digest_null
-      if !self.password_protected
-        self.password_digest = nil
-      end
+      self.password_digest = nil
     end
 end

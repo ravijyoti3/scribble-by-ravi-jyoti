@@ -58,7 +58,7 @@ const Categories = () => {
         finalPosition.destination.index
       );
       setCategoryList(reorderedItems);
-      await categoriesApi.position_update({
+      await categoriesApi.positionUpdate({
         category_id_list: reorderedItems.map(category => category.id),
       });
     }

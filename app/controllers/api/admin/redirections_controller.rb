@@ -6,7 +6,6 @@ class Api::Admin::RedirectionsController < ApplicationController
 
   def index
     @redirections = @current_organization.redirections
-    render
   end
 
   def create
