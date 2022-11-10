@@ -8,10 +8,10 @@ const SideBar = ({ categories }) => {
 
   const findCategory = () =>
     categories
-      .map(e => e.id)
+      .map(category => category.id)
       .indexOf(
         categories.find(category =>
-          category.articles.map(e => e.slug).includes(pathName)
+          category.articles.map(article => article.slug).includes(pathName)
         )?.id
       ) || 0;
 
@@ -22,17 +22,19 @@ const SideBar = ({ categories }) => {
         defaultActiveKey={findCategory()}
         iconPosition="end"
       >
-        {categories.map(category => (
-          <Accordion.Item key={category.id} title={category.name}>
-            {category.articles.filter(article => article.status === "published")
-              .length === 0 ? (
-              <Typography className="neeto-ui-text-gray-400" style="h4">
-                No Articles
-              </Typography>
-            ) : (
-              category.articles
-                .filter(article => article.status === "published")
-                .map(article => (
+        {categories.map(category => {
+          const publishedArticles = category.articles.filter(
+            article => article.status === "published"
+          );
+
+          return (
+            <Accordion.Item key={category.id} title={category.name}>
+              {publishedArticles.length === 0 ? (
+                <Typography className="neeto-ui-text-gray-400" style="h4">
+                  No Articles
+                </Typography>
+              ) : (
+                publishedArticles.map(article => (
                   <div className="mb-2" key={article.slug}>
                     <NavLink
                       activeClassName="text-indigo-600 font-medium"
@@ -43,9 +45,10 @@ const SideBar = ({ categories }) => {
                     </NavLink>
                   </div>
                 ))
-            )}
-          </Accordion.Item>
-        ))}
+              )}
+            </Accordion.Item>
+          );
+        })}
       </Accordion>
     </div>
   );

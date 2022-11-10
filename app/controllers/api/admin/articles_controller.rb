@@ -6,9 +6,8 @@ class Api::Admin::ArticlesController < ApplicationController
 
   def index
     @articles = ArticleFilterationService.new(
-      @_current_user.articles, params[:categories], params[:status],
+      current_user!.articles, params[:categories], params[:status],
       params[:search]).process
-    render
   end
 
   def create
@@ -27,8 +26,7 @@ class Api::Admin::ArticlesController < ApplicationController
   end
 
   def show_by_slug
-    @article = @_current_user.articles.find_by!(slug: params[:slug])
-    render
+    @article = current_user!.articles.find_by!(slug: params[:slug])
   end
 
   def update
@@ -43,6 +41,6 @@ class Api::Admin::ArticlesController < ApplicationController
     end
 
     def load_article!
-      @article = @_current_user.articles.find(params[:id])
+      @article = current_user!.articles.find(params[:id])
     end
 end

@@ -7,11 +7,11 @@ export const useKey = (key, callback) => {
   });
 
   useEffect(() => {
-    function handle(event) {
+    const handle = event => {
       if (event.key === key) {
         callbackRef.current(event);
       }
-    }
+    };
     document.addEventListener("keydown", handle);
 
     return () => document.removeEventListener("keydown", handle);

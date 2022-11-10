@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const showBySlug = slug =>
-  axios.get(`/api/public/articles/${slug}/show_by_slug`);
+const show = slug => axios.get(`/api/public/articles/${slug}`);
+
 const articlesApi = {
-  showBySlug,
+  show,
 };
 
 export default articlesApi;

@@ -5,8 +5,7 @@ class Api::Admin::CategoriesController < ApplicationController
   before_action :load_category!, only: %i[show update destroy]
 
   def index
-    @categories = @_current_user.categories.all
-    render
+    @categories = current_user!.categories.all
   end
 
   def create
@@ -37,7 +36,7 @@ class Api::Admin::CategoriesController < ApplicationController
   end
 
   def destroy
-    if CategoryDeletionService.new(@_current_user, params[:id], params[:new_id]).process
+    if CategoryDeletionService.new(current_user!, params[:id], params[:new_id]).process
       respond_with_success(t("successfully_deleted", entity: Category))
     else
       respond_with_error(t("category.cannot_be_deleted"))
@@ -51,6 +50,6 @@ class Api::Admin::CategoriesController < ApplicationController
     end
 
     def load_category!
-      @category = @_current_user.categories.find(params[:id])
+      @category = current_user!.categories.find(params[:id])
     end
 end

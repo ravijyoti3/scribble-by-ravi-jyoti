@@ -13,19 +13,19 @@ class Redirection < ApplicationRecord
 
     def to_and_from_not_equal
       if self.to == self.from
-        errors.add(:base, "To and From cannot be equal")
+        errors.add(:base, t("redirection.to_and_from_not_equal"))
       end
     end
 
     def check_redirection_loop
       if to_exist_in_from? && from_exist_in_to?
-        errors.add(:base, "This redirection causes redirection loop")
+        errors.add(:base, t("redirection.redirection_loop"))
       end
     end
 
     def unique_to_and_from_combination
       if Redirection.where(to: self.to, from: self.from).present?
-        errors.add(:base, "This redirection already exist")
+        errors.add(:base, t("redirection.unique_to_and_from_combination"))
       end
     end
 

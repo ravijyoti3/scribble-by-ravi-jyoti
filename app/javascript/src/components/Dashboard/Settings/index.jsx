@@ -9,8 +9,7 @@ import SideMenuBar from "./SideMenuBar";
 
 const Settings = () => {
   const { search } = useLocation();
-  const getCurrentTab = param => new URLSearchParams(search).get(param);
-  const currentTab = getCurrentTab("tab");
+  const currentTab = new URLSearchParams(search).get("tab");
 
   return (
     <div className="flex">

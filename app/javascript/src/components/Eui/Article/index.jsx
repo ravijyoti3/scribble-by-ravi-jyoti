@@ -13,9 +13,15 @@ const Article = () => {
   const [categories, setCategories] = useState([]);
   const [defaultSlug, setDefaultSlug] = useState("");
   const [pageLoading, setPageLoading] = useState(true);
-  const [slugs, setSlugs] = useState([]);
 
-  const isValidRoute = slugs
+  const getSlugs = () =>
+    categories
+      .map(category => category.articles)
+      .flat()
+      .filter(article => article.status === "published")
+      .map(article => article.slug);
+
+  const isValidRoute = getSlugs()
     .map(slug => `/public/${slug}`)
     .includes(window.location.pathname);
 
@@ -25,17 +31,8 @@ const Article = () => {
       setCategories(data.categories);
       setDefaultSlug(
         data.categories
-          .filter(e => e.articles.length > 0)[0]
-          .articles.filter(e => e.status === "published")[0].slug
-      );
-      setSlugs(
-        data.categories
-          .map(e =>
-            e.articles
-              .filter(article => article.status === "published")
-              .map(article => article.slug)
-          )
-          .flat()
+          .filter(category => category.articles.length > 0)[0]
+          .articles.filter(article => article.status === "published")[0].slug
       );
       setPageLoading(false);
     } catch (error) {
@@ -61,7 +58,7 @@ const Article = () => {
       {isValidRoute && <SideBar categories={categories} />}
       <div className="mt-5 w-3/4 px-5">
         <Switch>
-          {slugs.map(slug => (
+          {getSlugs().map(slug => (
             <Route key={slug} path={`/public/${slug}`}>
               <ArticleContent />
             </Route>
