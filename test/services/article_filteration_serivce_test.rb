@@ -22,8 +22,8 @@ class ArticleFilterationServiceTest < ActiveSupport::TestCase
     first_article = create(:article, category: @category, user: @user, status: "draft")
     second_article = create(:article, category: @category, user: @user, status: "published")
     third_article = create(:article, category: new_category, user: @user, status: "draft")
-    category_ids_string = [@category.id].join(",")
-    articles = ArticleFilterationService.new(@user.articles, category_ids_string, "draft", nil).process
+    category_ids = [@category.id]
+    articles = ArticleFilterationService.new(@user.articles, category_ids, "draft", nil).process
     assert_equal articles, [first_article]
   end
 
@@ -43,8 +43,8 @@ class ArticleFilterationServiceTest < ActiveSupport::TestCase
       :article, category: second_category, user: @user, title: "First Second Article",
       status: "draft")
     third_article = create(:article, category: first_category, user: @user, title: "Third Article", status: "draft")
-    category_ids_string = [@category.id, second_category.id].join(",")
-    articles = ArticleFilterationService.new(@user.articles, category_ids_string, "draft", "First").process
+    category_ids = [@category.id, second_category.id]
+    articles = ArticleFilterationService.new(@user.articles, category_ids, "draft", "First").process
     assert_equal articles, [first_article, second_article]
   end
 end

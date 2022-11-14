@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-json.extract! @current_organization, :id, :name, :authentication_token
+json.extract! @_current_organization, :id, :name, :authentication_token

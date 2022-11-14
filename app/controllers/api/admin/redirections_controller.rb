@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 
 class Api::Admin::RedirectionsController < ApplicationController
-  before_action :load_current_organization!, only: %i[index create update destroy]
   before_action :load_redirections!, only: %i[update destroy]
 
   def index
-    @redirections = @current_organization.redirections
+    @redirections = current_organization.redirections
   end
 
   def create
-    redirection = @current_organization.redirections.create!(redirection_params)
+    current_organization.redirections.create!(redirection_params)
     respond_with_success(t("successfully_created", entity: Redirection))
   end
 
@@ -26,7 +25,7 @@ class Api::Admin::RedirectionsController < ApplicationController
   private
 
     def load_redirections!
-      @redirection = @current_organization.redirections.find(params[:id])
+      @redirection = current_organization.redirections.find(params[:id])
     end
 
     def redirection_params

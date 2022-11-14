@@ -31,16 +31,6 @@ class CategoriesControllerTest < ActionDispatch::IntegrationTest
     assert_equal t("successfully_deleted", entity: Category), response_json["notice"]
   end
 
-  def test_should_not_delete_last_category_if_it_is_general
-    @category.destroy
-    Category.new(name: "General", user_id: @user.id).save!
-    @category = @user.categories.last
-    delete api_admin_category_path(@category.id), as: :json
-    assert_response :unprocessable_entity
-    response_json = response.parsed_body
-    assert_equal t("category.cannot_be_deleted"), response_json["error"]
-  end
-
   def test_should_update_category
     @category.save
     category_params = { category: { name: "ISRO", user_id: @user.id } }
@@ -54,12 +44,10 @@ class CategoriesControllerTest < ActionDispatch::IntegrationTest
     first_category = create(:category, user: @user)
     second_category = create(:category, user: @user)
     third_category = create(:category, user: @user)
-
-    category_id_list = [third_category.id, first_category.id, second_category.id]
     last_position = @category.position
-    put position_update_api_admin_categories_path, params: { category_id_list: category_id_list }, as: :json
+    put position_update_api_admin_categories_path, params: { id: first_category.id, final_position: last_position + 1 },
+      as: :json
     assert_response :success
-
     response_json = response.parsed_body
     assert_equal t("position_successfully_updated", entity: Category), response_json["notice"]
   end

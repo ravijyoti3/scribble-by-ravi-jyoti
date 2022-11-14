@@ -29,7 +29,7 @@ const Dashboard = ({ history }) => {
   const fetchArticles = async () => {
     try {
       const payload = {
-        categories: articleFilters.categoryIds.join(","),
+        categories: articleFilters.categoryIds,
         status: articleFilters.status,
         search: searchQuery,
       };

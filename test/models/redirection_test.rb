@@ -34,9 +34,12 @@ class RedirectionTest < ActiveSupport::TestCase
     third_redirection = create(:redirection, organization: @organization)
 
     second_redirection.from = first_redirection.to
+    second_redirection.save!
     third_redirection.from = second_redirection.to
+    third_redirection.save!
     third_redirection.to = first_redirection.from
+    third_redirection.save!
 
-    assert_not third_redirection.valid?
+    assert third_redirection.invalid?
   end
 end

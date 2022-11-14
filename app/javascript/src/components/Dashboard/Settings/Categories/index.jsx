@@ -59,7 +59,8 @@ const Categories = () => {
       );
       setCategoryList(reorderedItems);
       await categoriesApi.positionUpdate({
-        category_id_list: reorderedItems.map(category => category.id),
+        id: parseInt(finalPosition.draggableId),
+        finalPosition: finalPosition.destination.index + 1,
       });
     }
   };

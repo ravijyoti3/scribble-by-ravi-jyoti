@@ -1,10 +1,5 @@
 import * as yup from "yup";
 
-const checkCyclicRedirection = (redirections, from, to) =>
-  redirections.filter(redirection => redirection.to === from).length +
-    redirections.filter(redirection => redirection.from === to).length >
-  1;
-
 export const GENERAL_SETTING_FORM_VALIDATION_SCHEMA = yup.object().shape({
   name: yup.string().required("Organization Name is required"),
   password_protected: yup.boolean(),
@@ -62,23 +57,17 @@ export const REDIRECTIONS_FORM_INITIAL_VALUE = {
   to: "/",
 };
 
-export const REDIRECTIONS_SETTING_FORM_VALIDATION_SCHEMA = redirectionsData =>
-  yup.object().shape({
-    from: yup
-      .string()
-      .notOneOf([yup.ref("to")], "From and To cannot be same")
-      .matches(/^\/[a-zA-Z0-9/?&=]+$/i, "From must be in the format of '/path'")
-      .required("From Path is required"),
-    to: yup
-      .string()
-      .test(
-        "testCyclicRedirection",
-        "Cyclic Redirection Detected",
-        to => !checkCyclicRedirection(redirectionsData, yup.ref("from"), to)
-      )
-      .matches(/^\/[a-zA-Z0-9/?&=]+$/i, "To must be in the format of '/path'")
-      .required("To Path is required"),
-  });
+export const REDIRECTIONS_SETTING_FORM_VALIDATION_SCHEMA = yup.object().shape({
+  from: yup
+    .string()
+    .notOneOf([yup.ref("to")], "From and To cannot be same")
+    .matches(/^\/[a-zA-Z0-9/?&=]+$/i, "From must be in the format of '/path'")
+    .required("From Path is required"),
+  to: yup
+    .string()
+    .matches(/^\/[a-zA-Z0-9/?&=]+$/i, "To must be in the format of '/path'")
+    .required("To Path is required"),
+});
 
 export const CATEGORY_FORM_INITIAL_VALUE = {
   name: "",

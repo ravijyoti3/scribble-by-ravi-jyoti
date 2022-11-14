@@ -34,4 +34,11 @@ class CategoryDeletionServiceTest < ActiveSupport::TestCase
     CategoryDeletionService.new(@user, @category.id, nil).process
     assert_equal @user.categories.count, 1
   end
+
+  def test_should_not_delete_general_category_if_it_is_last
+    @category.name = "General"
+    @category.save!
+    response = CategoryDeletionService.new(@user, @category.id, nil).process
+    assert_nil response
+  end
 end
