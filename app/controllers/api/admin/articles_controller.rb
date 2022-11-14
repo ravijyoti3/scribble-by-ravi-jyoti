@@ -1,32 +1,26 @@
 # frozen_string_literal: true
 
 class Api::Admin::ArticlesController < ApplicationController
-  before_action :current_user!, only: %i[show update destroy index show_by_slug]
   before_action :load_article!, only: %i[show update destroy]
 
   def index
     @articles = ArticleFilterationService.new(
-      current_user!.articles, params[:categories], params[:status],
+      current_user.articles, params[:categories], params[:status],
       params[:search]).process
   end
 
   def create
-    article = Article.new(article_params)
-    article.save!
+    current_user.articles.create!(article_params)
     respond_with_success(t("successfully_created", entity: "Article"))
   end
 
   def destroy
-    @article.destroy
+    @article.destroy!
     respond_with_success(t("successfully_deleted", entity: "Article"))
   end
 
   def show
     render
-  end
-
-  def show_by_slug
-    @article = current_user!.articles.find_by!(slug: params[:slug])
   end
 
   def update
@@ -41,6 +35,6 @@ class Api::Admin::ArticlesController < ApplicationController
     end
 
     def load_article!
-      @article = current_user!.articles.find(params[:id])
+      @article = current_user.articles.find(params[:id])
     end
 end

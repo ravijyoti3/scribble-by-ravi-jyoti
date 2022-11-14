@@ -13,7 +13,6 @@ import {
 const Form = ({
   submitHandler,
   initialValues,
-  redirectionsData,
   setEditingKey,
   setShowAddRow,
 }) => {
@@ -29,9 +28,7 @@ const Form = ({
       validateOnChange
       initialValues={initialValues || REDIRECTIONS_FORM_INITIAL_VALUE}
       validateOnBlur={submitted}
-      validationSchema={REDIRECTIONS_SETTING_FORM_VALIDATION_SCHEMA(
-        redirectionsData
-      )}
+      validationSchema={REDIRECTIONS_SETTING_FORM_VALIDATION_SCHEMA}
       onSubmit={handleSubmit}
     >
       {({ isSubmitting }) => (

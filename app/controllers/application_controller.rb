@@ -6,12 +6,11 @@ class ApplicationController < ActionController::Base
 
   private
 
-    def load_current_organization!
-      @current_organization = Organization.first
+    def current_organization
+      @_current_organization ||= Organization.first
     end
 
-    def current_user!
-      current_organization = load_current_organization!
-      @_current_user ||= @current_organization.users.first
+    def current_user
+      @_current_user ||= current_organization.users.first
     end
 end

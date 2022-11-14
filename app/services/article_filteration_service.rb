@@ -11,11 +11,10 @@ class ArticleFilterationService
   end
 
   def process
-    category_ids = @category_ids.split(",").map(&:to_i) if @category_ids.present?
-    @articles = @articles.all
-    @articles = @articles.where(status: @status) if @status.present?
-    @articles = @articles.where(category_id: category_ids) if category_ids.present?
-    @articles = @articles.where("title iLIKE ?", "%#{@search.downcase}%") if @search.present?
-    @articles
+    filtered_articles = articles.all
+    filtered_articles = filtered_articles.where(status: status) if status.present?
+    filtered_articles = filtered_articles.where(category_id: category_ids) if category_ids.present?
+    filtered_articles = filtered_articles.where("title iLIKE ?", "%#{search}%") if search.present?
+    filtered_articles
   end
 end

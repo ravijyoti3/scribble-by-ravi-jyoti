@@ -1,28 +1,19 @@
 # frozen_string_literal: true
 
 class Api::Admin::CategoriesController < ApplicationController
-  before_action :current_user!, only: %i[show update destroy index]
-  before_action :load_category!, only: %i[show update destroy]
+  before_action :load_category!, only: %i[show update destroy position_update]
 
   def index
-    @categories = current_user!.categories.all
+    @categories = current_user.categories.order(:position)
   end
 
   def create
-    category = Category.new(category_params)
-    category.save!
+    current_user.categories.create!(category_params)
     respond_with_success(t("successfully_created", entity: Category))
   end
 
   def position_update
-    position = 1
-    category_id_list = params[:category_id_list]
-    category_id_list.each do |pos|
-      category = Category.find_by!(id: pos)
-      category.position = position
-      position = position + 1
-      category.save!
-    end
+    @category.insert_at(params[:final_position].to_i)
     respond_with_success(t("position_successfully_updated", entity: Category))
   end
 
@@ -36,11 +27,8 @@ class Api::Admin::CategoriesController < ApplicationController
   end
 
   def destroy
-    if CategoryDeletionService.new(current_user!, params[:id], params[:new_id]).process
-      respond_with_success(t("successfully_deleted", entity: Category))
-    else
-      respond_with_error(t("category.cannot_be_deleted"))
-    end
+    CategoryDeletionService.new(current_user, params[:id], params[:new_id]).process
+    respond_with_success(t("successfully_deleted", entity: Category))
   end
 
   private
@@ -50,6 +38,6 @@ class Api::Admin::CategoriesController < ApplicationController
     end
 
     def load_category!
-      @category = current_user!.categories.find(params[:id])
+      @category = current_user.categories.find(params[:id])
     end
 end

@@ -87,15 +87,15 @@ const General = () => {
                     name="password"
                     type="password"
                     disabled={
-                      !(changePassword || !organizationData?.password_digest)
+                      !(changePassword || !organizationData?.password_protected)
                     }
                     placeholder={
-                      !changePassword && organizationData?.password_digest
+                      !changePassword && organizationData?.password_protected
                         ? "********"
                         : "Enter new password"
                     }
                   />
-                  {organizationData.password_digest && (
+                  {organizationData.password_protected && (
                     <Button
                       className="ml-3 rounded-sm bg-gray-800 hover:bg-gray-600"
                       disabled={changePassword}
