@@ -19,7 +19,7 @@ class Redirection < ApplicationRecord
 
     def check_redirection_loop
       new_path = to
-      while (redirection = Redirection.find_by!(from: new_path))
+      while (redirection = Redirection.find_by(from: new_path))
         if redirection.to == from
           errors.add(:base, t("redirection.redirection_loop"))
           break
