@@ -38,7 +38,6 @@ class RedirectionTest < ActiveSupport::TestCase
     third_redirection.from = second_redirection.to
     third_redirection.save!
     third_redirection.to = first_redirection.from
-    third_redirection.save!
 
     assert third_redirection.invalid?
   end
