@@ -6,7 +6,7 @@ class Redirection < ApplicationRecord
   validates :from, presence: true, uniqueness: true
   validates :to, presence: true
 
-  validate :to_and_from_not_equal
+  validate :to_and_from_not_equal, :check_redirection_loop
   validate :unique_to_and_from_combination
 
   private
@@ -19,7 +19,7 @@ class Redirection < ApplicationRecord
 
     def check_redirection_loop
       new_path = to
-      while (redirection = Redirection.find_by!(from: new_path))
+      while (redirection = Redirection.find_by(from: new_path))
         if redirection.to == from
           errors.add(:base, t("redirection.redirection_loop"))
           break
