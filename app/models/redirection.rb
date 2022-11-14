@@ -6,7 +6,7 @@ class Redirection < ApplicationRecord
   validates :from, presence: true, uniqueness: true
   validates :to, presence: true
 
-  validate :to_and_from_not_equal
+  validate :to_and_from_not_equal, :check_redirection_loop
   validate :unique_to_and_from_combination
 
   private
