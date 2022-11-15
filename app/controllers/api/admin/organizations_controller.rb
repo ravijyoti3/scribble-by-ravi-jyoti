@@ -8,10 +8,7 @@ class Api::Admin::OrganizationsController < ApplicationController
   end
 
   def update
-    current_organization.name = params[:name]
-    current_organization.password_protected = params[:password_protected]
-    current_organization.password = params[:password] if params[:password].present?
-    current_organization.save!
+    current_organization.update!(organization_params)
     respond_with_success(t("successfully_updated", entity: Organization))
   end
 
@@ -20,4 +17,10 @@ class Api::Admin::OrganizationsController < ApplicationController
       respond_with_error(t("organization.incorrect_credential"), :unauthorized)
     end
   end
+
+  private
+
+    def organization_params
+      params.require(:organization).permit(:name, :password_protected, :password)
+    end
 end
