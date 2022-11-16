@@ -13,7 +13,7 @@ import {
 
 const Dashboard = () => {
   const isValidRoute = matchPath(window.location.pathname, {
-    path: DASHBOARD_ROUTES.map(route => route.path),
+    path: [...DASHBOARD_ROUTES.map(route => route.path), "/"],
     exact: true,
     strict: false,
   });
