@@ -11,10 +11,23 @@ class ArticleFilterationService
   end
 
   def process
-    filtered_articles = articles.all
-    filtered_articles = filtered_articles.where(status: status) if status.present?
-    filtered_articles = filtered_articles.where(category_id: category_ids) if category_ids.present?
-    filtered_articles = filtered_articles.where("title iLIKE ?", "%#{search}%") if search.present?
-    filtered_articles
+    @articles = filter_by_status if status.present?
+    @articles = filter_by_category if category_ids.present?
+    @articles = filter_by_search if search.present?
+    @articles
   end
+
+  private
+
+    def filter_by_status
+      articles.where(status: status)
+    end
+
+    def filter_by_category
+      articles.where(category_id: category_ids)
+    end
+
+    def filter_by_search
+      articles.where("title iLIKE ?", "%#{search}%")
+    end
 end
