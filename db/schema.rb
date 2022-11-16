@@ -12,31 +12,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_11_06_101050) do
+ActiveRecord::Schema.define(version: 2022_11_16_065719) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
-  create_table "articles", force: :cascade do |t|
+  create_table "articles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "title", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.text "body", null: false
     t.integer "status", default: 0
-    t.integer "category_id", null: false
     t.string "slug"
-    t.integer "user_id", default: 1, null: false
+    t.uuid "user_id", null: false
+    t.uuid "category_id", null: false
   end
 
-  create_table "categories", force: :cascade do |t|
+  create_table "categories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "position", null: false
-    t.integer "user_id", default: 1, null: false
+    t.uuid "user_id", null: false
   end
 
-  create_table "organizations", force: :cascade do |t|
+  create_table "organizations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "name"
@@ -50,20 +51,20 @@ ActiveRecord::Schema.define(version: 2022_11_06_101050) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "from"
     t.string "to"
-    t.integer "organization_id", null: false
+    t.uuid "organization_id", null: false
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "email", null: false
-    t.integer "organization_id", null: false
+    t.uuid "organization_id", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
   add_foreign_key "articles", "categories", on_delete: :cascade
-  add_foreign_key "articles", "users"
+  add_foreign_key "articles", "users", on_delete: :cascade
   add_foreign_key "categories", "users", on_delete: :cascade
   add_foreign_key "redirections", "organizations", on_delete: :cascade
   add_foreign_key "users", "organizations", on_delete: :cascade

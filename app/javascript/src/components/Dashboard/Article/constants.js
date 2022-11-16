@@ -21,7 +21,7 @@ export const FORM_VALIDATION_SCHEMA = CATEGORY_LIST =>
       .nullable()
       .shape({
         label: yup.string().oneOf(CATEGORY_LIST.map(cat => cat.label)),
-        value: yup.number().oneOf(CATEGORY_LIST.map(cat => cat.value)),
+        value: yup.string().oneOf(CATEGORY_LIST.map(cat => cat.value)),
       })
       .required("Category is required"),
     body: yup.string().required("Body is required"),
