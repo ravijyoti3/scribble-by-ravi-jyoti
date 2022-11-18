@@ -3,9 +3,9 @@ import axios from "axios";
 const fetch = payload =>
   axios.get("api/admin/articles?categories", {
     params: {
-      categories: payload.categories,
-      status: payload.status,
-      search: payload.search,
+      categories: payload?.categories,
+      status: payload?.status,
+      search: payload?.search,
     },
   });
 const create = payload => axios.post("api/admin/articles", payload);

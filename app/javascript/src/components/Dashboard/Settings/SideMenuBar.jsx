@@ -10,7 +10,7 @@ const SideMenuBar = () => {
   const currentTab = useQuery().get("tab");
 
   return (
-    <div className="flex">
+    <div className="sticky top-0 flex">
       <MenuBar showMenu title="">
         {LEFT_MENU_ITEMS.map(item => (
           <Link key={item.id} to={`settings?tab=${item.tab}`}>
