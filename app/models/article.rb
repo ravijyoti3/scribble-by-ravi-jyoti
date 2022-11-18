@@ -14,6 +14,8 @@ class Article < ApplicationRecord
   before_create :set_slug, if: -> { status == "published" }
   before_update :set_slug, if: -> { status == "published" && !slug }
 
+  acts_as_list scope: :category
+
   private
 
     def set_slug
