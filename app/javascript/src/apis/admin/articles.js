@@ -8,7 +8,8 @@ const fetch = payload =>
       search: payload?.search,
     },
   });
-const create = payload => axios.post("api/admin/articles", payload);
+const create = payload =>
+  axios.post("api/admin/articles", { article: payload });
 const destroy = id => axios.delete(`api/admin/articles/${id}`);
 const show = id => axios.get(`api/admin/articles/${id}`);
 const update = ({ id, payload }) =>
