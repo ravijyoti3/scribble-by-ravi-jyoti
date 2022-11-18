@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 
-import { Delete, Edit } from "neetoicons";
-import { Button, Typography } from "neetoui";
+import { Typography } from "@bigbinary/neetoui";
+import { MenuVertical } from "neetoicons";
+import { Dropdown } from "neetoui";
 import { Draggable } from "react-beautiful-dnd";
 
 import categoriesApi from "apis/admin/categories";
@@ -13,6 +14,8 @@ import Form from "./Form";
 const List = ({ category, index, refetch, categoryList, setCategoryList }) => {
   const [isEdit, setIsEdit] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const { MenuItem } = Dropdown;
 
   const editCategory = async payload => {
     payload.id = category.id;
@@ -31,45 +34,29 @@ const List = ({ category, index, refetch, categoryList, setCategoryList }) => {
 
   return (
     <>
-      <Draggable
-        draggableId={category.id.toString()}
-        index={index}
-        key={category.id}
-      >
+      <Draggable draggableId={category.id} index={index} key={category.id}>
         {provided => (
           <div
-            className="mt-4 flex items-center justify-between border-t-2"
+            className="mb-2 flex items-center justify-between"
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
           >
             {!isEdit ? (
-              <>
-                <div className="flex">
-                  <Typography
-                    className="ri-drag-move-2-line fa-2x neeto-ui-text-gray-500 mx-2 my-px"
-                    style="body1"
-                  />
-                  <Typography className="mt-1" style="h4">
-                    {category.name}
-                  </Typography>
+              <div className="flex w-full items-center justify-between rounded-md p-2 hover:bg-gray-200">
+                <div>
+                  <Typography style="h4">{category.name}</Typography>
+                  <Typography style="body3">{category.name}</Typography>
                 </div>
-                <div className="mt-2">
-                  <Button
-                    icon={Delete}
-                    style="text"
-                    disabled={
-                      category.name === "General" && categoryList.length === 1
-                    }
-                    onClick={() => setShowDeleteModal(true)}
-                  />
-                  <Button
-                    icon={Edit}
-                    style="text"
-                    onClick={() => setIsEdit(true)}
-                  />
-                </div>
-              </>
+                <Dropdown
+                  buttonSize="small"
+                  buttonStyle="text"
+                  icon={MenuVertical}
+                >
+                  <MenuItem.Button>Edit</MenuItem.Button>
+                  <MenuItem.Button style="danger">Delete</MenuItem.Button>
+                </Dropdown>
+              </div>
             ) : (
               <Form
                 category={category}
