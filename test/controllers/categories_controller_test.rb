@@ -44,11 +44,9 @@ class CategoriesControllerTest < ActionDispatch::IntegrationTest
     first_category = create(:category, user: @user)
     second_category = create(:category, user: @user)
     third_category = create(:category, user: @user)
-    last_position = @category.position
+    last_position = third_category.position
     put position_update_api_admin_categories_path, params: { id: first_category.id, final_position: last_position + 1 },
       as: :json
-    assert_response :success
-    response_json = response.parsed_body
-    assert_equal t("position_successfully_updated", entity: Category), response_json["notice"]
+    assert_equal last_position + 1, first_category.reload.position
   end
 end

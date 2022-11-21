@@ -65,4 +65,24 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
     all_articles = @user.articles.count
     assert_equal all_articles, response_json["articles"].count
   end
+
+  def test_should_update_article_positions
+    first_article = create(:article, category: @category, user: @user)
+    second_article = create(:article, category: @category, user: @user)
+    third_article = create(:article, category: @category, user: @user)
+    last_position = third_article.position
+    put position_update_api_admin_articles_path, params: { id: first_article.id, final_position: last_position + 1 },
+      as: :json
+    assert_equal last_position + 1, first_article.reload.position
+  end
+
+  def test_should_bulk_update_article_category_id
+    first_article = create(:article, category: @category, user: @user)
+    second_article = create(:article, category: @category, user: @user)
+    third_article = create(:article, category: @category, user: @user)
+    put bulk_update_api_admin_articles_path,
+      params: { category_id: @category.id, article_ids: [first_article.id, second_article.id, third_article.id] }
+      , as: :json
+    assert_equal @category.id, first_article.reload.category_id
+  end
 end

@@ -5,7 +5,6 @@ import { Check, Close } from "neetoicons";
 import { Button, Pane, Typography } from "neetoui";
 import { Input } from "neetoui/formik";
 
-import categoriesApi from "apis/admin/categories";
 import TooltipWrapper from "components/Common/TooltipWrapper";
 
 import {
@@ -13,27 +12,13 @@ import {
   CATEGORY_SETTING_FORM_VALIDATION_SCHEMA,
 } from "../constants";
 
-const Form = ({ refetch, category, showAddCategory, setShowAddCategory }) => {
+const Form = ({ handleSubmit, category, onClose }) => {
   const [submitted, setSubmitted] = useState(false);
 
   const inputRef = useRef(null);
 
-  const addCategory = async category => {
-    try {
-      await categoriesApi.create(category);
-      refetch();
-      setShowAddCategory(false);
-    } catch (error) {
-      logger.error(error);
-    }
-  };
-
   return (
-    <Pane
-      initialFocusRef={inputRef}
-      isOpen={showAddCategory}
-      onClose={() => setShowAddCategory(false)}
-    >
+    <Pane isOpen initialFocusRef={inputRef} onClose={onClose}>
       <Pane.Header>
         <Typography style="h2" weight="semibold">
           Add category
@@ -44,7 +29,7 @@ const Form = ({ refetch, category, showAddCategory, setShowAddCategory }) => {
         validateOnBlur={submitted}
         validateOnChange={submitted}
         validationSchema={CATEGORY_SETTING_FORM_VALIDATION_SCHEMA}
-        onSubmit={addCategory}
+        onSubmit={handleSubmit}
       >
         {({ isSubmitting, dirty }) => (
           <FormikForm className="my-3">
@@ -75,7 +60,7 @@ const Form = ({ refetch, category, showAddCategory, setShowAddCategory }) => {
                 label="Cancel"
                 style="text"
                 type="reset"
-                onClick={() => setShowAddCategory(false)}
+                onClick={onClose}
               />
             </Pane.Footer>
           </FormikForm>

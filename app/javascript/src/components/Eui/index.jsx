@@ -22,7 +22,8 @@ const Eui = () => {
       const { data } = await organizationApi.show();
       setOrganizationData(data);
       setIsPasswordValidated(
-        (authToken && authToken.token) || !data.password_protected
+        authToken?.token === data.authentication_token ||
+          !data.password_protected
       );
     } catch (err) {
       logger.error(err);
