@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 class Api::Admin::ArticlesController < ApplicationController
-  before_action :load_article!, only: %i[show update destroy]
+  before_action :load_article!, only: %i[show update destroy position_update]
 
   def index
     @articles = ArticleFilterationService.new(
       current_user.articles, params[:categories], params[:status],
-      params[:search]).process
+      params[:search]).process.order(position: :asc)
   end
 
   def create
@@ -19,6 +19,11 @@ class Api::Admin::ArticlesController < ApplicationController
     respond_with_success(t("successfully_deleted", entity: "Article"))
   end
 
+  def position_update
+    @article.insert_at(params[:final_position])
+    respond_with_success(t("successfully_updated", entity: "Article"))
+  end
+
   def show
     render
   end
@@ -26,6 +31,10 @@ class Api::Admin::ArticlesController < ApplicationController
   def update
     @article.update!(article_params)
     respond_with_success(t("successfully_updated", entity: "Article"))
+  end
+
+  def bulk_update
+    current_user.articles.where(id: params[:ids]).update_all(category_id: params[:category_id])
   end
 
   private

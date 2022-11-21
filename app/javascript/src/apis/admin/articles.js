@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const fetch = payload =>
-  axios.get("api/admin/articles?categories", {
+  axios.get("api/admin/articles", {
     params: {
       categories: payload?.categories,
       status: payload?.status,
@@ -14,6 +14,16 @@ const destroy = id => axios.delete(`api/admin/articles/${id}`);
 const show = id => axios.get(`api/admin/articles/${id}`);
 const update = ({ id, payload }) =>
   axios.put(`api/admin/articles/${id}`, payload);
+const positionUpdate = payload =>
+  axios.put("api/admin/articles/position_update", {
+    id: payload.id,
+    final_position: payload.finalPosition,
+  });
+const bulkUpdate = payload =>
+  axios.put("api/admin/articles/bulk_update", {
+    ids: payload.ids,
+    category_id: payload.categoryId,
+  });
 
 const articlesApi = {
   fetch,
@@ -21,6 +31,8 @@ const articlesApi = {
   destroy,
   show,
   update,
+  positionUpdate,
+  bulkUpdate,
 };
 
 export default articlesApi;

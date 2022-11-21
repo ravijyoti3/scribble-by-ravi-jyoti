@@ -9,19 +9,14 @@ import UrlNotFound from "components/Common/UrlNotFound";
 import ArticleContent from "./ArticleContent";
 import SideBar from "./SideBar";
 
+import { getDefaultSlug, getSlugs } from "../utils";
+
 const Article = () => {
   const [categories, setCategories] = useState([]);
   const [defaultSlug, setDefaultSlug] = useState("");
   const [pageLoading, setPageLoading] = useState(true);
 
-  const getSlugs = () =>
-    categories
-      .map(category => category.articles)
-      .flat()
-      .filter(article => article.status === "published")
-      .map(article => article.slug);
-
-  const isValidRoute = getSlugs()
+  const isValidRoute = getSlugs(categories)
     .map(slug => `/public/${slug}`)
     .includes(window.location.pathname);
 
@@ -29,11 +24,7 @@ const Article = () => {
     try {
       const { data } = await categoriesApi.fetch();
       setCategories(data.categories);
-      setDefaultSlug(
-        data.categories
-          .filter(category => category.articles.length > 0)[0]
-          .articles.filter(article => article.status === "published")[0].slug
-      );
+      setDefaultSlug(getDefaultSlug(data.categories));
       setPageLoading(false);
     } catch (error) {
       logger.error(error);
@@ -58,7 +49,7 @@ const Article = () => {
       {isValidRoute && <SideBar categories={categories} />}
       <div className="mt-5 w-3/4 px-5">
         <Switch>
-          {getSlugs().map(slug => (
+          {getSlugs(categories).map(slug => (
             <Route key={slug} path={`/public/${slug}`}>
               <ArticleContent />
             </Route>

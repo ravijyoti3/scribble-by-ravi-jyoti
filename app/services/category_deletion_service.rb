@@ -11,8 +11,8 @@ class CategoryDeletionService
 
   def process
     if current_user.categories.count == 1 && current_user.categories.first.name != "General"
-      current_user.categories.create!(name: "General")
-      self.new_id = current_user.categories.last.id
+      new_category = current_user.categories.create!(name: "General")
+      self.new_id = new_category.id
     elsif current_user.categories.count == 1 && current_user.categories.first.name == "General"
       return nil
     end

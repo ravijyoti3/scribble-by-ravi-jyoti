@@ -14,7 +14,6 @@ class Api::Admin::CategoriesController < ApplicationController
 
   def position_update
     @category.insert_at(params[:final_position])
-    respond_with_success(t("position_successfully_updated", entity: Category))
   end
 
   def update

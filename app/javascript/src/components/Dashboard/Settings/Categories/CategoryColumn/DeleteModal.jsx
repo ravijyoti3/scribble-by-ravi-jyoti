@@ -11,6 +11,7 @@ const DeleteModal = ({
   setShowDeleteModal,
   refetch,
   categoryList,
+  setActiveCategory,
 }) => {
   const [moveArticlesToCategory, setMoveArticlesToCategory] = useState("");
 
@@ -21,6 +22,7 @@ const DeleteModal = ({
         newId: moveArticlesToCategory,
       });
       refetch();
+      setActiveCategory(categoryList[0]);
     } catch (error) {
       logger.error(error);
     }
