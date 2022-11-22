@@ -21,7 +21,6 @@ class Api::Admin::ArticlesController < ApplicationController
 
   def position_update
     @article.insert_at(params[:final_position])
-    respond_with_success(t("successfully_updated", entity: "Article"))
   end
 
   def show
