@@ -65,7 +65,7 @@ const ArticleCard = ({
             </div>
             <Avatar
               user={{
-                name: "Oliver Smith",
+                name: article.author.name,
               }}
             />
             <Tag
