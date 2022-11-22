@@ -4,6 +4,7 @@ import { Typography, Dropdown, Button, PageLoader } from "neetoui";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 import articlesApi from "apis/admin/articles";
+import TooltipWrapper from "components/Common/TooltipWrapper";
 import EmptyArticles from "images/empty";
 
 import Card from "./Card";
@@ -66,20 +67,27 @@ const ArticleColumn = ({ activeCategory, categoryList, refetch }) => {
     <div className="col-span-2 px-4 pt-3">
       <div className="mb-4 flex w-full items-center justify-between">
         <Typography style="h4">Manage articles</Typography>
-        <Dropdown disabled={selectedArticleIds.length === 0} label="Move To">
-          <Menu>
-            {categoryList
-              .filter(category => category.id !== activeCategory.id)
-              .map(category => (
-                <MenuItem.Button
-                  key={category.id}
-                  onClick={() => moveArticles(category.id)}
-                >
-                  {category.name}
-                </MenuItem.Button>
-              ))}
-          </Menu>
-        </Dropdown>
+        <TooltipWrapper
+          content="Select articles to move them to another category"
+          disabled={selectedArticleIds.length === 0}
+          followCursor="horizontal"
+          position="bottom"
+        >
+          <Dropdown disabled={selectedArticleIds.length === 0} label="Move To">
+            <Menu>
+              {categoryList
+                .filter(category => category.id !== activeCategory.id)
+                .map(category => (
+                  <MenuItem.Button
+                    key={category.id}
+                    onClick={() => moveArticles(category.id)}
+                  >
+                    {category.name}
+                  </MenuItem.Button>
+                ))}
+            </Menu>
+          </Dropdown>
+        </TooltipWrapper>
       </div>
       {!hideInfo && (
         <div className="rounded-xs mb-4 bg-indigo-100 p-2">
