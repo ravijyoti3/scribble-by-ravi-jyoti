@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ArticleUpdationService
+class ArticlesCategoryUpdationService
   attr_accessor :current_user, :article_ids, :new_category_id
 
   def initialize(current_user, article_ids, new_category_id)

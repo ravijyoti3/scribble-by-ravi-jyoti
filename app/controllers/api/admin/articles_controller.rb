@@ -33,7 +33,7 @@ class Api::Admin::ArticlesController < ApplicationController
   end
 
   def bulk_update
-    ArticleUpdationService.new(current_user, params[:ids], params[:category_id]).process
+    ArticlesCategoryUpdationService.new(current_user, params[:ids], params[:category_id]).process
   end
 
   private
