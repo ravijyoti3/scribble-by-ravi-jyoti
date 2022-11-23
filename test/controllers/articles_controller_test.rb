@@ -81,7 +81,7 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
     second_article = create(:article, category: @category, user: @user)
     third_article = create(:article, category: @category, user: @user)
     put bulk_update_api_admin_articles_path,
-      params: { category_id: @category.id, article_ids: [first_article.id, second_article.id, third_article.id] },
+      params: { category_id: @category.id, ids: [first_article.id, second_article.id, third_article.id] },
       as: :json
     assert_equal @category.id, first_article.reload.category_id
   end

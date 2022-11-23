@@ -16,7 +16,8 @@ class CategoryDeletionService
     elsif current_user.categories.count == 1 && current_user.categories.first.name == "General"
       return nil
     end
-    current_user.articles.where(category_id: id).update(category_id: new_id)
+    article_ids = current_user.articles.where(category_id: id).pluck(:id)
+    ArticleUpdationService.new(current_user, article_ids, new_id).process
     current_user.categories.find(id).destroy!
   end
 end

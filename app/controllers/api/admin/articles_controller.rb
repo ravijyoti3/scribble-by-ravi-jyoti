@@ -33,7 +33,7 @@ class Api::Admin::ArticlesController < ApplicationController
   end
 
   def bulk_update
-    current_user.articles.where(id: params[:ids]).update_all(category_id: params[:category_id])
+    ArticleUpdationService.new(current_user, params[:ids], params[:category_id]).process
   end
 
   private
