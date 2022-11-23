@@ -17,7 +17,7 @@ class CategoryDeletionService
       return nil
     end
     article_ids = current_user.articles.where(category_id: id).pluck(:id)
-    ArticleUpdationService.new(current_user, article_ids, new_id).process
+    ArticlesCategoryUpdationService.new(current_user, article_ids, new_id).process
     current_user.categories.find(id).destroy!
   end
 end
