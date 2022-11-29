@@ -24,10 +24,24 @@ const NavBar = () => (
       >
         <Typography style="h4">Settings</Typography>
       </NavLink>
+      <NavLink
+        activeClassName="neeto-ui-text-primary-500 mx-6"
+        className="neeto-ui-text-gray-500 mx-6"
+        to="/analytics"
+      >
+        <Typography style="h4">Analytics</Typography>
+      </NavLink>
     </div>
-    <Link target="_blank" to="/public">
-      <Button icon={ExternalLink} label="Preview" style="secondary" />
-    </Link>
+    <div className="flex items-center">
+      <div className="mr-4 rounded-md bg-green-500 px-2">
+        <Typography className="text-white" style="body2">
+          Published
+        </Typography>
+      </div>
+      <Link target="_blank" to="/public">
+        <Button icon={ExternalLink} label="Preview" style="secondary" />
+      </Link>
+    </div>
   </nav>
 );
 
