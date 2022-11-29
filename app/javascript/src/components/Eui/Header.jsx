@@ -1,10 +1,21 @@
 import React from "react";
 
-import { Typography } from "neetoui";
+import { Input, Typography } from "neetoui";
 
 const Header = ({ title }) => (
-  <div className="border-b flex w-full justify-center py-3">
-    <Typography style="h4">{title}</Typography>
+  <div className="border-b grid w-full grid-flow-col grid-cols-4 items-center py-3">
+    <div className="w-full pl-5">
+      <Input
+        className="text-gray-600"
+        placeholder="Search for articles here."
+      />
+    </div>
+    <Typography
+      className="col-span-3 place-items-center text-center"
+      style="h4"
+    >
+      {title}
+    </Typography>
   </div>
 );
 
