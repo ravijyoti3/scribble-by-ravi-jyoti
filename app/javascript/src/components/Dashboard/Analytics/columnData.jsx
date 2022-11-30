@@ -48,10 +48,9 @@ export const buildTableColumnData = () => [
   },
   {
     title: "Visits",
-    dataIndex: "status",
-    key: "status",
+    dataIndex: "visit",
+    key: "visit",
     width: "16%",
-
     render: renderText,
   },
 ];
