@@ -7,5 +7,6 @@ class Api::Public::ArticlesController < ApplicationController
 
   def show
     @article = current_user.articles.find_by!(slug: params[:slug])
+    @article.increment!(:visit)
   end
 end

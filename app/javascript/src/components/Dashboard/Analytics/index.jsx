@@ -9,12 +9,13 @@ import { buildTableColumnData } from "./columnData";
 const Analytics = () => {
   const [articleData, setArticleData] = useState([]);
   const [pageLoading, setPageLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const fetchArticles = async () => {
     try {
       const {
         data: { articles },
-      } = await articlesApi.fetch();
+      } = await articlesApi.fetch({ status: "published" });
       setArticleData(articles);
       setPageLoading(false);
     } catch (error) {
@@ -38,9 +39,11 @@ const Analytics = () => {
   return (
     <div className="mx-auto mt-5 w-4/5">
       <NeetouiTable
-        pagination
         allowRowClick={false}
         columnData={buildTableColumnData()}
+        currentPageNumber={currentPage}
+        defaultPageSize={10}
+        handlePageChange={setCurrentPage}
         rowData={articleData}
       />
     </div>
