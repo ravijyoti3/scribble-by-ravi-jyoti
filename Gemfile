@@ -79,3 +79,5 @@ end
 gem "responders"
 
 gem "simplecov", require: false, group: :test
+
+gem "paper_trail"
