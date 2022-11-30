@@ -1,20 +1,58 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { Typography, Button } from "neetoui";
+import { formatCreatedTimeToDateAndTime } from "utils";
 
-const SideBar = () => (
-  <div className="border-l h-screen px-5 pt-5">
-    <Typography style="h2">Version History</Typography>
-    <Typography className="text-gray-600" style="body2">
-      Version history of Setting up an account in Scribble.
-    </Typography>
-    <div className="mt-2 flex items-center">
-      <Typography className="text-gray-600" style="body2">
-        10:00 AM, 12/20/2021
-      </Typography>
-      <Button className="ml-5" label="Article Drafted" style="link" />
-    </div>
-  </div>
-);
+import VersionDetailModal from "./VersionDetailModal";
+
+const SideBar = ({ versionData, refetch }) => {
+  const [showVersionModal, setShowVersionModal] = useState(false);
+  const [selectedVersion, setSelectedVersion] = useState(null);
+
+  return (
+    <>
+      <div className="border-l h-screen px-5 pt-5">
+        <Typography style="h2">Version History</Typography>
+        <Typography className="text-gray-600" style="body2">
+          Version history of Setting up an account in Scribble.
+        </Typography>
+        {versionData.map(version => {
+          const articleData = JSON.parse(version.object);
+
+          return (
+            <div
+              className="mt-2 flex items-center justify-between"
+              key={version.id}
+            >
+              <Typography className="text-gray-600" style="body2">
+                {formatCreatedTimeToDateAndTime(version.created_at)}
+              </Typography>
+              <Button
+                className="ml-5"
+                style="link"
+                label={
+                  articleData.status === 1
+                    ? "Article Published"
+                    : "Article Drafted"
+                }
+                onClick={() => {
+                  setSelectedVersion(version);
+                  setShowVersionModal(true);
+                }}
+              />
+            </div>
+          );
+        })}
+      </div>
+      {showVersionModal && (
+        <VersionDetailModal
+          refetch={refetch}
+          setShowVersionModal={setShowVersionModal}
+          versionArticleData={JSON.parse(selectedVersion.object)}
+        />
+      )}
+    </>
+  );
+};
 
 export default SideBar;

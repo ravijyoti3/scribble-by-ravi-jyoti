@@ -4,7 +4,7 @@ import { ExternalLink } from "neetoicons";
 import { Button, Typography } from "neetoui";
 import { Link, NavLink } from "react-router-dom";
 
-const NavBar = () => (
+const NavBar = ({ isEditArticleRoute }) => (
   <nav className=" border-b sticky top-0 z-50 flex h-16 w-full items-center justify-between bg-white px-5">
     <div className="flex items-center">
       <Typography className="mr-5" style="h3">
@@ -33,11 +33,13 @@ const NavBar = () => (
       </NavLink>
     </div>
     <div className="flex items-center">
-      <div className="mr-4 rounded-md bg-green-500 px-2">
-        <Typography className="text-white" style="body2">
-          Published
-        </Typography>
-      </div>
+      {isEditArticleRoute && (
+        <div className="mr-4 rounded-md bg-green-500 px-2">
+          <Typography className="text-white" style="body2">
+            Published
+          </Typography>
+        </div>
+      )}
       <Link target="_blank" to="/public">
         <Button icon={ExternalLink} label="Preview" style="secondary" />
       </Link>

@@ -15,6 +15,7 @@ class Article < ApplicationRecord
   before_update :set_slug, if: -> { status == "published" && !slug }
 
   acts_as_list scope: :category
+  has_paper_trail only: %i[title body status category_id]
 
   private
 

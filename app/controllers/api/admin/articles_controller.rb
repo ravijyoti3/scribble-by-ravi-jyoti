@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Api::Admin::ArticlesController < ApplicationController
-  before_action :load_article!, only: %i[show update destroy position_update]
+  before_action :load_article!, only: %i[show update destroy position_update ]
 
   def index
     @articles = ArticleFilterationService.new(

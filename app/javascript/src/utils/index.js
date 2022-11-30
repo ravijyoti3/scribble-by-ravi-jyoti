@@ -10,3 +10,6 @@ export const buildSelectOptions = options =>
 
 export const formatCreatedTimeToDate = dateTime =>
   dayjs(dateTime).format("MMMM  D, YYYY");
+
+export const formatCreatedTimeToDateAndTime = dateTime =>
+  dayjs(dateTime).format("h:mm A, D/M/YYYY");

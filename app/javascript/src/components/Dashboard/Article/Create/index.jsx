@@ -8,14 +8,13 @@ import categoriesApi from "apis/admin/categories";
 
 import Form from "./Form";
 import SideBar from "./SideBar";
-import VersionDetailModal from "./VersionDetailModal";
 
 const Create = ({ history }) => {
   const [categoryList, setCategoryList] = useState([]);
   const [pageLoading, setPageLoading] = useState(true);
   const [article, setArticle] = useState(null);
   const [submitButtonLabel, setSubmitButtonLabel] = useState("Save Draft");
-  const [showVersionModal, setShowVersionModal] = useState(false);
+  const [versionData, setVersionData] = useState([]);
 
   const { id } = useParams();
   const fetchArticle = async () => {
@@ -31,6 +30,7 @@ const Create = ({ history }) => {
         },
       };
       setArticle(payload);
+      setVersionData(data.versions);
       setSubmitButtonLabel(
         data.status === "published" ? "Publish" : "Save Draft"
       );
@@ -82,13 +82,7 @@ const Create = ({ history }) => {
         setSubmitButtonLabel={setSubmitButtonLabel}
         submitButtonLabel={submitButtonLabel}
       />
-      <SideBar />
-      {showVersionModal && (
-        <VersionDetailModal
-          article={article}
-          setShowVersionModal={setShowVersionModal}
-        />
-      )}
+      <SideBar refetch={fetchArticle} versionData={versionData} />
     </div>
   );
 };
