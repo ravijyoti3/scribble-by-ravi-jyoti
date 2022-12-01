@@ -8,6 +8,7 @@ import PrivateRoute from "components/Common/PrivateRoute";
 import Article from "./Article";
 import Header from "./Header";
 import Login from "./Login";
+import SearchModal from "./SearchModal";
 
 import { PUBLIC_PATH, LOGIN_PATH } from "../routeConstants";
 
@@ -16,6 +17,7 @@ const Eui = () => {
 
   const [organizationData, setOrganizationData] = useState({});
   const [isPasswordValidated, setIsPasswordValidated] = useState(true);
+  const [showSearchModal, setShowSearchModal] = useState(false);
 
   const fetchOrganizationDataAndCheckPasswordValidation = async () => {
     try {
@@ -36,7 +38,10 @@ const Eui = () => {
 
   return (
     <>
-      <Header title={organizationData.name} />
+      <Header
+        setShowSearchModal={setShowSearchModal}
+        title={organizationData.name}
+      />
       <Switch>
         <Route exact path={LOGIN_PATH}>
           <Login
@@ -51,6 +56,9 @@ const Eui = () => {
           redirectRoute={LOGIN_PATH}
         />
       </Switch>
+      {showSearchModal && (
+        <SearchModal setShowSearchModal={setShowSearchModal} />
+      )}
     </>
   );
 };
