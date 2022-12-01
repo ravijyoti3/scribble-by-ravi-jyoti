@@ -10,7 +10,7 @@ const SideBar = ({ versionData, refetch }) => {
   const [selectedVersion, setSelectedVersion] = useState(null);
 
   return (
-    <>
+    <div className="col-span-1">
       <div className="border-l h-screen px-5 pt-5">
         <Typography style="h2">Version History</Typography>
         <Typography className="text-gray-600" style="body2">
@@ -51,7 +51,7 @@ const SideBar = ({ versionData, refetch }) => {
           versionArticleData={JSON.parse(selectedVersion.object)}
         />
       )}
-    </>
+    </div>
   );
 };
 

@@ -73,7 +73,11 @@ const Create = ({ history }) => {
   }
 
   return (
-    <div className="grid grid-flow-row grid-cols-4">
+    <div
+      className={`place grid auto-cols-max grid-flow-row ${
+        id ? "grid-cols-4" : "grid-cols-3"
+      }`}
+    >
       <Form
         article={article}
         categoryList={categoryList}
@@ -82,7 +86,7 @@ const Create = ({ history }) => {
         setSubmitButtonLabel={setSubmitButtonLabel}
         submitButtonLabel={submitButtonLabel}
       />
-      <SideBar refetch={fetchArticle} versionData={versionData} />
+      {id && <SideBar refetch={fetchArticle} versionData={versionData} />}
     </div>
   );
 };
