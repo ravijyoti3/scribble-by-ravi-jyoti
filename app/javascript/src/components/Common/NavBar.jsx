@@ -25,7 +25,7 @@ const NavBar = () => {
     if (isEditArticleRoute) {
       fetchArticle();
     }
-  }, []);
+  }, [articleId]);
 
   return (
     <nav className=" border-b sticky top-0 z-50 flex h-16 w-full items-center justify-between bg-white px-5">
