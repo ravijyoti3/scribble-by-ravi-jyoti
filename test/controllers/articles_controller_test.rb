@@ -85,4 +85,11 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
       as: :json
     assert_equal @category.id, first_article.reload.category_id
   end
+
+  def test_should_increment_count_of_article_visit
+    first_article = create(:article, category: @category, user: @user, status: "published")
+    get api_public_article_path(first_article.slug), as: :json
+    assert_response :success
+    assert_equal 1, first_article.reload.visit
+  end
 end

@@ -2,7 +2,8 @@
 
 class Api::Public::ArticlesController < ApplicationController
   def index
-    @articles = current_user.articles.where(status: 1).order("updated_at DESC")
+    @articles = ArticleFilterationService.new(
+      current_user.articles, nil, "published", params[:search]).process.order("updated_at DESC")
   end
 
   def show
