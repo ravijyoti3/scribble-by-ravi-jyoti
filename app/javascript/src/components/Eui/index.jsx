@@ -40,6 +40,7 @@ const Eui = () => {
     <>
       <Header
         setShowSearchModal={setShowSearchModal}
+        showSearchModal={showSearchModal}
         title={organizationData.name}
       />
       <Switch>
