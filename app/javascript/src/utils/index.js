@@ -13,3 +13,6 @@ export const formatCreatedTimeToDate = dateTime =>
 
 export const formatCreatedTimeToDateAndTime = dateTime =>
   dayjs(dateTime).format("h:mm A, D/M/YYYY");
+
+export const formatVisitedTimeToDate = dateTime =>
+  dayjs(dateTime).format("YYYY-MM-DD");

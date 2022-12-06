@@ -15,7 +15,7 @@ export const buildTableColumnData = () => [
     title: "Title",
     dataIndex: "title",
     key: "title",
-    width: "16%",
+    width: "23%",
 
     render: (title, { status, slug }) =>
       status === "published" ? (
@@ -32,7 +32,7 @@ export const buildTableColumnData = () => [
     title: "Date",
     dataIndex: "created_at",
     key: "created_at",
-    width: "16%",
+    width: "23%",
 
     render: created_at => (
       <div className="font-semibold">{formatCreatedTimeToDate(created_at)}</div>
@@ -42,15 +42,17 @@ export const buildTableColumnData = () => [
     title: "Category",
     dataIndex: "category",
     key: "category",
-    width: "16%",
+    width: "23%",
 
     render: category => renderText(category.name),
   },
   {
     title: "Visits",
-    dataIndex: "visit",
+    dataIndex: "visits",
     key: "visit",
-    width: "16%",
-    render: renderText,
+    width: "23%",
+
+    render: visits =>
+      renderText(visits.reduce((acc, curr) => acc + curr.visit, 0)),
   },
 ];
