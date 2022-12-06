@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 
+import { Typography } from "@bigbinary/neetoui";
 import { Table as NeetouiTable, PageLoader } from "neetoui";
+import { formatVisitedTimeToDate } from "utils";
 
 import articlesApi from "apis/admin/articles";
 
@@ -45,6 +47,31 @@ const Analytics = () => {
         defaultPageSize={10}
         handlePageChange={setCurrentPage}
         rowData={articleData}
+        expandable={{
+          rowExpandable: record => record.visits.length > 0,
+          expandedRowRender: record => (
+            <>
+              <div className="flex w-56 items-center bg-white p-2">
+                <Typography className="w-1/2" style="h6">
+                  DATE
+                </Typography>
+                <Typography className="w-1/2" style="h6">
+                  VISITS
+                </Typography>
+              </div>
+              {record.visits.map(visit => (
+                <div className="items-cente flex w-56 p-2" key={visit.id}>
+                  <Typography className="w-1/2" style="body3">
+                    {formatVisitedTimeToDate(visit.visited_at)}
+                  </Typography>
+                  <Typography className="w-1/2" style="body3">
+                    {visit.visit}
+                  </Typography>
+                </div>
+              ))}
+            </>
+          ),
+        }}
       />
     </div>
   );

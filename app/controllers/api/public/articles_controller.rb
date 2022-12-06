@@ -8,6 +8,11 @@ class Api::Public::ArticlesController < ApplicationController
 
   def show
     @article = current_user.articles.find_by!(slug: params[:slug])
-    @article.increment!(:visit)
+    @visit = @article.visits.find_by(visited_at: Time.zone.today)
+    if @visit
+      @visit.increment!(:visit)
+    else
+      @article.visits.create!(visited_at: Time.zone.today)
+    end
   end
 end
