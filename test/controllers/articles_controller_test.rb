@@ -90,6 +90,6 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
     first_article = create(:article, category: @category, user: @user, status: "published")
     get api_public_article_path(first_article.slug), as: :json
     assert_response :success
-    assert_equal 1, first_article.reload.visit
+    assert_equal 1, first_article.reload.visits.reduce(0) { |sum, visit| sum + visit.visit }
   end
 end
