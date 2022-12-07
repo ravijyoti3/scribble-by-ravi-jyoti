@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { Typography } from "@bigbinary/neetoui";
-import { Table as NeetouiTable, PageLoader } from "neetoui";
+import { Table as NeetouiTable, PageLoader, Pagination } from "neetoui";
 import { formatVisitedTimeToDate } from "utils";
 
 import articlesApi from "apis/admin/articles";
@@ -12,13 +12,17 @@ const Analytics = () => {
   const [articleData, setArticleData] = useState([]);
   const [pageLoading, setPageLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [currentPageNumber, setCurrentPageNumber] = useState(1);
 
   const fetchArticles = async () => {
     try {
-      const {
-        data: { articles },
-      } = await articlesApi.fetch({ status: "published" });
-      setArticleData(articles);
+      const { data } = await articlesApi.fetch({
+        status: "published",
+        pageNumber: currentPageNumber,
+      });
+      setArticleData(data.articles);
+      setTotalCount(data.total_count);
       setPageLoading(false);
     } catch (error) {
       logger.error(error);
@@ -28,7 +32,7 @@ const Analytics = () => {
 
   useEffect(() => {
     fetchArticles();
-  }, []);
+  }, [currentPageNumber]);
 
   if (pageLoading) {
     return (
@@ -73,6 +77,15 @@ const Analytics = () => {
           ),
         }}
       />
+      <div className="flex w-full justify-end">
+        <Pagination
+          className="mt-4"
+          count={totalCount}
+          navigate={setCurrentPageNumber}
+          pageNo={currentPageNumber}
+          pageSize={10}
+        />
+      </div>
     </div>
   );
 };

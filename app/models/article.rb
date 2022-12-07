@@ -2,6 +2,7 @@
 
 class Article < ApplicationRecord
   MAX_TITLE_LENGTH = 50
+  MAX_PAGE_SIZE = 10
 
   enum status: %i[draft published]
 
@@ -17,6 +18,7 @@ class Article < ApplicationRecord
 
   acts_as_list scope: :category
   has_paper_trail only: %i[title body status category_id]
+  paginates_per MAX_PAGE_SIZE
 
   private
 

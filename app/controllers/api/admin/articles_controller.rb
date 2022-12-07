@@ -6,7 +6,7 @@ class Api::Admin::ArticlesController < ApplicationController
   def index
     @articles = ArticleFilterationService.new(
       current_user.articles, params[:categories], params[:status],
-      params[:search]).process.order(position: :asc)
+      params[:search]).process.order(position: :asc).page(params[:page_number])
   end
 
   def create
