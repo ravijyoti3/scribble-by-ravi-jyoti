@@ -14,7 +14,7 @@ export const FORM_VALIDATION_SCHEMA = CATEGORY_LIST =>
   yup.object().shape({
     title: yup
       .string()
-      .matches(/^[A-Za-z 0-9]*$/, "Title must be alphanumeric")
+      .matches(/^[a-zA-Z0-9](.*[a-zA-Z0-9]*)?$/, "Title must be alphanumeric")
       .required("Title is required"),
     category: yup
       .object()
