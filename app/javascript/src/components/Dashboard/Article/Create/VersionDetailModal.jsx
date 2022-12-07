@@ -30,6 +30,7 @@ const VersionDetailModal = ({
           body: versionArticleData.body,
           status: 0,
           category_id: versionArticleData.category_id,
+          restored_from: versionArticleData.updated_at,
         },
       });
       refetch();

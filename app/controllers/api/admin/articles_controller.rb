@@ -39,7 +39,7 @@ class Api::Admin::ArticlesController < ApplicationController
   private
 
     def article_params
-      params.require(:article).permit(:title, :body, :status, :category_id)
+      params.require(:article).permit(:title, :body, :status, :category_id, :restored_from)
     end
 
     def load_article!

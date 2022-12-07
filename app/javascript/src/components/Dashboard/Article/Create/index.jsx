@@ -21,16 +21,14 @@ const Create = ({ history }) => {
     try {
       const { data } = await articlesApi.show(id);
       const payload = {
-        title: data.title,
-        body: data.body,
-        status: data.status,
+        ...data,
         category: {
           label: data.category.name,
           value: data.category.id,
         },
       };
       setArticle(payload);
-      setVersionData(data.versions);
+      setVersionData(data.versions.slice(1));
       setSubmitButtonLabel(
         data.status === "published" ? "Publish" : "Save Draft"
       );
@@ -74,7 +72,7 @@ const Create = ({ history }) => {
 
   return (
     <div
-      className={`place grid auto-cols-max grid-flow-row ${
+      className={`place grid h-screen auto-cols-max grid-flow-row overflow-y-hidden ${
         id ? "grid-cols-4" : "grid-cols-3"
       }`}
     >
@@ -86,7 +84,13 @@ const Create = ({ history }) => {
         setSubmitButtonLabel={setSubmitButtonLabel}
         submitButtonLabel={submitButtonLabel}
       />
-      {id && <SideBar refetch={fetchArticle} versionData={versionData} />}
+      {id && (
+        <SideBar
+          article={article}
+          refetch={fetchArticle}
+          versionData={versionData}
+        />
+      )}
     </div>
   );
 };
