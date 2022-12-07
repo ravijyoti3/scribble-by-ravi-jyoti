@@ -59,7 +59,11 @@ const VersionDetailModal = ({
               label="Article Title"
               value={versionArticleData?.title}
             />
-            <Input disabled label="Category" value={category} />
+            <Input
+              disabled
+              label="Category"
+              value={category || "Category has been deleted"}
+            />
           </div>
           <Textarea
             disabled
@@ -71,6 +75,7 @@ const VersionDetailModal = ({
       </Modal.Body>
       <Modal.Footer>
         <Button
+          disabled={!category}
           label="Restore Version"
           onClick={() => {
             restoreVersion();
