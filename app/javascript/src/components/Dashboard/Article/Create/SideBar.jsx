@@ -41,6 +41,7 @@ const SideBar = ({ versionData, refetch, article }) => {
               </div>
               <Button
                 className="ml-5"
+                disabled={articleData.restored_from}
                 style="link"
                 label={
                   articleData?.status === "published"
