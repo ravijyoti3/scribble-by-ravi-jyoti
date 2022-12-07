@@ -92,4 +92,30 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_equal 1, first_article.reload.visits.reduce(0) { |sum, visit| sum + visit.visit }
   end
+
+  def test_should_show_article_details
+    first_article = create(:article, category: @category, user: @user, status: "published")
+    get api_admin_article_path(first_article.id), as: :json
+    assert_response :success
+    response_json = response.parsed_body
+    assert_equal first_article.title, response_json["title"]
+  end
+
+  def test_should_create_visit_and_increment_visit_if_already_exist
+    first_article = create(:article, category: @category, user: @user, status: "published")
+    get api_public_article_path(first_article.slug), as: :json
+    assert_response :success
+    assert_equal 1, first_article.reload.visits.reduce(0) { |sum, visit| sum + visit.visit }
+    get api_public_article_path(first_article.slug), as: :json
+    assert_response :success
+    assert_equal 2, first_article.reload.visits.reduce(0) { |sum, visit| sum + visit.visit }
+  end
+
+  def test_should_list_searched_article_public
+    first_article = create(:article, category: @category, user: @user, status: "published")
+    get api_public_articles_path, params: { search: first_article.title }, as: :json
+    assert_response :success
+    response_json = response.parsed_body
+    assert_equal first_article.title, response_json["articles"].first["title"]
+  end
 end

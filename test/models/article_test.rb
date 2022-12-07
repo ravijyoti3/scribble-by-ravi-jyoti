@@ -118,4 +118,12 @@ class ArticleTest < ActiveSupport::TestCase
     @category.destroy
     assert_empty Article.all
   end
+
+  def test_should_not_change_slug
+    @article.slug = "dummy-slug"
+    assert_raises ActiveRecord::RecordInvalid do
+      @article.save!
+    end
+    assert_match t("article.slug.immutable"), @article.errors_to_sentence
+  end
 end
