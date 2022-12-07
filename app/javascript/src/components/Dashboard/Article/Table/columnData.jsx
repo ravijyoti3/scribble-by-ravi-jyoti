@@ -26,7 +26,7 @@ export const buildTableColumnData = (
       render: (title, { status, slug }) =>
         status === "published" ? (
           <Link target="_blank" to={`/public/${slug}`}>
-            <Typography className="text-indigo-500" style="h5">
+            <Typography className="truncate text-indigo-500" style="h5">
               {title}
             </Typography>
           </Link>

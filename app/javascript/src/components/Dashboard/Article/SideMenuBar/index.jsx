@@ -14,16 +14,17 @@ import { searchCategory } from "../utils";
 const SideMenuBar = ({
   showMenu,
   refetch,
-  articles,
   categories,
   setArticleFilters,
   articleFilters,
+  setCurrentPageNumber,
+  articleCount,
 }) => {
   const [isSearchCollapsed, setIsSearchCollapsed] = useState(true);
   const [isAddCollapsed, setIsAddCollapsed] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const allArticles = useMemo(() => articles, []);
+  const articlesCount = useMemo(() => articleCount, []);
 
   useKey("Escape", () => {
     setIsSearchCollapsed(true);
@@ -35,27 +36,33 @@ const SideMenuBar = ({
       <MenuBar showMenu={showMenu} title="Articles">
         <MenuBar.Block
           active={!articleFilters.status}
-          count={allArticles.length}
+          count={articlesCount.all}
           label="All"
-          onClick={() =>
+          onClick={() => {
             setArticleFilters(articleFilters => ({
               ...articleFilters,
               status: "",
-            }))
-          }
+            }));
+            setCurrentPageNumber(1);
+          }}
         />
         {STATUS_OPTIONS.map(option => (
           <MenuBar.Block
             active={articleFilters.status === option.value}
-            count={allArticles.filter(e => e.status === option.value).length}
             key={option.label}
             label={option.label}
-            onClick={() =>
+            count={
+              option.value === "published"
+                ? articlesCount.published
+                : articlesCount.draft
+            }
+            onClick={() => {
               setArticleFilters(articleFilters => ({
                 ...articleFilters,
                 status: option.value,
-              }))
-            }
+              }));
+              setCurrentPageNumber(1);
+            }}
           />
         ))}
         <MenuBar.SubTitle
@@ -96,12 +103,10 @@ const SideMenuBar = ({
         {searchCategory(categories, searchQuery).map(category => (
           <MenuBar.Block
             active={articleFilters.categoryIds?.includes(category.id)}
+            count={category.articles.length}
             key={category.name}
             label={category.name}
-            count={
-              allArticles.filter(e => e.category_id === category.id).length
-            }
-            onClick={() =>
+            onClick={() => {
               setArticleFilters(articleFilters => {
                 if (articleFilters.categoryIds?.includes(category.id)) {
                   return {
@@ -116,8 +121,9 @@ const SideMenuBar = ({
                   ...articleFilters,
                   categoryIds: [...articleFilters.categoryIds, category.id],
                 };
-              })
-            }
+              });
+              setCurrentPageNumber(1);
+            }}
           />
         ))}
       </MenuBar>

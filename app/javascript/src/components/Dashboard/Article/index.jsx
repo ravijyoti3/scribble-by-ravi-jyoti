@@ -25,6 +25,8 @@ const Dashboard = ({ history }) => {
   const [article, setArticle] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [pageLoading, setPageLoading] = useState(true);
+  const [articleCount, setArticleCount] = useState({});
+  const [currentPageNumber, setCurrentPageNumber] = useState(1);
 
   const fetchArticles = async () => {
     try {
@@ -32,16 +34,20 @@ const Dashboard = ({ history }) => {
         categories: articleFilters.categoryIds,
         status: articleFilters.status,
         search: searchQuery,
+        pageNumber: currentPageNumber,
       };
-      const {
-        data: { articles },
-      } = await articlesApi.fetch(payload);
-      setArticles(articles);
+      const { data } = await articlesApi.fetch(payload);
+      setArticles(data.articles);
+      setArticleCount({
+        all: data.total_count,
+        published: data.published_count,
+        draft: data.draft_count,
+      });
       if (
         articleFilters.status === "" &&
         articleFilters.categoryIds.length === 0
       ) {
-        setArticles(articles);
+        setArticles(data.articles);
       }
       setLoading(false);
     } catch (error) {
@@ -72,7 +78,7 @@ const Dashboard = ({ history }) => {
 
   useEffect(() => {
     fetchArticles();
-  }, [articleFilters, searchQuery]);
+  }, [articleFilters, searchQuery, currentPageNumber]);
 
   if (pageLoading) {
     return (
@@ -86,11 +92,13 @@ const Dashboard = ({ history }) => {
     <div className="flex items-start">
       <SideMenuBar
         showMenu
+        articleCount={articleCount}
         articleFilters={articleFilters}
         articles={articles}
         categories={categories}
         refetch={fetchCategories}
         setArticleFilters={setArticleFilters}
+        setCurrentPageNumber={setCurrentPageNumber}
       />
       <Container>
         <Header
@@ -104,15 +112,21 @@ const Dashboard = ({ history }) => {
           searchProps={{
             placeholder: "Search article title",
             value: searchQuery,
-            onChange: e => setSearchQuery(e.target.value),
+            onChange: e => {
+              setSearchQuery(e.target.value);
+              setCurrentPageNumber(1);
+            },
           }}
         />
         {!loading && (
           <Table
+            currentPageNumber={currentPageNumber}
             data={articles}
             history={history}
             setArticle={setArticle}
+            setCurrentPageNumber={setCurrentPageNumber}
             setShowDeleteAlert={setShowDeleteAlert}
+            totalCount={articleCount.all}
             visibleColumns={visibleColumns}
           />
         )}

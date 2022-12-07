@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Table as NeetoUITable, Typography } from "neetoui";
+import { Table as NeetoUITable, Typography, Pagination } from "neetoui";
 
 import { buildTableColumnData } from "./columnData";
 
@@ -10,6 +10,9 @@ const Table = ({
   setShowDeleteAlert,
   setArticle,
   history,
+  setCurrentPageNumber,
+  totalCount,
+  currentPageNumber,
 }) => (
   <>
     <Typography className="mb-5" style="h3">
@@ -17,6 +20,7 @@ const Table = ({
     </Typography>
     <NeetoUITable
       allowRowClick={false}
+      defaultPageSize={10}
       rowData={data}
       columnData={buildTableColumnData(
         visibleColumns,
@@ -24,7 +28,17 @@ const Table = ({
         setArticle,
         history
       )}
+      onPageChange={setCurrentPageNumber}
     />
+    <div className="flex w-full justify-end">
+      <Pagination
+        className="mt-4"
+        count={totalCount}
+        navigate={setCurrentPageNumber}
+        pageNo={currentPageNumber}
+        pageSize={10}
+      />
+    </div>
   </>
 );
 
