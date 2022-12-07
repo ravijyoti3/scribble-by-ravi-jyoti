@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { Search } from "neetoicons";
 import { Modal, Input, Typography, Kbd } from "neetoui";
@@ -13,6 +13,8 @@ const SearchModal = ({ setShowSearchModal }) => {
   const [activeOption, setActiveOption] = useState(0);
 
   const history = useHistory();
+
+  const resultRef = useRef(null);
 
   const searchArticle = async query => {
     try {
@@ -29,12 +31,14 @@ const SearchModal = ({ setShowSearchModal }) => {
     if (activeOption < searchedArticles.length - 1) {
       setActiveOption(activeOption + 1);
     }
+    resultRef.current.scrollTop += 30;
   });
 
   useKey("ArrowUp", () => {
     if (activeOption > 0) {
       setActiveOption(activeOption - 1);
     }
+    resultRef.current.scrollTop -= 30;
   });
 
   useKey("Enter", () => {
@@ -60,7 +64,7 @@ const SearchModal = ({ setShowSearchModal }) => {
             searchArticle(e.target.value);
           }}
         />
-        <div className="rounded h-48 overflow-scroll bg-white">
+        <div className="rounded h-48 overflow-scroll bg-white" ref={resultRef}>
           {searchedArticles.map(article => {
             const isActive = searchedArticles[activeOption].id === article.id;
 
