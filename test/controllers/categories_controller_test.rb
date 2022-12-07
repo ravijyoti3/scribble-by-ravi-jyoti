@@ -49,4 +49,18 @@ class CategoriesControllerTest < ActionDispatch::IntegrationTest
       as: :json
     assert_equal last_position + 1, first_category.reload.position
   end
+
+  def test_should_list_all_categories_for_admin
+    get api_admin_categories_path, as: :json
+    assert_response :ok
+    response_json = response.parsed_body
+    assert_equal @user.categories.count, response_json["categories"].count
+  end
+
+  def test_should_show_category
+    get api_admin_category_path(@category.id), as: :json
+    assert_response :ok
+    response_json = response.parsed_body
+    assert_equal @category.name, response_json["name"]
+  end
 end

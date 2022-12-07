@@ -13,6 +13,8 @@ class Article < ApplicationRecord
   validates :title, presence: true, length: { maximum: MAX_TITLE_LENGTH }
   validates :body, :status, presence: true
 
+  validate :slug_not_changed
+
   before_create :set_slug, if: -> { status == "published" }
   before_update :set_slug, if: -> { status == "published" && !slug }
 

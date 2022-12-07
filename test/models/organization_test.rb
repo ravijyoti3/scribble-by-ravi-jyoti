@@ -52,4 +52,10 @@ class OrganizationTest < ActiveSupport::TestCase
     @organization.password = nil
     assert @organization.valid?
   end
+
+  def test_should_set_password_digest_nil_when_password_is_nil
+    @organization.password_protected = nil
+    @organization.save
+    assert_nil @organization.password_digest
+  end
 end
