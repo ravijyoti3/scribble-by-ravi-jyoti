@@ -28,6 +28,7 @@ const Form = ({
       body,
       status,
       category_id: article.category.value,
+      restored_from: null,
     };
     try {
       if (id) {

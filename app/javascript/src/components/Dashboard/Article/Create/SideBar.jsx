@@ -3,35 +3,47 @@ import React, { useState } from "react";
 import { Typography, Button } from "neetoui";
 import { formatCreatedTimeToDateAndTime } from "utils";
 
+import CurrentVersion from "./CurrentVersion";
 import VersionDetailModal from "./VersionDetailModal";
 
-const SideBar = ({ versionData, refetch }) => {
+const SideBar = ({ versionData, refetch, article }) => {
   const [showVersionModal, setShowVersionModal] = useState(false);
   const [selectedVersion, setSelectedVersion] = useState(null);
 
   return (
-    <div className="col-span-1">
-      <div className="border-l h-screen px-5 pt-5">
-        <Typography style="h2">Version History</Typography>
-        <Typography className="text-gray-600" style="body2">
-          Version history of Setting up an account in Scribble.
-        </Typography>
-        {versionData.map(version => {
-          const articleData = JSON.parse(version.object);
+    <div className="col-span-1 overflow-y-auto">
+      <div className="border-l px-5 ">
+        <div className="sticky top-0 z-10 bg-white pt-5">
+          <Typography style="h2">Version History</Typography>
+          <Typography className="text-gray-600" style="body2">
+            Version history of Setting up an account in Scribble.
+          </Typography>
+          <CurrentVersion article={article} />
+        </div>
+        {versionData.reverse().map(version => {
+          const articleData = version.object;
 
           return (
             <div
-              className="mt-2 flex items-center justify-between"
+              className="border mt-2 grid grid-flow-row grid-cols-3 items-center rounded-lg border-gray-400 p-3"
               key={version.id}
             >
-              <Typography className="text-gray-600" style="body2">
-                {formatCreatedTimeToDateAndTime(version.created_at)}
-              </Typography>
+              <div className="col-span-2">
+                <Typography className="text-gray-600" style="body3">
+                  {formatCreatedTimeToDateAndTime(version.created_at)}
+                </Typography>
+                {articleData?.restored_from && (
+                  <Typography className=" text-gray-600" style="body3">
+                    (Restored from version{" "}
+                    {formatCreatedTimeToDateAndTime(articleData.restored_from)})
+                  </Typography>
+                )}
+              </div>
               <Button
                 className="ml-5"
                 style="link"
                 label={
-                  articleData.status === 1
+                  articleData?.status === "published"
                     ? "Article Published"
                     : "Article Drafted"
                 }
@@ -48,7 +60,7 @@ const SideBar = ({ versionData, refetch }) => {
         <VersionDetailModal
           refetch={refetch}
           setShowVersionModal={setShowVersionModal}
-          versionArticleData={JSON.parse(selectedVersion.object)}
+          versionArticleData={selectedVersion.object}
         />
       )}
     </div>
