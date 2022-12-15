@@ -8,6 +8,7 @@ Rails.application.routes.draw do
         resource :organization, only: %i[update show create]
         resources :categories, only: %i[index create destroy show]
         resources :redirections, only: %i[index create destroy update]
+        resources :schedules, only: %i[create update show], param: :article_id
         resources :categories, only: :update do
           put "position_update", on: :collection
         end

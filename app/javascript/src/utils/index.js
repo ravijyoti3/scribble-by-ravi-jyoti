@@ -16,3 +16,5 @@ export const formatCreatedTimeToDateAndTime = dateTime =>
 
 export const formatVisitedTimeToDate = dateTime =>
   dayjs(dateTime).format("YYYY-MM-DD");
+
+export const formatScheduledTime = dateTime => dayjs(dateTime).format();

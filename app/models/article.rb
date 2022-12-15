@@ -9,6 +9,7 @@ class Article < ApplicationRecord
   belongs_to :category
   belongs_to :user
   has_many :visits
+  has_one :schedule
 
   validates :title, presence: true, length: { maximum: MAX_TITLE_LENGTH }
   validates :body, :status, presence: true

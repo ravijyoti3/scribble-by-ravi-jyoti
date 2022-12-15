@@ -12,7 +12,7 @@ const SideBar = ({ versionData, refetch, article }) => {
 
   return (
     <div className="col-span-1 overflow-y-auto">
-      <div className="border-l px-5 ">
+      <div className="px-5">
         <div className="sticky top-0 z-10 bg-white pt-5">
           <Typography style="h2">Version History</Typography>
           <Typography className="text-gray-600" style="body2">
