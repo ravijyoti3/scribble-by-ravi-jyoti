@@ -97,6 +97,7 @@ const Create = ({ history }) => {
       )}
       {showScheduleArticleModal && (
         <ScheduleArticleModal
+          article={article}
           articleId={id}
           refetch={fetchArticle}
           scheduleAction={submitButtonLabel}

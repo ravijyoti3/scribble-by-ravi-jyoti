@@ -1,21 +1,22 @@
 import React, { useState } from "react";
 
 import { DatePicker } from "antd";
+import dayjs from "dayjs";
 import { Modal, Typography, Button } from "neetoui";
 import { formatScheduledTime } from "utils";
 
-import articlesApi from "apis/admin/articles";
 import schedulesApi from "apis/admin/schedules";
 
 const ScheduleArticleModal = ({
   onClose,
-  articleId,
+  article,
   scheduleAction,
   refetch,
 }) => {
   const [scheduleTime, setScheduleTime] = useState(null);
 
   const handleSubmit = async () => {
+    const articleId = article.id;
     let payload;
     if (scheduleAction === "Publish Later") {
       payload = {
@@ -42,10 +43,7 @@ const ScheduleArticleModal = ({
     }
 
     try {
-      const {
-        data: { schedule },
-      } = await articlesApi.show(articleId);
-      if (schedule) {
+      if (article.schedule) {
         await schedulesApi.update(payload);
       } else {
         await schedulesApi.create(payload);
@@ -56,6 +54,8 @@ const ScheduleArticleModal = ({
       logger.error(err);
     }
   };
+
+  const disabledDate = current => current < dayjs().startOf("day");
 
   return (
     <Modal isOpen className="pb-5" onClose={onClose}>
@@ -68,6 +68,7 @@ const ScheduleArticleModal = ({
           <DatePicker
             showTime
             className="w-full"
+            disabledDate={disabledDate}
             format="YYYY-MM-DD HH:mm"
             value={scheduleTime}
             onChange={setScheduleTime}
