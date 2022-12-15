@@ -7,6 +7,7 @@ import articlesApi from "apis/admin/articles";
 import categoriesApi from "apis/admin/categories";
 
 import Form from "./Form";
+import ScheduleArticleModal from "./ScheduleArticleModal";
 import SideBar from "./SideBar";
 
 const Create = ({ history }) => {
@@ -15,6 +16,8 @@ const Create = ({ history }) => {
   const [article, setArticle] = useState(null);
   const [submitButtonLabel, setSubmitButtonLabel] = useState("Save Draft");
   const [versionData, setVersionData] = useState([]);
+  const [showScheduleArticleModal, setShowScheduleArticleModal] =
+    useState(false);
 
   const { id } = useParams();
   const fetchArticle = async () => {
@@ -81,6 +84,7 @@ const Create = ({ history }) => {
         categoryList={categoryList}
         history={history}
         id={id}
+        setShowScheduleArticleModal={setShowScheduleArticleModal}
         setSubmitButtonLabel={setSubmitButtonLabel}
         submitButtonLabel={submitButtonLabel}
       />
@@ -89,6 +93,14 @@ const Create = ({ history }) => {
           article={article}
           refetch={fetchArticle}
           versionData={versionData}
+        />
+      )}
+      {showScheduleArticleModal && (
+        <ScheduleArticleModal
+          articleId={id}
+          refetch={fetchArticle}
+          scheduleAction={submitButtonLabel}
+          onClose={() => setShowScheduleArticleModal(false)}
         />
       )}
     </div>

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 
 import { Formik, Form as FormikForm } from "formik";
-import { Button, Dropdown, ActionDropdown } from "neetoui";
+import { Button, Callout, Dropdown, ActionDropdown } from "neetoui";
 import { Input, Select, Textarea } from "neetoui/formik";
+import { formatCreatedTimeToDateAndTime } from "utils";
 
 import articlesApi from "apis/admin/articles";
 import TooltipWrapper from "components/Common/TooltipWrapper";
@@ -16,6 +17,7 @@ const Form = ({
   setSubmitButtonLabel,
   id,
   history,
+  setShowScheduleArticleModal,
 }) => {
   const [submitted, setSubmitted] = useState(false);
   const articleStatus = ["Publish", "Save Draft"];
@@ -46,7 +48,7 @@ const Form = ({
   };
 
   return (
-    <div className="col-span-3">
+    <div className="border-r col-span-3">
       <Formik
         enableReinitialize
         initialValues={id ? article : INITIAL_FORM_VALUES}
@@ -55,9 +57,23 @@ const Form = ({
         validationSchema={FORM_VALIDATION_SCHEMA(categoryList)}
         onSubmit={handleSubmit}
       >
-        {({ isSubmitting, setFieldValue, dirty, isValid }) => (
+        {({ isSubmitting, setFieldValue, values, dirty, isValid }) => (
           <FormikForm className="mt-5 flex w-full justify-center">
             <div className="w-3/5">
+              {article?.schedule?.publish_at && (
+                <Callout className="mb-5">
+                  Article is scheduled to be publish at{" "}
+                  {formatCreatedTimeToDateAndTime(article.schedule.publish_at)}
+                </Callout>
+              )}
+              {article?.schedule?.unpublish_at && (
+                <Callout className="mb-5">
+                  Article is scheduled to be unpublish at{" "}
+                  {formatCreatedTimeToDateAndTime(
+                    article.schedule.unpublish_at
+                  )}
+                </Callout>
+              )}
               <div className="space-between grid w-full grid-flow-row grid-cols-3 gap-4 ">
                 <Input
                   className="col-span-2 mr-4 w-full rounded-sm"
@@ -88,16 +104,27 @@ const Form = ({
                     disabled={isSubmitting || !(isValid && dirty)}
                     position="bottom"
                   >
-                    <Button
-                      className="mr-px"
-                      disabled={isSubmitting || !(isValid && dirty)}
-                      label={submitButtonLabel}
-                      pageLoading={isSubmitting}
-                      size="medium"
-                      style="primary"
-                      type="submit"
-                      onClick={() => setSubmitted(true)}
-                    />
+                    {values?.status !== 2 && (
+                      <Button
+                        className="mr-px"
+                        disabled={isSubmitting || !(isValid && dirty)}
+                        label={submitButtonLabel}
+                        pageLoading={isSubmitting}
+                        size="medium"
+                        style="primary"
+                        type="submit"
+                        onClick={() => setSubmitted(true)}
+                      />
+                    )}
+                    {values?.status === 2 && (
+                      <Button
+                        className="mr-px"
+                        label={submitButtonLabel}
+                        size="medium"
+                        style="primary"
+                        onClick={() => setShowScheduleArticleModal(true)}
+                      />
+                    )}
                   </TooltipWrapper>
                   <Dropdown
                     className="mr-3"
@@ -112,13 +139,37 @@ const Form = ({
                             setSubmitButtonLabel(status);
                             setFieldValue(
                               "status",
-                              status === "Save Draft" ? 0 : 1
+                              status === "Publish" ? 1 : 0
                             );
                           }}
                         >
                           {status}
                         </MenuItem.Button>
                       ))}
+                      {!article?.schedule?.publish_at &&
+                        (article?.status !== "published" ||
+                          article?.schedule?.unpublish_at) && (
+                          <MenuItem.Button
+                            onClick={() => {
+                              setSubmitButtonLabel("Publish Later");
+                              setFieldValue("status", 2);
+                            }}
+                          >
+                            Publish Later
+                          </MenuItem.Button>
+                        )}
+                      {!article?.schedule?.unpublish_at &&
+                        (article?.status !== "draft" ||
+                          article?.schedule?.publish_at) && (
+                          <MenuItem.Button
+                            onClick={() => {
+                              setSubmitButtonLabel("Unpublish Later");
+                              setFieldValue("status", 2);
+                            }}
+                          >
+                            Unpublish Later
+                          </MenuItem.Button>
+                        )}
                     </Menu>
                   </Dropdown>
                 </div>

@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_06_232006) do
+ActiveRecord::Schema.define(version: 2022_12_12_100651) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -54,6 +54,12 @@ ActiveRecord::Schema.define(version: 2022_12_06_232006) do
     t.string "from"
     t.string "to"
     t.uuid "organization_id", null: false
+  end
+
+  create_table "schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "publish_at"
+    t.datetime "unpublish_at"
+    t.uuid "article_id"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
