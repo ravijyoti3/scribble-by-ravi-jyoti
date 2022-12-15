@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_12_100651) do
+ActiveRecord::Schema.define(version: 2022_12_12_101222) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -93,6 +93,7 @@ ActiveRecord::Schema.define(version: 2022_12_12_100651) do
   add_foreign_key "articles", "users", on_delete: :cascade
   add_foreign_key "categories", "users", on_delete: :cascade
   add_foreign_key "redirections", "organizations", on_delete: :cascade
+  add_foreign_key "schedules", "articles", on_delete: :cascade
   add_foreign_key "users", "organizations", on_delete: :cascade
   add_foreign_key "visits", "articles", on_delete: :cascade
 end
