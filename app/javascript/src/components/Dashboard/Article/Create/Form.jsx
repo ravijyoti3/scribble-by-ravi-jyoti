@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 
 import { Formik, Form as FormikForm } from "formik";
-import { Button, Callout, Dropdown, ActionDropdown } from "neetoui";
+import { Button, Dropdown, ActionDropdown } from "neetoui";
 import { Input, Select, Textarea } from "neetoui/formik";
-import { formatCreatedTimeToDateAndTime } from "utils";
 
 import articlesApi from "apis/admin/articles";
 import TooltipWrapper from "components/Common/TooltipWrapper";
+
+import ScheduleInfo from "./ScheduleInfo";
 
 import { FORM_VALIDATION_SCHEMA, INITIAL_FORM_VALUES } from "../constants";
 
@@ -16,6 +17,7 @@ const Form = ({
   submitButtonLabel,
   setSubmitButtonLabel,
   id,
+  refetch,
   history,
   setShowScheduleArticleModal,
 }) => {
@@ -60,20 +62,7 @@ const Form = ({
         {({ isSubmitting, setFieldValue, values, dirty, isValid }) => (
           <FormikForm className="mt-5 flex w-full justify-center">
             <div className="w-3/5">
-              {article?.schedule?.publish_at && (
-                <Callout className="mb-5">
-                  Article is scheduled to be publish at{" "}
-                  {formatCreatedTimeToDateAndTime(article.schedule.publish_at)}
-                </Callout>
-              )}
-              {article?.schedule?.unpublish_at && (
-                <Callout className="mb-5">
-                  Article is scheduled to be unpublish at{" "}
-                  {formatCreatedTimeToDateAndTime(
-                    article.schedule.unpublish_at
-                  )}
-                </Callout>
-              )}
+              <ScheduleInfo article={article} refetch={refetch} />
               <div className="space-between grid w-full grid-flow-row grid-cols-3 gap-4 ">
                 <Input
                   className="col-span-2 mr-4 w-full rounded-sm"

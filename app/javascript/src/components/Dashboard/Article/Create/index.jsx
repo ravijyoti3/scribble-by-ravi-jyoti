@@ -84,6 +84,7 @@ const Create = ({ history }) => {
         categoryList={categoryList}
         history={history}
         id={id}
+        refetch={fetchArticle}
         setShowScheduleArticleModal={setShowScheduleArticleModal}
         setSubmitButtonLabel={setSubmitButtonLabel}
         submitButtonLabel={submitButtonLabel}
