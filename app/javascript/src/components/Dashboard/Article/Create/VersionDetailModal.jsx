@@ -4,6 +4,7 @@ import { Modal, Typography, Button, Input, Textarea } from "neetoui";
 
 import articlesApi from "apis/admin/articles";
 import categoriesApi from "apis/admin/categories";
+import schedulesApi from "apis/admin/schedules";
 
 const VersionDetailModal = ({
   refetch,
@@ -23,6 +24,11 @@ const VersionDetailModal = ({
 
   const restoreVersion = async () => {
     try {
+      await schedulesApi.update({
+        articleId: versionArticleData.id,
+        publishAt: null,
+        unpublishAt: null,
+      });
       await articlesApi.update({
         id: versionArticleData.id,
         payload: {
@@ -74,6 +80,9 @@ const VersionDetailModal = ({
         </>
       </Modal.Body>
       <Modal.Footer>
+        <Typography className="mb-2 text-red-600" style="body2">
+          *Resotring the version will remove scheduled publish/unpublish.
+        </Typography>
         <Button
           disabled={!category}
           label="Restore Version"
