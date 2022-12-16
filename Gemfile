@@ -87,3 +87,5 @@ gem "kaminari"
 gem "sidekiq", "<7"
 
 gem "sidekiq-cron"
+
+gem "database_cleaner"
