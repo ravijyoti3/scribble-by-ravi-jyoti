@@ -1,0 +1,20 @@
+default: &default
+  article_schedule_worker:
+    cron: "0 * * * *"
+    class: "ArticleScheduleWorker"
+    queue: "default"
+
+development:
+  article_schedule_worker:
+    cron: "* * * * *"
+    class: "ArticleScheduleWorker"
+    queue: "default"
+
+test:
+  <<: *default
+
+staging:
+  <<: *default
+
+production:
+  <<: *default

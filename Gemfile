@@ -83,3 +83,7 @@ gem "simplecov", require: false, group: :test
 gem "paper_trail"
 
 gem "kaminari"
+
+gem "sidekiq", "<7"
+
+gem "sidekiq-cron"
