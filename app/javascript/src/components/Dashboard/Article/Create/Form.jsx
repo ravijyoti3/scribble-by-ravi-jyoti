@@ -7,6 +7,7 @@ import { Input, Select, Textarea } from "neetoui/formik";
 import articlesApi from "apis/admin/articles";
 import TooltipWrapper from "components/Common/TooltipWrapper";
 
+import ForceStatusChangeAlert from "./ForceStatusChangeAlert";
 import ScheduleInfo from "./ScheduleInfo";
 
 import { FORM_VALIDATION_SCHEMA, INITIAL_FORM_VALUES } from "../constants";
@@ -22,6 +23,8 @@ const Form = ({
   setShowScheduleArticleModal,
 }) => {
   const [submitted, setSubmitted] = useState(false);
+  const [showForceStatusChangeAlert, setShowForceStatusChangeAlert] =
+    useState(false);
   const articleStatus = ["Publish", "Save Draft"];
   const { Menu, MenuItem } = ActionDropdown;
 
@@ -35,15 +38,18 @@ const Form = ({
       restored_from: null,
     };
     try {
-      if (id) {
+      if (article.schedule?.publish_at || article.schedule?.unpublish_at) {
+        setShowForceStatusChangeAlert(true);
+      } else if (id) {
         await articlesApi.update({
           id,
           payload,
         });
+        history.push("/articles");
       } else {
         await articlesApi.create(payload);
+        history.push("/articles");
       }
-      history.push("/articles");
     } catch (error) {
       logger.error(error);
     }
@@ -171,6 +177,14 @@ const Form = ({
                 />
               </div>
             </div>
+            {showForceStatusChangeAlert && (
+              <ForceStatusChangeAlert
+                articleId={article.id}
+                history={history}
+                values={values}
+                onClose={() => setShowForceStatusChangeAlert(false)}
+              />
+            )}
           </FormikForm>
         )}
       </Formik>
