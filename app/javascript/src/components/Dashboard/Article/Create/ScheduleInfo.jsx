@@ -20,6 +20,7 @@ const ScheduleInfo = ({ article, refetch }) => {
           ? null
           : article.schedule.unpublish_at,
     };
+
     try {
       await schedulesApi.update(payload);
       refetch();

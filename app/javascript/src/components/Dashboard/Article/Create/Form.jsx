@@ -28,17 +28,19 @@ const Form = ({
   const articleStatus = ["Publish", "Save Draft"];
   const { Menu, MenuItem } = ActionDropdown;
 
-  const handleSubmit = async article => {
-    const { title, body, status } = article;
+  const handleSubmit = async articleValues => {
+    const { title, body, status } = articleValues;
     const payload = {
       title,
       body,
       status,
-      category_id: article.category.value,
+      category_id: articleValues.category.value,
       restored_from: null,
     };
+    const articleChanged = article.status !== articleValues.status;
+
     try {
-      if (article.schedule?.publish_at || article.schedule?.unpublish_at) {
+      if (articleChanged) {
         setShowForceStatusChangeAlert(true);
       } else if (id) {
         await articlesApi.update({
