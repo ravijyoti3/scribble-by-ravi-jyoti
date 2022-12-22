@@ -1,11 +1,26 @@
 import React from "react";
 
 import { Callout, Button, Typography } from "neetoui";
+import { useMutation } from "react-query";
 import { formatCreatedTimeToDateAndTime } from "utils";
 
 import schedulesApi from "apis/admin/schedules";
 
 const ScheduleInfo = ({ article, refetch }) => {
+  const { mutate: deleteSchedule } = useMutation(
+    async payload => {
+      await schedulesApi.update(payload);
+    },
+    {
+      onSuccess: () => {
+        refetch();
+      },
+      onError: error => {
+        logger.error(error);
+      },
+    }
+  );
+
   const cancelSchedule = async scheduleAction => {
     const payload = {
       articleId: article.id,
@@ -21,12 +36,7 @@ const ScheduleInfo = ({ article, refetch }) => {
           : article.schedule.unpublish_at,
     };
 
-    try {
-      await schedulesApi.update(payload);
-      refetch();
-    } catch (error) {
-      logger.error(error);
-    }
+    deleteSchedule(payload);
   };
 
   return (

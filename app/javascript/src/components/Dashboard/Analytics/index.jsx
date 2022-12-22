@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { Typography } from "@bigbinary/neetoui";
 import { Table as NeetouiTable, PageLoader, Pagination } from "neetoui";
+import { useMutation } from "react-query";
 import { formatVisitedTimeToDate } from "utils";
 
 import articlesApi from "apis/admin/articles";
@@ -10,31 +11,33 @@ import { buildTableColumnData } from "./columnData";
 
 const Analytics = () => {
   const [articleData, setArticleData] = useState([]);
-  const [pageLoading, setPageLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [currentPageNumber, setCurrentPageNumber] = useState(1);
 
-  const fetchArticles = async () => {
-    try {
+  const { mutate: fetchArticles, isLoading } = useMutation(
+    async () => {
       const { data } = await articlesApi.fetch({
         status: "published",
         pageNumber: currentPageNumber,
       });
-      setArticleData(data.articles);
-      setTotalCount(data.total_count);
-      setPageLoading(false);
-    } catch (error) {
-      logger.error(error);
-      setPageLoading(false);
+
+      return data;
+    },
+    {
+      onSuccess: data => {
+        setArticleData(data.articles);
+        setTotalCount(data.total_count);
+      },
+      onError: error => logger.error(error),
     }
-  };
+  );
 
   useEffect(() => {
     fetchArticles();
   }, [currentPageNumber]);
 
-  if (pageLoading) {
+  if (isLoading) {
     return (
       <div className="h-screen w-screen">
         <PageLoader />

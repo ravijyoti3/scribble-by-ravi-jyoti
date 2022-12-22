@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { Typography, Dropdown, Button, PageLoader } from "neetoui";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { useMutation } from "react-query";
 
 import articlesApi from "apis/admin/articles";
 import TooltipWrapper from "components/Common/TooltipWrapper";
@@ -13,49 +14,53 @@ import { onDragEnd } from "../utils";
 
 const ArticleColumn = ({ activeCategory, categoryList, refetch }) => {
   const [articleList, setArticleList] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [selectedArticleIds, setSelectedArticleIds] = useState([]);
   const [hideInfo, setHideInfo] = useState(
     localStorage.getItem("hideManageCategoryInfo")
   );
 
-  useEffect(() => {
-    if (activeCategory?.id) fetchArticles();
-    setSelectedArticleIds([]);
-  }, [activeCategory, categoryList]);
+  const { mutate: fetchArticles, isLoading: isLoadingArticles } = useMutation(
+    async () => {
+      const { data } = await articlesApi.fetch({
+        categories: activeCategory.id,
+      });
+
+      return data.articles;
+    },
+    {
+      onSuccess: data => setArticleList(data),
+      onError: error => logger.error(error),
+    }
+  );
+
+  const { mutate: moveArticles } = useMutation(
+    async categoryId =>
+      await articlesApi.bulkUpdate({ ids: selectedArticleIds, categoryId }),
+    {
+      onSuccess: () => {
+        fetchArticles();
+        refetch();
+        setSelectedArticleIds([]);
+      },
+      onError: error => {
+        logger.error(error);
+      },
+    }
+  );
 
   const { Menu, MenuItem } = Dropdown;
-
-  const fetchArticles = async () => {
-    try {
-      const {
-        data: { articles },
-      } = await articlesApi.fetch({ categories: activeCategory.id });
-      setArticleList(articles);
-      setLoading(false);
-    } catch (error) {
-      logger.error(error);
-      setLoading(false);
-    }
-  };
 
   const hideManageCategoryInfo = () => {
     localStorage.setItem("hideManageCategoryInfo", true);
     setHideInfo(localStorage.getItem("hideManageCategoryInfo"));
   };
 
-  const moveArticles = async categoryId => {
-    try {
-      await articlesApi.bulkUpdate({ ids: selectedArticleIds, categoryId });
-      fetchArticles();
-      refetch();
-      setSelectedArticleIds([]);
-    } catch (error) {
-      logger.error(error);
-    }
-  };
+  useEffect(() => {
+    if (activeCategory?.id) fetchArticles();
+    setSelectedArticleIds([]);
+  }, [activeCategory, categoryList]);
 
-  if (loading) {
+  if (isLoadingArticles) {
     return (
       <div className="col-span-2">
         <PageLoader />

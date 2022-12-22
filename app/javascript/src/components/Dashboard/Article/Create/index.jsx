@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { PageLoader } from "neetoui";
+import { useMutation } from "react-query";
 import { useParams } from "react-router-dom";
 
 import articlesApi from "apis/admin/articles";
@@ -12,7 +13,6 @@ import SideBar from "./SideBar";
 
 const Create = ({ history }) => {
   const [categoryList, setCategoryList] = useState([]);
-  const [pageLoading, setPageLoading] = useState(true);
   const [article, setArticle] = useState(null);
   const [submitButtonLabel, setSubmitButtonLabel] = useState("Save Draft");
   const [versionData, setVersionData] = useState([]);
@@ -20,52 +20,64 @@ const Create = ({ history }) => {
     useState(false);
 
   const { id } = useParams();
-  const fetchArticle = async () => {
-    try {
-      const { data } = await articlesApi.show(id);
-      const payload = {
-        ...data,
-        category: {
-          label: data.category.name,
-          value: data.category.id,
-        },
-      };
-      setArticle(payload);
-      setVersionData(data.versions.slice(1));
-      setSubmitButtonLabel(
-        data.status === "published" ? "Publish" : "Save Draft"
-      );
-      setPageLoading(false);
-    } catch (error) {
-      logger.error(error);
-      setPageLoading(false);
-    }
-  };
 
-  const fetchCategories = async () => {
-    try {
-      const {
-        data: { categories },
-      } = await categoriesApi.fetch();
-      setCategoryList(
-        categories.map(category => ({
-          label: category.name,
-          value: category.id,
-        }))
-      );
-      setPageLoading(false);
-    } catch (error) {
-      logger.error(error);
-      setPageLoading(false);
+  const { mutate: fetchArticle, isLoading: isLoadingArticles } = useMutation(
+    async () => {
+      const { data } = await articlesApi.show(id);
+
+      return data;
+    },
+    {
+      onSuccess: article => {
+        const payload = {
+          ...article,
+          category: {
+            label: article.category.name,
+            value: article.category.id,
+          },
+        };
+        setArticle(payload);
+        setVersionData(article.versions.slice(1));
+        setSubmitButtonLabel(
+          article.status === "published" ? "Publish" : "Save Draft"
+        );
+      },
+      onError: error => {
+        logger.error(error);
+      },
     }
-  };
+  );
+
+  const { mutate: fetchCategories, isLoading: isLoadingCategories } =
+    useMutation(
+      async () => {
+        const { data } = await categoriesApi.fetch();
+
+        return data.categories;
+      },
+      {
+        onSuccess: categories => {
+          setCategoryList(
+            categories.map(category => ({
+              label: category.name,
+              value: category.id,
+            }))
+          );
+        },
+        onError: error => {
+          logger.error(error);
+        },
+      }
+    );
+
+  const isLoading = isLoadingArticles || isLoadingCategories;
 
   useEffect(() => {
     fetchCategories();
     if (id) fetchArticle();
   }, [id]);
 
-  if (pageLoading) {
+  if (isLoading) {
     return (
       <div className="h-screen w-screen">
         <PageLoader />

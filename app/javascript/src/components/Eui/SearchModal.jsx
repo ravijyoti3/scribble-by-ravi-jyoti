@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 import { Search } from "neetoicons";
 import { Modal, Input, Typography, Kbd } from "neetoui";
+import { useMutation } from "react-query";
 import { useHistory } from "react-router-dom";
 
 import articlesApi from "apis/public/articles";
@@ -16,16 +17,17 @@ const SearchModal = ({ setShowSearchModal }) => {
 
   const resultRef = useRef(null);
 
-  const searchArticle = async query => {
-    try {
-      const {
-        data: { articles },
-      } = await articlesApi.fetch(query);
-      setSearchedArticles(!query ? articles.slice(0, 5) : articles);
-    } catch (error) {
-      logger.error(error);
+  const { mutate: searchArticle } = useMutation(
+    async query => {
+      const { data } = await articlesApi.fetch(query);
+      setSearchedArticles(!query ? data.articles.slice(0, 5) : data.articles);
+
+      return data;
+    },
+    {
+      onError: error => logger.error(error),
     }
-  };
+  );
 
   useKey("ArrowDown", () => {
     if (activeOption < searchedArticles.length - 1) {

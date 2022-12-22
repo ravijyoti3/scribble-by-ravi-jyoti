@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import { Delete, Edit, Plus } from "neetoicons";
 import { Typography, Button } from "neetoui";
+import { useMutation } from "react-query";
 
 import redirectionsApi from "apis/admin/redirections";
 import { useKey } from "hooks/useKey";
@@ -9,32 +10,35 @@ import { useKey } from "hooks/useKey";
 import DeleteAlert from "./DeleteAlert";
 import Form from "./Form";
 
-const Table = ({ redirectionsData, refetch }) => {
+const Table = ({ redirections, refetch }) => {
   const [editingKey, setEditingKey] = useState("");
   const [showAddRow, setShowAddRow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const { origin } = window.location;
-  const addRedirection = async payload => {
-    try {
-      await redirectionsApi.create(payload);
-      setShowAddRow(false);
-      refetch();
-    } catch (error) {
-      logger.error(error);
-    }
-  };
 
-  const updateRedirection = async payload => {
-    try {
-      await redirectionsApi.update(payload);
-      setEditingKey("");
-      setShowAddRow(false);
-      refetch();
-    } catch (error) {
-      logger.error(error);
+  const { mutate: addRedirection } = useMutation(
+    async payload => await redirectionsApi.create(payload),
+    {
+      onSuccess: () => {
+        setShowAddRow(false);
+        refetch();
+      },
+      onError: error => logger.error(error),
     }
-  };
+  );
+
+  const { mutate: updateRedirection } = useMutation(
+    async payload => await redirectionsApi.update(payload),
+    {
+      onSuccess: () => {
+        setEditingKey("");
+        setShowAddRow(false);
+        refetch();
+      },
+      onError: error => logger.error(error),
+    }
+  );
 
   useKey("Escape", () => {
     setEditingKey("");
@@ -57,11 +61,12 @@ const Table = ({ redirectionsData, refetch }) => {
           Actions
         </Typography>
       </div>
-      {redirectionsData.map(item =>
+      {redirections?.map(item =>
         editingKey === item.id ? (
           <Form
             initialValues={item}
-            redirectionsData={redirectionsData}
+            key={item.id}
+            redirections={redirections}
             refetch={refetch}
             setEditingKey={setEditingKey}
             submitHandler={updateRedirection}
@@ -98,7 +103,7 @@ const Table = ({ redirectionsData, refetch }) => {
       )}
       {showAddRow && (
         <Form
-          redirectionsData={redirectionsData}
+          redirections={redirections}
           setShowAddRow={setShowAddRow}
           submitHandler={addRedirection}
         />

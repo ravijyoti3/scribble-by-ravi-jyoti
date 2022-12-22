@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { PageLoader } from "neetoui";
+import { useMutation } from "react-query";
 import { Switch, Route, Redirect } from "react-router-dom";
 
 import categoriesApi from "apis/admin/categories";
@@ -14,29 +15,31 @@ import { getDefaultSlug, getSlugs } from "../utils";
 const Article = () => {
   const [categories, setCategories] = useState([]);
   const [defaultSlug, setDefaultSlug] = useState("");
-  const [pageLoading, setPageLoading] = useState(true);
 
   const isValidRoute = getSlugs(categories)
     .map(slug => `/public/${slug}`)
     .includes(window.location.pathname);
 
-  const fetchCategories = async () => {
-    try {
+  const { mutate: fetchCategories, isLoading } = useMutation(
+    async () => {
       const { data } = await categoriesApi.fetch();
-      setCategories(data.categories);
-      setDefaultSlug(getDefaultSlug(data.categories));
-      setPageLoading(false);
-    } catch (error) {
-      logger.error(error);
-      setPageLoading(false);
+
+      return data.categories;
+    },
+    {
+      onSuccess: data => {
+        setCategories(data);
+        setDefaultSlug(getDefaultSlug(data));
+      },
+      onError: error => logger.error(error),
     }
-  };
+  );
 
   useEffect(() => {
     fetchCategories();
   }, []);
 
-  if (pageLoading) {
+  if (isLoading) {
     return (
       <div className="h-screen w-screen">
         <PageLoader />

@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 
+import { PageLoader } from "neetoui";
+import { useMutation } from "react-query";
+
 import categoriesApi from "apis/admin/categories";
 
 import ArticleColumn from "./ArticleColumn";
@@ -9,21 +12,32 @@ const Categories = () => {
   const [activeCategory, setActiveCategory] = useState(null);
   const [categoryList, setCategoryList] = useState([]);
 
-  const fetchCategories = async () => {
-    try {
-      const {
-        data: { categories },
-      } = await categoriesApi.fetch();
-      setCategoryList(categories);
-      if (!activeCategory) setActiveCategory(categories[0]);
-    } catch (error) {
-      logger.error(error);
+  const { mutate: fetchCategories, isLoading } = useMutation(
+    async () => {
+      const { data } = await categoriesApi.fetch();
+
+      return data.categories;
+    },
+    {
+      onSuccess: categories => {
+        setCategoryList(categories);
+        if (!activeCategory) setActiveCategory(categories[0]);
+      },
+      onError: error => logger.error(error),
     }
-  };
+  );
 
   useEffect(() => {
     fetchCategories();
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="h-screen w-screen">
+        <PageLoader />
+      </div>
+    );
+  }
 
   return (
     <div className="grid w-full grid-flow-row grid-cols-3 justify-center">
