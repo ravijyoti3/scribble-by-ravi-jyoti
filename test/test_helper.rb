@@ -25,3 +25,10 @@ class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
   parallelize(workers: :number_of_processors) unless ENV["COVERAGE"]
 end
+
+def headers
+  {
+    Accept: "application/json",
+    "Content_Type" => "application/json"
+  }
+end

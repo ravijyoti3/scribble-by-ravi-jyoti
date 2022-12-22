@@ -2,7 +2,7 @@
 
 require "test_helper"
 
-class ArticleUnpublishServiceTest < ActiveSupport::TestCase
+class ArticleStatusUpdateServiceTest < ActiveSupport::TestCase
   def setup
     @organization = create(:organization)
     @user = create(:user, organization: @organization)
@@ -12,11 +12,19 @@ class ArticleUnpublishServiceTest < ActiveSupport::TestCase
     @time = Time.zone.now + 5.minutes
   end
 
+  def test_should_publish_article_later
+    @article.update(status: "draft")
+    @schedule.update(publish_at: @time)
+    travel_to @time + 1.minute
+    ArticleStatusUpdateService.new().process
+    assert_equal "published", @article.reload.status
+  end
+
   def test_should_unpublish_article_later
     @article.update(status: "published")
     @schedule.update(unpublish_at: @time)
     travel_to @time + 1.minute
-    ArticleUnpublishService.new(@article).process
+    ArticleStatusUpdateService.new().process
     assert_equal "draft", @article.reload.status
   end
 end

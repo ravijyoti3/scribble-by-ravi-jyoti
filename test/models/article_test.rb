@@ -8,6 +8,7 @@ class ArticleTest < ActiveSupport::TestCase
     @user = create(:user, organization: @organization)
     @category = create(:category, user: @user)
     @article = create(:article, category: @category, user: @user)
+    @schedule = create(:schedule, article: @article)
   end
 
   def test_article_without_title_should_not_be_valid
@@ -125,5 +126,19 @@ class ArticleTest < ActiveSupport::TestCase
       @article.save!
     end
     assert_match t("article.slug.immutable"), @article.errors_to_sentence
+  end
+
+  def test_should_delete_schedule_associated_when_article_is_destroyed
+    @article.save!
+    @article.schedule.destroy
+    @article.destroy
+    assert_nil @article.schedule
+  end
+
+  def test_should_delete_schedule_if_perfomed_explicitly
+    @article.update!(status: "draft")
+    @schedule.update!(publish_at: Time.zone.now + 5.minutes)
+    @article.update!(status: "published")
+    assert_nil @article.schedule.publish_at
   end
 end

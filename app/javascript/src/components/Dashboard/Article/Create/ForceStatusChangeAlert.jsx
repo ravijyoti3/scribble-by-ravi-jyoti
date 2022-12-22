@@ -3,7 +3,6 @@ import React from "react";
 import { Alert } from "neetoui";
 
 import articlesApi from "apis/admin/articles";
-import schedulesApi from "apis/admin/schedules";
 
 const ForceStatusChangeAlert = ({ values, articleId, onClose, history }) => {
   const handleSubmit = async () => {
@@ -17,11 +16,6 @@ const ForceStatusChangeAlert = ({ values, articleId, onClose, history }) => {
     };
 
     try {
-      await schedulesApi.update({
-        articleId,
-        publishAt: null,
-        unpublishAt: null,
-      });
       await articlesApi.update({
         id: articleId,
         payload,
