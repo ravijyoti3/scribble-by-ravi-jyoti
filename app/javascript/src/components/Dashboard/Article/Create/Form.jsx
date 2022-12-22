@@ -27,6 +27,12 @@ const Form = ({
     useState(false);
   const articleStatus = ["Publish", "Save Draft"];
   const { Menu, MenuItem } = ActionDropdown;
+  const showPublishLater =
+    !article?.schedule?.publish_at &&
+    (article?.status !== "published" || article?.schedule?.unpublish_at);
+  const showUnpublishLater =
+    !article?.schedule?.unpublish_at &&
+    (article?.status !== "draft" || article?.schedule?.publish_at);
 
   const handleSubmit = async articleValues => {
     const { title, body, status } = articleValues;
@@ -37,7 +43,9 @@ const Form = ({
       category_id: articleValues.category.value,
       restored_from: null,
     };
-    const articleChanged = article.status !== articleValues.status;
+    const articleChanged =
+      article.status !== articleValues.status &&
+      (article.schedule.publish_at || article.schedule.unpublish_at);
 
     try {
       if (articleChanged) {
@@ -143,30 +151,26 @@ const Form = ({
                           {status}
                         </MenuItem.Button>
                       ))}
-                      {!article?.schedule?.publish_at &&
-                        (article?.status !== "published" ||
-                          article?.schedule?.unpublish_at) && (
-                          <MenuItem.Button
-                            onClick={() => {
-                              setSubmitButtonLabel("Publish Later");
-                              setFieldValue("status", 2);
-                            }}
-                          >
-                            Publish Later
-                          </MenuItem.Button>
-                        )}
-                      {!article?.schedule?.unpublish_at &&
-                        (article?.status !== "draft" ||
-                          article?.schedule?.publish_at) && (
-                          <MenuItem.Button
-                            onClick={() => {
-                              setSubmitButtonLabel("Unpublish Later");
-                              setFieldValue("status", 2);
-                            }}
-                          >
-                            Unpublish Later
-                          </MenuItem.Button>
-                        )}
+                      {showPublishLater && (
+                        <MenuItem.Button
+                          onClick={() => {
+                            setSubmitButtonLabel("Publish Later");
+                            setFieldValue("status", 2);
+                          }}
+                        >
+                          Publish Later
+                        </MenuItem.Button>
+                      )}
+                      {showUnpublishLater && (
+                        <MenuItem.Button
+                          onClick={() => {
+                            setSubmitButtonLabel("Unpublish Later");
+                            setFieldValue("status", 2);
+                          }}
+                        >
+                          Unpublish Later
+                        </MenuItem.Button>
+                      )}
                     </Menu>
                   </Dropdown>
                 </div>

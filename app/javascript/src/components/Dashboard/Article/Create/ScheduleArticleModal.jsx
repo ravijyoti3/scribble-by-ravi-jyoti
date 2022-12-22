@@ -32,13 +32,11 @@ const ScheduleArticleModal = ({
       payload = {
         articleId,
         publishAt:
-          scheduleAction === "Publish Later"
-            ? formatScheduledTime(scheduleTime)
-            : null,
+          scheduleAction === "Publish Later" &&
+          formatScheduledTime(scheduleTime),
         unpublishAt:
-          scheduleAction === "Unpublish Later"
-            ? formatScheduledTime(scheduleTime)
-            : null,
+          scheduleAction === "Unpublish Later" &&
+          formatScheduledTime(scheduleTime),
       };
     }
 
