@@ -4,6 +4,7 @@ import { Formik, Form as FormikForm } from "formik";
 import { Check } from "neetoicons";
 import { Button } from "neetoui";
 import { Input } from "neetoui/formik";
+import { useMutation } from "react-query";
 
 import categoryApi from "apis/admin/categories";
 
@@ -14,16 +15,20 @@ import {
 
 const Form = ({ setIsAddCollapsed, refetch }) => {
   const [submitted, setSubmitted] = useState(false);
-  const handleSubmit = async category => {
-    try {
-      await categoryApi.create(category);
-    } catch (error) {
-      logger.error(error);
+
+  const { mutate: createCategory } = useMutation(
+    async category => await categoryApi.create(category),
+    {
+      onSuccess: () => {
+        setIsAddCollapsed(true);
+        setSubmitted(true);
+        refetch();
+      },
+      onError: error => {
+        logger.error(error);
+      },
     }
-    setIsAddCollapsed(true);
-    refetch();
-    setSubmitted(true);
-  };
+  );
 
   return (
     <Formik
@@ -31,7 +36,7 @@ const Form = ({ setIsAddCollapsed, refetch }) => {
       validateOnBlur={submitted}
       validateOnChange={submitted}
       validationSchema={CATEGORY_FORM_VALIDATION_SCHEMA}
-      onSubmit={handleSubmit}
+      onSubmit={createCategory}
     >
       <FormikForm>
         <Input

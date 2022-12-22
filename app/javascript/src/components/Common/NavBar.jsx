@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { ExternalLink } from "neetoicons";
 import { Button, Typography } from "neetoui";
+import { useMutation } from "react-query";
 import { Link, NavLink, useLocation } from "react-router-dom";
 
 import articlesApi from "apis/admin/articles";
@@ -12,14 +13,15 @@ const NavBar = () => {
 
   const articleId = useLocation().pathname.split("/")[2];
 
-  const fetchArticle = async () => {
-    try {
+  const { mutate: fetchArticle } = useMutation(
+    async () => {
       const { data } = await articlesApi.show(articleId);
       setArticle(data);
-    } catch (error) {
-      logger.error(error);
+    },
+    {
+      onError: error => logger.error(error),
     }
-  };
+  );
 
   useEffect(() => {
     if (isEditArticleRoute) {

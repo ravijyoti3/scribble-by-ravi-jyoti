@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Plus } from "neetoicons";
 import { Typography, Button } from "neetoui";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { useMutation } from "react-query";
 
 import categoriesApi from "apis/admin/categories";
 import { useKey } from "hooks/useKey";
@@ -21,15 +22,16 @@ const CategoryColumn = ({
 }) => {
   const [showAddCategory, setShowAddCategory] = useState(false);
 
-  const addCategory = async category => {
-    try {
-      await categoriesApi.create(category);
-      refetch();
-      setShowAddCategory(false);
-    } catch (error) {
-      logger.error(error);
+  const { mutate: addCategory } = useMutation(
+    async category => await categoriesApi.create(category),
+    {
+      onSuccess: () => {
+        refetch();
+        setShowAddCategory(false);
+      },
+      onError: error => logger.error(error),
     }
-  };
+  );
 
   useKey("Escape", () => {
     setShowAddCategory(false);

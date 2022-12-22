@@ -4,6 +4,7 @@ import { Typography } from "@bigbinary/neetoui";
 import { MenuVertical } from "neetoicons";
 import { Dropdown } from "neetoui";
 import { Draggable } from "react-beautiful-dnd";
+import { useMutation } from "react-query";
 
 import categoriesApi from "apis/admin/categories";
 
@@ -25,15 +26,16 @@ const CategoryCard = ({
   const { MenuItem } = Dropdown;
   const { id, name, articles } = category;
 
-  const editCategory = async category => {
-    try {
-      await categoriesApi.update(category);
-      refetch();
-      setShowForm(false);
-    } catch (error) {
-      logger.error(error);
+  const { mutate: editCategory } = useMutation(
+    async category => await categoriesApi.update(category),
+    {
+      onSuccess: () => {
+        refetch();
+        setShowForm(false);
+      },
+      onError: error => logger.error(error),
     }
-  };
+  );
 
   return (
     <>

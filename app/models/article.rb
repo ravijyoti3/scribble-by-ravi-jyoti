@@ -18,7 +18,8 @@ class Article < ApplicationRecord
 
   before_create :set_slug, if: -> { status == "published" }
   before_update :set_slug, if: -> { status == "published" && !slug }
-  before_update :delete_schedules, if: -> { status_changed? && self.schedule.present? }
+  before_update :delete_schedule, if: -> { status_changed? && self.schedule.present? }
+  before_update :delete_all_schedules, if: -> { restored_from_changed? && self.schedule.present? }
 
   acts_as_list scope: :category
   has_paper_trail only: %i[title body status category_id]
@@ -49,9 +50,13 @@ class Article < ApplicationRecord
       end
     end
 
-    def delete_schedules
+    def delete_schedule
       self.schedule.unpublish_at = nil if status == "draft"
       self.schedule.publish_at = nil if status == "published"
       self.schedule.save!
+    end
+
+    def delete_all_schedules
+      self.schedule.destroy
     end
 end

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
 import { Modal, Typography, Button } from "neetoui";
+import { useMutation } from "react-query";
 import { formatScheduledTime } from "utils";
 
 import schedulesApi from "apis/admin/schedules";
@@ -14,6 +15,36 @@ const ScheduleArticleModal = ({
   refetch,
 }) => {
   const [scheduleTime, setScheduleTime] = useState(null);
+
+  const { mutate: createSchedule } = useMutation(
+    async payload => {
+      await schedulesApi.create(payload);
+    },
+    {
+      onSuccess: () => {
+        onClose();
+        refetch();
+      },
+      onError: error => {
+        logger.error(error);
+      },
+    }
+  );
+
+  const { mutate: updateSchedule } = useMutation(
+    async payload => {
+      await schedulesApi.update(payload);
+    },
+    {
+      onSuccess: () => {
+        onClose();
+        refetch();
+      },
+      onError: error => {
+        logger.error(error);
+      },
+    }
+  );
 
   const handleSubmit = async () => {
     const articleId = article.id;
@@ -40,16 +71,10 @@ const ScheduleArticleModal = ({
       };
     }
 
-    try {
-      if (article.schedule) {
-        await schedulesApi.update(payload);
-      } else {
-        await schedulesApi.create(payload);
-      }
-      onClose();
-      refetch();
-    } catch (err) {
-      logger.error(err);
+    if (article.schedule) {
+      updateSchedule(payload);
+    } else {
+      createSchedule(payload);
     }
   };
 

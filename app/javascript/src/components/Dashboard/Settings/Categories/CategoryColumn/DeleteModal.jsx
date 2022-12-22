@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import { Warning } from "neetoicons";
 import { Modal, Button, Typography, Callout, Select } from "neetoui";
+import { useMutation } from "react-query";
 
 import categoriesApi from "apis/admin/categories";
 
@@ -15,17 +16,20 @@ const DeleteModal = ({
 }) => {
   const [moveArticlesToCategory, setMoveArticlesToCategory] = useState("");
 
-  const handleSubmit = async id => {
-    try {
-      await categoriesApi.destroy({
-        id,
-        newId: moveArticlesToCategory,
-      });
-      refetch();
-      setActiveCategory(categoryList[0]);
-    } catch (error) {
-      logger.error(error);
+  const { mutate: deleteCategory } = useMutation(
+    async id =>
+      await categoriesApi.destroy({ id, newId: moveArticlesToCategory }),
+    {
+      onSuccess: () => {
+        refetch();
+        setActiveCategory(categoryList[0]);
+      },
+      onError: error => logger.error(error),
     }
+  );
+
+  const handleSubmit = async id => {
+    deleteCategory(id);
     setShowDeleteModal(false);
   };
 

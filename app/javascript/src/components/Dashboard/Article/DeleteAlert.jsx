@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Modal, Button, Typography } from "neetoui";
+import { useMutation } from "react-query";
 
 import articlesApi from "apis/admin/articles";
 
@@ -10,15 +11,18 @@ const DeleteAlert = ({
   setShowDeleteAlert,
   refetch,
 }) => {
-  const deleteArticle = async () => {
-    try {
-      await articlesApi.destroy(article.id);
-      refetch();
-      setShowDeleteAlert(false);
-    } catch (error) {
-      logger.error(error);
+  const { mutate: deleteArticle } = useMutation(
+    async () => await articlesApi.destroy(article.id),
+    {
+      onSuccess: () => {
+        refetch();
+        setShowDeleteAlert(false);
+      },
+      onError: error => {
+        logger.error(error);
+      },
     }
-  };
+  );
 
   return (
     <div className="w-full">

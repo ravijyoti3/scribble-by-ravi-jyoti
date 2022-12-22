@@ -1,34 +1,30 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 
 import { Modal, Typography, Button, Input, Textarea } from "neetoui";
+import { useMutation, useQuery } from "react-query";
 
 import articlesApi from "apis/admin/articles";
 import categoriesApi from "apis/admin/categories";
-import schedulesApi from "apis/admin/schedules";
 
 const VersionDetailModal = ({
   refetch,
   versionArticleData,
   setShowVersionModal,
 }) => {
-  const [category, setCategory] = useState(null);
-
-  const fetchCategory = async () => {
-    try {
+  const { data: category, refetch: fetchCategory } = useQuery(
+    "fetchCategoryName",
+    async () => {
       const { data } = await categoriesApi.show(versionArticleData.category_id);
-      setCategory(data.name);
-    } catch (error) {
-      logger.error(error);
-    }
-  };
 
-  const restoreVersion = async () => {
-    try {
-      await schedulesApi.update({
-        articleId: versionArticleData.id,
-        publishAt: null,
-        unpublishAt: null,
-      });
+      return data.name;
+    },
+    {
+      onError: error => logger.error(error),
+    }
+  );
+
+  const { mutate: restoreVersion } = useMutation(
+    async () =>
       await articlesApi.update({
         id: versionArticleData.id,
         payload: {
@@ -38,12 +34,12 @@ const VersionDetailModal = ({
           category_id: versionArticleData.category_id,
           restored_from: versionArticleData.updated_at,
         },
-      });
-      refetch();
-    } catch (error) {
-      logger.error(error);
+      }),
+    {
+      onSuccess: () => refetch(),
+      onError: error => logger.error(error),
     }
-  };
+  );
 
   useEffect(() => {
     fetchCategory();

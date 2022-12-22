@@ -1,19 +1,21 @@
 import React from "react";
 
 import { Modal, Button, Typography } from "neetoui";
+import { useMutation } from "react-query";
 
 import redirectionsApi from "apis/admin/redirections";
 
 const DeleteAlert = ({ id, showDeleteAlert, setShowDeleteAlert, refetch }) => {
-  const deleteRedirection = async () => {
-    try {
-      await redirectionsApi.destroy(id);
-      refetch();
-      setShowDeleteAlert(false);
-    } catch (error) {
-      logger.error(error);
+  const { mutate: deleteRedirection } = useMutation(
+    async () => await redirectionsApi.destroy(id),
+    {
+      onSuccess: () => {
+        refetch();
+        setShowDeleteAlert(false);
+      },
+      onError: error => logger.error(error),
     }
-  };
+  );
 
   return (
     <div className="w-full">

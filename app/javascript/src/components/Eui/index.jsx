@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
+import { useQuery } from "react-query";
 import { Route, Switch } from "react-router-dom";
 
 import organizationApi from "apis/admin/organization";
@@ -15,33 +16,33 @@ import { PUBLIC_PATH, LOGIN_PATH } from "../routeConstants";
 const Eui = () => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
 
-  const [organizationData, setOrganizationData] = useState({});
   const [isPasswordValidated, setIsPasswordValidated] = useState(true);
   const [showSearchModal, setShowSearchModal] = useState(false);
 
-  const fetchOrganizationDataAndCheckPasswordValidation = async () => {
-    try {
+  const { data: organizationData } = useQuery(
+    "fetchOrganizationDataAndCheckPasswordValidation",
+    async () => {
       const { data } = await organizationApi.show();
-      setOrganizationData(data);
-      setIsPasswordValidated(
-        authToken?.token === data.authentication_token ||
-          !data.password_protected
-      );
-    } catch (err) {
-      logger.error(err);
-    }
-  };
 
-  useEffect(() => {
-    fetchOrganizationDataAndCheckPasswordValidation();
-  }, []);
+      return data;
+    },
+    {
+      onSuccess: data => {
+        setIsPasswordValidated(
+          authToken?.token === data.authentication_token ||
+            !data.password_protected
+        );
+      },
+      onError: error => logger.error(error),
+    }
+  );
 
   return (
     <>
       <Header
         setShowSearchModal={setShowSearchModal}
         showSearchModal={showSearchModal}
-        title={organizationData.name}
+        title={organizationData?.name}
       />
       <Switch>
         <Route exact path={LOGIN_PATH}>

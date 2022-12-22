@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { Typography, Tag, PageLoader } from "neetoui";
+import { useQuery } from "react-query";
 import { formatCreatedTimeToDate } from "utils";
 
 import articlesApi from "apis/public/articles";
@@ -8,25 +9,19 @@ import articlesApi from "apis/public/articles";
 const ArticleContent = () => {
   const slug = window.location.pathname.split("/")[2];
 
-  const [article, setArticle] = useState(null);
-  const [pageLoading, setPageLoading] = useState(true);
-
-  const showArticle = async slug => {
-    try {
+  const { data: article, isLoading } = useQuery(
+    "showArticle",
+    async () => {
       const { data } = await articlesApi.show(slug);
-      setArticle(data);
-      setPageLoading(false);
-    } catch (error) {
-      logger.error(error);
-      setPageLoading(false);
+
+      return data;
+    },
+    {
+      onError: error => logger.error(error),
     }
-  };
+  );
 
-  useEffect(() => {
-    showArticle(slug);
-  }, []);
-
-  if (pageLoading) {
+  if (isLoading) {
     return (
       <div className="h-screen w-screen">
         <PageLoader />

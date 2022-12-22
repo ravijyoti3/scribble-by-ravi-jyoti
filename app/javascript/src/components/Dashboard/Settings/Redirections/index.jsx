@@ -1,33 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { Typography, PageLoader } from "neetoui";
+import { useQuery } from "react-query";
 
 import redirectionsApi from "apis/admin/redirections";
 
 import Table from "./Table";
 
 const Redirections = () => {
-  const [redirectionsData, setRedirectionsData] = useState([]);
-  const [pageLoading, setPageLoading] = useState(true);
+  const {
+    data: redirections,
+    isLoading,
+    refetch: fetchRedirections,
+  } = useQuery(
+    "fetchRedirections",
+    async () => {
+      const { data } = await redirectionsApi.fetch();
 
-  const fetchRedirections = async () => {
-    try {
-      const {
-        data: { redirections },
-      } = await redirectionsApi.fetch();
-      setRedirectionsData(redirections);
-      setPageLoading(false);
-    } catch (error) {
-      logger.error(error);
-      setPageLoading(false);
+      return data.redirections;
+    },
+    {
+      onError: error => logger.error(error),
     }
-  };
+  );
 
-  useEffect(() => {
-    fetchRedirections();
-  }, []);
-
-  if (pageLoading) {
+  if (isLoading) {
     return (
       <div className="h-screen w-screen">
         <PageLoader />
@@ -45,10 +42,7 @@ const Redirections = () => {
           SEO friendly.
         </Typography>
         <div className="mt-5 bg-indigo-100 p-8">
-          <Table
-            redirectionsData={redirectionsData}
-            refetch={fetchRedirections}
-          />
+          <Table redirections={redirections} refetch={fetchRedirections} />
         </div>
       </div>
     </div>

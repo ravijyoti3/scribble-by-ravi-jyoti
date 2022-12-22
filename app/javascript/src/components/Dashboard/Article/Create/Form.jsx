@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Formik, Form as FormikForm } from "formik";
 import { Button, Dropdown, ActionDropdown } from "neetoui";
 import { Input, Select, Textarea } from "neetoui/formik";
+import { useMutation } from "react-query";
 
 import articlesApi from "apis/admin/articles";
 import TooltipWrapper from "components/Common/TooltipWrapper";
@@ -25,6 +26,7 @@ const Form = ({
   const [submitted, setSubmitted] = useState(false);
   const [showForceStatusChangeAlert, setShowForceStatusChangeAlert] =
     useState(false);
+
   const articleStatus = ["Publish", "Save Draft"];
   const { Menu, MenuItem } = ActionDropdown;
   const showPublishLater =
@@ -33,6 +35,32 @@ const Form = ({
   const showUnpublishLater =
     !article?.schedule?.unpublish_at &&
     (article?.status !== "draft" || article?.schedule?.publish_at);
+
+  const { mutate: createArticle } = useMutation(
+    async payload => {
+      await articlesApi.create(payload);
+    },
+    {
+      onSuccess: () => {
+        history.push("/articles");
+      },
+      onError: error => {
+        logger.error(error);
+      },
+    }
+  );
+
+  const { mutate: updateArticle } = useMutation(
+    async payload => await articlesApi.update(payload),
+    {
+      onSuccess: () => {
+        history.push("/articles");
+      },
+      onError: error => {
+        logger.error(error);
+      },
+    }
+  );
 
   const handleSubmit = async articleValues => {
     const { title, body, status } = articleValues;
@@ -44,24 +72,15 @@ const Form = ({
       restored_from: null,
     };
     const articleChanged =
-      article.status !== articleValues.status &&
-      (article.schedule.publish_at || article.schedule.unpublish_at);
+      article?.status !== articleValues.status &&
+      (article?.schedule.publish_at || article?.schedule.unpublish_at);
 
-    try {
-      if (articleChanged) {
-        setShowForceStatusChangeAlert(true);
-      } else if (id) {
-        await articlesApi.update({
-          id,
-          payload,
-        });
-        history.push("/articles");
-      } else {
-        await articlesApi.create(payload);
-        history.push("/articles");
-      }
-    } catch (error) {
-      logger.error(error);
+    if (articleChanged) {
+      setShowForceStatusChangeAlert(true);
+    } else if (id) {
+      updateArticle({ id, payload });
+    } else {
+      createArticle(payload);
     }
   };
 

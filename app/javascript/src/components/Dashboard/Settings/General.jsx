@@ -6,6 +6,7 @@ import {
   Input as FormikInput,
   Checkbox as FormikCheckbox,
 } from "neetoui/formik";
+import { useMutation } from "react-query";
 
 import organizationApi from "apis/admin/organization";
 
@@ -17,31 +18,35 @@ const General = () => {
   const [organizationData, setOrganizationData] = useState(null);
   const [changePassword, setChangePassword] = useState(false);
 
-  const fetchOrganizationDetails = async () => {
-    try {
+  const { mutate: fetchOrganizationDetails } = useMutation(
+    async () => {
       const { data } = await organizationApi.show();
-      setOrganizationData({
-        ...data,
-        changePassword: !data.password_protected,
-      });
-      setShowPasswordField(data.password_protected);
-    } catch (err) {
-      logger.error(err);
-    }
-  };
 
-  const handleSubmit = async values => {
-    try {
-      await organizationApi.update(
-        showPasswordField ? values : { ...values, password: null }
-      );
-      setSubmitted(true);
-      localStorage.setItem("authToken", JSON.stringify({ token: null }));
-      setTimeout(() => window.location.reload(), 500);
-    } catch (err) {
-      logger.error(err);
+      return data;
+    },
+    {
+      onSuccess: data => {
+        setOrganizationData({
+          ...data,
+          changePassword: !data.password_protected,
+        });
+        setShowPasswordField(data.password_protected);
+      },
+      onError: error => logger.error(error),
     }
-  };
+  );
+
+  const { mutate: handleSubmit } = useMutation(
+    async values => await organizationApi.update(values),
+    {
+      onSuccess: () => {
+        setSubmitted(true);
+        localStorage.setItem("authToken", JSON.stringify({ token: null }));
+        setTimeout(() => window.location.reload(), 500);
+      },
+      onError: error => logger.error(error),
+    }
+  );
 
   useEffect(() => {
     fetchOrganizationDetails();
