@@ -1,33 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { ExternalLink } from "neetoicons";
 import { Button, Typography } from "neetoui";
-import { useMutation } from "react-query";
 import { Link, NavLink, useLocation } from "react-router-dom";
 
-import articlesApi from "apis/admin/articles";
+import useStore from "store";
 
 const NavBar = () => {
-  const [article, setArticle] = useState(null);
   const isEditArticleRoute = useLocation().pathname.includes("edit");
 
-  const articleId = useLocation().pathname.split("/")[2];
-
-  const { mutate: fetchArticle } = useMutation(
-    async () => {
-      const { data } = await articlesApi.show(articleId);
-      setArticle(data);
-    },
-    {
-      onError: error => logger.error(error),
-    }
-  );
-
-  useEffect(() => {
-    if (isEditArticleRoute) {
-      fetchArticle();
-    }
-  }, [articleId]);
+  const articleStatus = useStore(state => state.articleStatus);
 
   return (
     <nav className=" border-b sticky top-0 z-50 flex h-16 w-full items-center justify-between bg-white px-5">
@@ -61,18 +43,16 @@ const NavBar = () => {
         {isEditArticleRoute && (
           <div
             className={`mr-4 rounded-md ${
-              article?.status === "published" ? "bg-green-500" : "bg-yellow-200"
+              articleStatus === "published" ? "bg-green-500" : "bg-yellow-200"
             } px-2`}
           >
             <Typography
               style="body2"
               className={
-                article?.status === "published"
-                  ? "text-white"
-                  : "text-orange-400"
+                articleStatus === "published" ? "text-white" : "text-orange-400"
               }
             >
-              {article?.status}
+              {articleStatus}
             </Typography>
           </div>
         )}

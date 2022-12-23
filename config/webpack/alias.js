@@ -10,6 +10,7 @@ module.exports = {
       lib: "src/lib",
       images: "src/images",
       hooks: "src/hooks",
+      store: "src/store",
     },
   },
 };

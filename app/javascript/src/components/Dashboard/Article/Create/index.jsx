@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 
 import articlesApi from "apis/admin/articles";
 import categoriesApi from "apis/admin/categories";
+import useStore from "store";
 
 import Form from "./Form";
 import ScheduleArticleModal from "./ScheduleArticleModal";
@@ -21,6 +22,8 @@ const Create = ({ history }) => {
     useState(false);
 
   const { id } = useParams();
+
+  const setArticleStatus = useStore(state => state.setArticleStatus);
 
   const { mutate: fetchArticle, isLoading: isLoadingArticles } = useMutation(
     async () => {
@@ -44,6 +47,7 @@ const Create = ({ history }) => {
         setSubmitButtonLabel(
           article.status === "published" ? "Publish" : "Save Draft"
         );
+        setArticleStatus(article.status);
       },
       onError: error => {
         logger.error(error);
