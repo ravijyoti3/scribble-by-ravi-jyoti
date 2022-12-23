@@ -1,4 +1,7 @@
+import { filter, pipe, toLower, includes, trim, prop } from "ramda";
+
 export const searchCategory = (categoryList, searchCategory) =>
-  categoryList.filter(category =>
-    category.name.toLowerCase().includes(searchCategory.toLowerCase().trim())
+  filter(
+    pipe(prop("name"), toLower, includes(pipe(toLower, trim)(searchCategory))),
+    categoryList
   );

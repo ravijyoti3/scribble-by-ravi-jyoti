@@ -6,6 +6,7 @@ import {
   Input as FormikInput,
   Checkbox as FormikCheckbox,
 } from "neetoui/formik";
+import { assoc } from "ramda";
 import { useMutation } from "react-query";
 
 import organizationApi from "apis/admin/organization";
@@ -26,10 +27,9 @@ const General = () => {
     },
     {
       onSuccess: data => {
-        setOrganizationData({
-          ...data,
-          changePassword: !data.password_protected,
-        });
+        setOrganizationData(
+          assoc("changePassword", !data.password_protected, data)
+        );
         setShowPasswordField(data.password_protected);
       },
       onError: error => logger.error(error),

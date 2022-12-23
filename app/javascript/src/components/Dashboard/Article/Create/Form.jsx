@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Formik, Form as FormikForm } from "formik";
 import { Button, Dropdown, ActionDropdown } from "neetoui";
 import { Input, Select, Textarea } from "neetoui/formik";
+import { assoc, pick, pipe } from "ramda";
 import { useMutation } from "react-query";
 
 import articlesApi from "apis/admin/articles";
@@ -63,17 +64,14 @@ const Form = ({
   );
 
   const handleSubmit = async articleValues => {
-    const { title, body, status } = articleValues;
-    const payload = {
-      title,
-      body,
-      status,
-      category_id: articleValues.category.value,
-      restored_from: null,
-    };
+    const payload = pipe(
+      assoc("category_id", articleValues.category.value),
+      assoc("restored_from", null),
+      pick(["title", "body", "status", "category_id", "restored_from"])
+    )(articleValues);
     const articleChanged =
       article?.status !== articleValues.status &&
-      (article?.schedule.publish_at || article?.schedule.unpublish_at);
+      (article?.schedule?.publish_at || article?.schedule?.unpublish_at);
 
     if (articleChanged) {
       setShowForceStatusChangeAlert(true);
