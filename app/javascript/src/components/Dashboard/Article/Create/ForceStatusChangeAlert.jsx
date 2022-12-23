@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Alert } from "neetoui";
+import { assoc } from "ramda";
 import { useMutation } from "react-query";
 
 import articlesApi from "apis/admin/articles";
@@ -24,15 +25,9 @@ const ForceStatusChangeAlert = ({ values, articleId, onClose, history }) => {
   );
 
   const handleSubmit = async () => {
-    const { title, body, status } = values;
-    const payload = {
-      title,
-      body,
-      status,
-      category_id: values.category.value,
-      restored_from: null,
-    };
-    updateArticle(payload);
+    assoc("category_id", values.category.value, values);
+    assoc("restored_from", null, values);
+    updateArticle(values);
   };
 
   return (

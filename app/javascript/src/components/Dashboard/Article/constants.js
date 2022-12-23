@@ -8,6 +8,7 @@ export const INITIAL_FORM_VALUES = {
     label: "",
   },
   body: "",
+  status: 0,
 };
 
 export const FORM_VALIDATION_SCHEMA = CATEGORY_LIST =>

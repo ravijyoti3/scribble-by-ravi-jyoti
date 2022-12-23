@@ -2,6 +2,7 @@ import React from "react";
 
 import { Down } from "neetoicons";
 import { Dropdown, Checkbox, Typography } from "neetoui";
+import { append } from "ramda";
 
 import { TABLE_COLUMNS } from "./constants";
 
@@ -34,7 +35,7 @@ const ColumnsDropDown = ({ visibleColumns, setVisibleColumns }) => (
                       return visibleColumns.filter(column => column !== item);
                     }
 
-                    return [...visibleColumns, item];
+                    return append(item, visibleColumns);
                   })
                 }
               />

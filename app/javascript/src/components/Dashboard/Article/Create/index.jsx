@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { PageLoader } from "neetoui";
+import { assoc } from "ramda";
 import { useMutation } from "react-query";
 import { useParams } from "react-router-dom";
 
@@ -29,14 +30,16 @@ const Create = ({ history }) => {
     },
     {
       onSuccess: article => {
-        const payload = {
-          ...article,
-          category: {
-            label: article.category.name,
-            value: article.category.id,
-          },
-        };
-        setArticle(payload);
+        setArticle(
+          assoc(
+            "category",
+            {
+              label: article.category.name,
+              value: article.category.id,
+            },
+            article
+          )
+        );
         setVersionData(article.versions.slice(1));
         setSubmitButtonLabel(
           article.status === "published" ? "Publish" : "Save Draft"

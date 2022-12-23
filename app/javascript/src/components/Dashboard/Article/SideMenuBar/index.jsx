@@ -3,6 +3,7 @@ import React, { useState, useMemo } from "react";
 import { Search, Plus } from "neetoicons";
 import { Typography } from "neetoui";
 import { MenuBar } from "neetoui/layouts";
+import { append, assoc, filter } from "ramda";
 
 import { useKey } from "hooks/useKey";
 
@@ -39,10 +40,7 @@ const SideMenuBar = ({
           count={articlesCount.all}
           label="All"
           onClick={() => {
-            setArticleFilters(articleFilters => ({
-              ...articleFilters,
-              status: "",
-            }));
+            setArticleFilters(assoc("status", ""));
             setCurrentPageNumber(1);
           }}
         />
@@ -57,10 +55,7 @@ const SideMenuBar = ({
                 : articlesCount.draft
             }
             onClick={() => {
-              setArticleFilters(articleFilters => ({
-                ...articleFilters,
-                status: option.value,
-              }));
+              setArticleFilters(assoc("status", option.value));
               setCurrentPageNumber(1);
             }}
           />
@@ -109,18 +104,21 @@ const SideMenuBar = ({
             onClick={() => {
               setArticleFilters(articleFilters => {
                 if (articleFilters.categoryIds?.includes(category.id)) {
-                  return {
-                    ...articleFilters,
-                    categoryIds: articleFilters.categoryIds.filter(
-                      id => id !== category.id
+                  return assoc(
+                    "categoryIds",
+                    filter(
+                      id => id !== category.id,
+                      articleFilters.categoryIds
                     ),
-                  };
+                    articleFilters
+                  );
                 }
 
-                return {
-                  ...articleFilters,
-                  categoryIds: [...articleFilters.categoryIds, category.id],
-                };
+                return assoc(
+                  "categoryIds",
+                  append(category.id, articleFilters.categoryIds),
+                  articleFilters
+                );
               });
               setCurrentPageNumber(1);
             }}

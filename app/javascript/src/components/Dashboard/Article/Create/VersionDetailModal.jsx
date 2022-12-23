@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 
 import { Modal, Typography, Button, Input, Textarea } from "neetoui";
+import { assoc } from "ramda";
 import { useMutation, useQuery } from "react-query";
 
 import articlesApi from "apis/admin/articles";
@@ -24,17 +25,14 @@ const VersionDetailModal = ({
   );
 
   const { mutate: restoreVersion } = useMutation(
-    async () =>
-      await articlesApi.update({
+    async () => {
+      const payload = assoc("status", 0, versionArticleData);
+
+      return await articlesApi.update({
         id: versionArticleData.id,
-        payload: {
-          title: versionArticleData.title,
-          body: versionArticleData.body,
-          status: 0,
-          category_id: versionArticleData.category_id,
-          restored_from: versionArticleData.updated_at,
-        },
-      }),
+        payload,
+      });
+    },
     {
       onSuccess: () => refetch(),
       onError: error => logger.error(error),
