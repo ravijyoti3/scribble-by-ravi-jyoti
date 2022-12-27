@@ -4,7 +4,13 @@ Rails.application.routes.draw do
   constraints(lambda { |req| req.format == :json }) do
     namespace :api do
       namespace :admin do
-        resources :articles, only: %i[index create destroy show ]
+        resources :articles, only: %i[index create destroy show] do
+          collection do
+            resource :report, only: %i[create], module: :articles do
+              get :download, on: :collection
+            end
+          end
+        end
         resource :organization, only: %i[update show create]
         resources :categories, only: %i[index create destroy show]
         resources :redirections, only: %i[index create destroy update]

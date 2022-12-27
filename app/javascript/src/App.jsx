@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import { initializeLogger } from "common/logger";
 import Dashboard from "components/Dashboard";
+import DownloadReport from "components/Dashboard/Article/DownloadReport";
 import Eui from "components/Eui";
 import "lib/dayjs"; //eslint-disable-line
 
@@ -34,6 +35,7 @@ const App = () => {
       <Router>
         <ToastContainer />
         <Switch>
+          <Route exact component={DownloadReport} path="/articles/report" />;
           <Route path="/public">
             <Eui />
           </Route>

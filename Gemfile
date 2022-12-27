@@ -89,3 +89,11 @@ gem "sidekiq", "<7"
 gem "sidekiq-cron"
 
 gem "database_cleaner"
+
+gem "wicked_pdf"
+
+gem "wkhtmltopdf-binary"
+
+gem "google-cloud-storage"
+
+gem "dotenv-rails"

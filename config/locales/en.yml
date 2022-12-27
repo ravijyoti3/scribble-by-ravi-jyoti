@@ -5,6 +5,7 @@ en:
   successfully_moved: "%{entity} was moved successfully"
   successfully_restored: "%{entity} was moved restored"
   position_successfully_updated: "%{entity} Position was successfully updated"
+  in_progress: "%{action} is in progress"
   organization:
     incorrect_credential: "Invalid Password."
   category:
