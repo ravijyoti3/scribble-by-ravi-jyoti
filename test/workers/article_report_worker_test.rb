@@ -6,9 +6,6 @@ class ArticleReportWorkerTest < ActiveSupport::TestCase
   def setup
     @organization = create(:organization)
     @user = create(:user, organization: @organization)
-    @category = create(:category, user: @user)
-    @article = create(:article, category: @category, user: @user)
-    @schedule = create(:schedule, article: @article)
   end
 
   def test_should_generate_report_if_no_report_is_attached
