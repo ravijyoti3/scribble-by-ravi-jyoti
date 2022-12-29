@@ -5,6 +5,7 @@ en:
   successfully_moved: "%{entity} was moved successfully"
   successfully_restored: "%{entity} was moved restored"
   position_successfully_updated: "%{entity} Position was successfully updated"
+  in_progress: "%{action} is in progress"
   organization:
     incorrect_credential: "Invalid Password."
   category:
@@ -17,3 +18,8 @@ en:
     before_unpublish: "cannot be before unpublish"
     before_publish: "cannot be before publish"
     before_present_time: "cannot be before present time"
+  report:
+    render: "Rendering the report"
+    generate: "Generating the PDF report"
+    upload: "Uploading to server"
+    attach: "Attaching the report to the user"

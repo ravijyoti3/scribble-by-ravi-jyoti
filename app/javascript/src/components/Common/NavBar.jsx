@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ExternalLink } from "neetoicons";
+import { ExternalLink, Download } from "neetoicons";
 import { Button, Typography } from "neetoui";
 import { Link, NavLink, useLocation } from "react-router-dom";
 
@@ -58,6 +58,14 @@ const NavBar = () => {
         )}
         <Link target="_blank" to="/public">
           <Button icon={ExternalLink} label="Preview" style="secondary" />
+        </Link>
+        <Link target="_blank" to="/articles/report">
+          <Button
+            className="ml-5"
+            icon={Download}
+            label="Download Report"
+            style="primary"
+          />
         </Link>
       </div>
     </nav>

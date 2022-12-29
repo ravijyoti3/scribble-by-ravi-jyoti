@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 
+import { useMutation } from "react-query";
 import { matchPath } from "react-router";
 import { Redirect, Route, Switch } from "react-router-dom";
 
+import usersApi from "apis/admin/users";
 import NavBar from "components/Common/NavBar";
 import UrlNotFound from "components/Common/UrlNotFound";
 import {
@@ -17,6 +19,21 @@ const Dashboard = () => {
     exact: true,
     strict: false,
   });
+
+  const { mutate: fetchCurrentUser } = useMutation(
+    async () => {
+      const { data } = await usersApi.getUser();
+
+      return data;
+    },
+    {
+      onSuccess: data => localStorage.setItem("currentUser", data.email),
+    }
+  );
+
+  useEffect(() => {
+    fetchCurrentUser();
+  }, []);
 
   return (
     <>

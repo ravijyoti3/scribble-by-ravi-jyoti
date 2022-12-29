@@ -25,6 +25,9 @@ const bulkUpdate = payload =>
     ids: payload.ids,
     category_id: payload.categoryId,
   });
+const generatePdf = () => axios.post("api/admin/articles/report", {});
+const download = () =>
+  axios.get("api/admin/articles/report/download", { responseType: "blob" });
 
 const articlesApi = {
   fetch,
@@ -34,6 +37,8 @@ const articlesApi = {
   update,
   positionUpdate,
   bulkUpdate,
+  generatePdf,
+  download,
 };
 
 export default articlesApi;

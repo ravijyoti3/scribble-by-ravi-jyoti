@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Article < ApplicationRecord
+  scope :accessible_to, ->(user_id) { where("user_id = ?", user_id) }
   MAX_TITLE_LENGTH = 50
   MAX_PAGE_SIZE = 10
 

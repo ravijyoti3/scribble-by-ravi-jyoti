@@ -11,6 +11,7 @@ module.exports = {
       images: "src/images",
       hooks: "src/hooks",
       store: "src/store",
+      channels: "src/channels",
     },
   },
 };

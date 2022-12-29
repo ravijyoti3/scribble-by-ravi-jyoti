@@ -8,6 +8,7 @@ require "rails/all"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+Dotenv::Railtie.load
 module ScribbleByRaviJyoti
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
@@ -18,6 +19,8 @@ module ScribbleByRaviJyoti
     config.generators do |g|
       g.test_framework :test_unit, fixture: false
     end
+
+    config.generators { |g| g.orm :active_record, primary_key_type: :uuid }
 
     # Configuration for the application, engines, and railties goes here.
     #

@@ -1,0 +1,21 @@
+<div class="p-4 mb-8 bg-white neeto-ui-shadow-s rounded">
+<h1>Scribble Articles Report</h1>
+ <table>
+  <thead>
+    <tr>
+      <th>Article</th>
+      <th>Views</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% @articles.each do |article| %>
+  <div class="flexrow w-full mb-4">
+    <tr>
+      <td><%= article.title %></td>
+      <td><%= article.visits.reduce(0) {|sum,num| sum+num.visit} %></td>
+    </tr>
+  </div>
+  <% end %>
+  </tbody>
+</table>
+</div>
