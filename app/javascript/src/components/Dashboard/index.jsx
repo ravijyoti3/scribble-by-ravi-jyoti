@@ -27,7 +27,7 @@ const Dashboard = () => {
       return data;
     },
     {
-      onSuccess: data => localStorage.setItem("currentUser", data.email),
+      onSuccess: data => localStorage.setItem("currentUser", data.id),
     }
   );
 

@@ -9,18 +9,17 @@ class ArticleReportWorkerTest < ActiveSupport::TestCase
     @category = create(:category, user: @user)
     @article = create(:article, category: @category, user: @user)
     @schedule = create(:schedule, article: @article)
-    @time = Time.zone.now + 5.minutes
   end
 
   def test_should_generate_report_if_no_report_is_attached
-    ArticleReportWorker.perform_async(@user.id, @user.email)
+    ArticleReportWorker.perform_async(@user.id)
     assert @user.report.attached?
   end
 
   def test_should_update_report_if_report_is_attached
-    ArticleReportWorker.perform_async(@user.id, @user.email)
+    ArticleReportWorker.perform_async(@user.id)
     report_id = @user.report.id
-    ArticleReportWorker.perform_async(@user.id, @user.email)
+    ArticleReportWorker.perform_async(@user.id)
     assert @user.report.attached?
     assert_not_equal @user.reload.report.id, report_id
   end
