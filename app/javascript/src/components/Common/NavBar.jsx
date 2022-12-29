@@ -63,8 +63,8 @@ const NavBar = () => {
           <Button
             className="ml-5"
             icon={Download}
-            label="Download"
-            style="secondary"
+            label="Download Report"
+            style="primary"
           />
         </Link>
       </div>

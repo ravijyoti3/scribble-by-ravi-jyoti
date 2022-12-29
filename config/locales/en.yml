@@ -18,3 +18,8 @@ en:
     before_unpublish: "cannot be before unpublish"
     before_publish: "cannot be before publish"
     before_present_time: "cannot be before present time"
+  report:
+    render: "Rendering the report"
+    generate: "Generating the PDF report"
+    upload: "Uploading to server"
+    attach: "Attaching the report to the user"

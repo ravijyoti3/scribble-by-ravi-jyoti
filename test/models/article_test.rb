@@ -141,4 +141,11 @@ class ArticleTest < ActiveSupport::TestCase
     @article.update!(status: "published")
     assert_nil @article.schedule.publish_at
   end
+
+  def test_should_delete_all_schedule_if_article_version_is_restored
+    @article.update!(status: "draft")
+    @schedule.update!(publish_at: Time.zone.now + 5.minutes)
+    @article.update!(restored_from: @article.versions.last.created_at, status: "published")
+    assert_nil @article.reload.schedule
+  end
 end

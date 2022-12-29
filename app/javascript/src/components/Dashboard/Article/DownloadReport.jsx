@@ -1,55 +1,69 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
-import { useMutation } from "react-query";
+import FileSaver from "file-saver";
+import { Button } from "neetoui";
+import { Container } from "neetoui/layouts";
 
 import articlesApi from "apis/admin/articles";
+import createConsumer from "channels/consumer";
+import { subscribeToReportDownloadChannel } from "channels/reportDownloadChannel";
+import ProgressBar from "components/Common/ProgressBar";
 
 const DownloadReport = () => {
-  const { mutate: generatePdf } = useMutation(
-    async () => await articlesApi.generatePdf(),
-    {
-      onError: error => logger.error(error),
-    }
-  );
+  const [isLoading, setIsLoading] = useState(true);
+  const [progress, setProgress] = useState(0);
+  const [message, setMessage] = useState("");
 
-  const saveAs = ({ blob, fileName }) => {
-    const objectUrl = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = objectUrl;
-    link.setAttribute("download", fileName);
-    document.body.appendChild(link);
-    link.click();
-    link.parentNode.removeChild(link);
-    setTimeout(() => window.URL.revokeObjectURL(objectUrl), 150);
+  const consumer = createConsumer();
+
+  const generatePdf = async () => {
+    try {
+      await articlesApi.generatePdf();
+    } catch (error) {
+      logger.error(error);
+    }
   };
 
-  const { mutate: downloadPdf, isLoading } = useMutation(
-    async () => await articlesApi.download(),
-    {
-      onSuccess: data => {
-        saveAs({ blob: data.data, fileName: "scribble_article_report.pdf" });
-      },
-      onError: error => {
-        logger.error(error);
-      },
+  const downloadPdf = async () => {
+    setIsLoading(true);
+    try {
+      const { data } = await articlesApi.download();
+      FileSaver.saveAs(data, "scribble_article_report.pdf");
+    } catch (error) {
+      logger.error(error);
+    } finally {
+      setIsLoading(false);
     }
-  );
+  };
 
   useEffect(() => {
-    generatePdf();
-    setTimeout(() => {
-      downloadPdf();
-    }, 5000);
+    subscribeToReportDownloadChannel({
+      consumer,
+      setMessage,
+      setProgress,
+      generatePdf,
+    });
+
+    return () => {
+      consumer.disconnect();
+    };
   }, []);
 
-  const message = isLoading
-    ? "Report is being generated..."
-    : "Report downloaded!";
+  useEffect(() => {
+    if (progress === 100) {
+      setIsLoading(false);
+      setMessage("Report is ready to be downloaded");
+    }
+  }, [progress]);
 
   return (
-    <div>
-      <h1>{message}</h1>
-    </div>
+    <Container>
+      <div className="mx-auto mt-48 w-3/6 space-y-6 rounded-md border-2 p-4 text-center">
+        <h1>{message}</h1>
+        <ProgressBar progress={progress} />
+        <Button label="Download" loading={isLoading} onClick={downloadPdf} />
+      </div>
+    </Container>
   );
 };
 
