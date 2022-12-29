@@ -11,7 +11,7 @@ class ApplicationCable::ConnectionTest < ActionCable::Connection::TestCase
   end
 
   def test_connection_success_when_auth_token_and_email_is_set_correctly
-    connect params: { email: @user.email }
+    connect params: { id: @user.id }
     assert_equal connection.current_user, @user
   end
 
@@ -22,7 +22,7 @@ class ApplicationCable::ConnectionTest < ActionCable::Connection::TestCase
   def test_connection_fails_when_user_is_not_verified
     assert_reject_connection {
       connect params: {
-        email: "hello@world.com"
+        id: "12343"
       }
     }
   end

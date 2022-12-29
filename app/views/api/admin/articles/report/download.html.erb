@@ -12,7 +12,26 @@
   <div class="flexrow w-full mb-4">
     <tr>
       <td><%= article.title %></td>
-      <td><%= article.visits.reduce(0) {|sum,num| sum+num.visit} %></td>
+      <%# if article have visit then render table else 0 %>
+      <% if article.visits.present? %>
+      <td>
+        <table>
+          <tr>
+            <th>Date</th>
+            <th>Views</th>
+          </tr>
+          <% article.visits.each do |visit| %>
+          <tr>
+          <%# convert the following date in dd/mm/yy %>
+            <td><%= visit.visited_at %></td>
+            <td><%= visit.visit %></td>
+          </tr>
+          <% end %>
+        </table>
+      </td>
+      <% else %>
+      <td>0</td>
+      <% end %>
     </tr>
   </div>
   <% end %>

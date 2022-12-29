@@ -2,7 +2,7 @@
 
 class Api::Admin::Articles::ReportsController < ApplicationController
   def create
-    ArticleReportWorker.perform_async(current_user.id, current_user.email)
+    ArticleReportWorker.perform_async(current_user.id)
   end
 
   def download
